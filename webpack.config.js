@@ -75,6 +75,20 @@ module.exports = {
                 use: [
                     'file-loader'
                 ]
+            },
+            {
+                include: [path.resolve(__dirname, "index.html")],
+                test: /\.html$/,
+                use: [
+                    "raw-loader"
+                ]
+            },
+            {
+                include: [path.resolve(__dirname, "src/web-test")],
+                test: /\.html$/,
+                use: [
+                    "html-loader"
+                ]
             }
         ]
     }
