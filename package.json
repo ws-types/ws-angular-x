@@ -1,0 +1,27 @@
+{
+  "name": "ws-angular-x",
+  "version": "1.0.0",
+  "description": "the new syntax of angular 1.x",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ws-types/ws-angular-x.git"
+  },
+  "author": "wallace sun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ws-types/ws-angular-x/issues"
+  },
+  "homepage": "https://github.com/ws-types/ws-angular-x#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/angular": "^1.6.40",
+    "@types/node": "^8.5.2",
+    "angular": "1.5.0",
+    "bootstrap": "3.3.6",
+    "jquery": "^3.2.1"
+  }
+}
