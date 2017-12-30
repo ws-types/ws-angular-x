@@ -1,4 +1,5 @@
-import { ViewEncapsulation } from "@angular/metadata";
+import { ViewEncapsulation } from "./enums";
+import { IClass } from "./class";
 
 
 export interface IDirectivetConfig {
@@ -12,3 +13,5 @@ export interface IDirectivetConfig {
 export type IDirectiveFn = () => ng.IDirective;
 
 export interface IDirectiveBundle extends IDirectiveFn { }
+
+export interface IDirectiveClass extends IClass<IDirectiveBundle> { }

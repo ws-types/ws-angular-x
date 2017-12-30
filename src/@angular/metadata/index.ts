@@ -5,4 +5,4 @@ export * from "./directive";
 export * from "./provider";
 export * from "./enums";
 export * from "./generator";
-
+export * from "./class";

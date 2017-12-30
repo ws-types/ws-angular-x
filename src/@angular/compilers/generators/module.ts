@@ -1,11 +1,11 @@
 import * as angular from "angular";
 
 import { SelectorParse } from "@angular/compilers/parsers/selector-parser";
-import { DeclarationExistError } from "@angular/utils/errors";
+import { DeclarationExistError, ElementTypeError } from "@angular/utils/errors";
 import { IModuleConfig, IModuleBundle } from "@angular/metadata";
 import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
-    IComponentGenerator, IProviderGenerator
+    IComponentGenerator, IProviderGenerator, IClass
 } from "@angular/metadata";
 
 
@@ -66,10 +66,21 @@ export class ModuleGenerator implements IModuleGenerator {
 
 }
 
-function parseElements<T>(elements: IGenerator<T>[], flag?: string): IGenerator<T>[] {
+function parseElements<T>(elements: (IGenerator<T> | IClass<T>)[], flag?: string): IGenerator<T>[] {
     const results: IGenerator<T>[] = [];
     if (elements && elements.length > 0) {
-        elements.forEach(ele => {
+        elements.forEach(e => {
+            let ele: IGenerator<T>;
+            if ((<IClass<T>>e).generator) {
+                // type is controller with generator payload, means from decoretor.
+                ele = (e as IClass<T>).generator;
+            } else {
+                // type is generator, comes from creating manually.
+                ele = e as IGenerator<T>;
+            }
+            if (!ele.Type) {
+                throw ElementTypeError(ele);
+            }
             const valid = !flag ? true : flag === ele.Type;
             if (valid) {
                 results.push(ele);

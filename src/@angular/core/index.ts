@@ -1,16 +1,24 @@
 import * as angular from "angular";
 import * as $ from "jquery";
 
+import { Ng2Module, IModuleClass, IModuleGenerator } from "@angular/metadata";
+
 const CoreModule = angular.module("ws-angular-x-v1", []);
 
-export function browserDynamic() {
+export function browserDynamic(selector = "html") {
     return {
-        bootstrapModule: function (module?: ng.IModule) {
+        bootstrapModule: function (module?: Ng2Module) {
             const deps = [CoreModule.name];
             if (module) {
-                deps.push(module.name);
+                let generator: IModuleGenerator;
+                if ((<IModuleClass>module).generator) {
+                    generator = (module as IModuleClass).generator;
+                } else {
+                    generator = module as IModuleGenerator;
+                }
+                deps.push(generator.Build().name);
             }
-            angular.bootstrap($("html"), deps);
+            angular.bootstrap($(selector), deps);
         }
     };
 }

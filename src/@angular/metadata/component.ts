@@ -1,5 +1,5 @@
-import { ViewEncapsulation } from "@angular/metadata";
-
+import { ViewEncapsulation } from "./enums";
+import { IClass } from "./class";
 
 export interface IComponentConfig {
     selector: string;
@@ -10,4 +10,6 @@ export interface IComponentConfig {
 }
 
 export interface IComponentBundle extends ng.IComponentOptions { }
+
+export interface IComponentClass extends IClass<IComponentBundle> { }
 

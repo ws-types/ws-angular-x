@@ -1,4 +1,8 @@
-import { IComponentBundle, IDirectiveBundle, IProviderBundle, IModuleBundle } from "@angular/metadata";
+import { IComponentBundle } from "./component";
+import { IDirectiveBundle } from "./directive";
+import { IProviderBundle } from "./provider";
+import { IModuleBundle } from "./module";
+
 
 export interface IGenerator<T> {
     Selector: string;
