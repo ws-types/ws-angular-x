@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-const cssObjectLoader = path.resolve(__dirname, "webpack/@ngtools/css-object-loader.js");
+const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader.js");
 
 module.exports = {
     entry: {
@@ -51,6 +51,9 @@ module.exports = {
     devServer: {
         contentBase: './dist'
     },
+    node: {
+        fs: "empty"
+    },
     module: {
         rules: [
             {
@@ -68,8 +71,20 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    'style-loader',
+                    // 'style-loader',
+                    cssObjectLoader,
+                    // 'exports-loader?=module.exports.toString()',
                     'css-loader'
+                ]
+            },
+            {
+                test: /\.(sass|scss)$/,
+                use: [
+                    // 'style-loader',
+                    // 'exports-loader?=module.exports.toString()',
+                    cssObjectLoader,
+                    // 'css-loader',
+                    'sass-loader'
                 ]
             },
             {

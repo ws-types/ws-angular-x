@@ -1,12 +1,13 @@
 import { ViewEncapsulation } from "./enums";
 import { IClass } from "./class";
+import { CssOnject } from "./common";
 
 
 export interface IDirectivetConfig {
     selector: string;
     template: string;
-    style?: string;
-    styles?: string[];
+    style?: CssOnject;
+    styles?: CssOnject[];
     encapsulation?: ViewEncapsulation;
 }
 

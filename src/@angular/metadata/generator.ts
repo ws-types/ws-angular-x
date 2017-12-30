@@ -17,7 +17,7 @@ export interface IGenerator<T> {
 }
 
 export interface IComponentGenerator extends IGenerator<IComponentBundle> {
-    CssInitLoader: () => void;
+    StylesLoad?: Function;
 }
 
 export interface IDirectiveGenerator extends IGenerator<IDirectiveBundle> { }
