@@ -5,14 +5,16 @@ import { DeclarationExistError, ElementTypeError } from "@angular/utils/errors";
 import { IModuleConfig, IModuleBundle } from "@angular/metadata";
 import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
-    IComponentGenerator, IProviderGenerator, IClass
+    IComponentGenerator, IProviderGenerator, IClass,
+    Ng2Component, Ng2Directive, Ng2Declaration,
+    Ng2Provider, GeneratorType
 } from "@angular/metadata";
 
 
 export class ModuleGenerator implements IModuleGenerator {
 
     public get Selector() { return SelectorParse(this.config.selector); }
-    public get Type() { return "ng_module"; }
+    public get Type() { return GeneratorType.Module; }
 
     private _components: IComponentGenerator[];
     private _directives: IDirectiveGenerator[];
@@ -20,8 +22,8 @@ export class ModuleGenerator implements IModuleGenerator {
     private _imports: IModuleGenerator[];
 
     constructor(private config: IModuleConfig) {
-        this._components = parseElements(<IComponentGenerator[]>config.declarations, "component");
-        this._directives = parseElements(<IDirectiveGenerator[]>config.declarations, "directive");
+        this._components = parseElements(<Ng2Component[]>config.declarations, GeneratorType.Component);
+        this._directives = parseElements(<Ng2Directive[]>config.declarations, GeneratorType.Directive);
         this._providers = parseElements(config.providers);
         this._imports = parseElements(config.imports);
     }

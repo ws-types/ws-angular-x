@@ -3,6 +3,12 @@ import { IDirectiveBundle } from "./directive";
 import { IProviderBundle } from "./provider";
 import { IModuleBundle } from "./module";
 
+export enum GeneratorType {
+    Component = "component",
+    Directive = "directive",
+    Provider = "provider",
+    Module = "ng_module"
+}
 
 export interface IGenerator<T> {
     Selector: string;
