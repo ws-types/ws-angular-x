@@ -5,8 +5,8 @@ import { IClass } from "./class";
 export interface IDirectivetConfig {
     selector: string;
     template: string;
-    style?: any;
-    styles?: any[];
+    style?: string;
+    styles?: string[];
     encapsulation?: ViewEncapsulation;
 }
 

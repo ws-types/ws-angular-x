@@ -4,8 +4,9 @@ import { IClass } from "./class";
 export interface IComponentConfig {
     selector: string;
     template: string;
-    style?: any;
-    styles?: any[];
+    style?: string;
+    styles?: string[];
+    alias?: string;
     encapsulation?: ViewEncapsulation;
 }
 

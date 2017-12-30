@@ -18,7 +18,9 @@
     "url": "https://github.com/ws-types/ws-angular-x/issues"
   },
   "homepage": "https://github.com/ws-types/ws-angular-x#readme",
-  "dependencies": {},
+  "dependencies": {
+    "css": "^2.2.1"
+  },
   "devDependencies": {
     "@types/angular": "^1.6.40",
     "@types/node": "^8.5.2",
