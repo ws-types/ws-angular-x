@@ -6,12 +6,12 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         vendor: ["angular", "bootstrap", "jquery"],
-        index: "./src/index.ts"
+        index: "./src/web-test/index.ts"
     },
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].bundle.js",
-        publicPath: "/assets/",
+        publicPath: "",
         // library: "ws-angular-x",
         // libraryTarget: "umd",
         pathinfo: true,
@@ -22,6 +22,15 @@ module.exports = {
         new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
             template: "./index.html"
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            chunks: ['index']
+        }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: 'jquery',
+            "window.jQuery": "jquery"
         })
     ],
     resolve: {
@@ -48,6 +57,11 @@ module.exports = {
                     path.resolve(__dirname, "src/web-test")
                 ],
                 loader: "babel-loader",
+            },
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
             },
             {
                 test: /\.css$/,
