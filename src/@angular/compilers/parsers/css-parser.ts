@@ -13,6 +13,8 @@ export interface ICssViewConfig {
 
 export class CssParser {
 
+    private get type() { return this.config.encapsulation; }
+
     private classes: CssOnject[] = [];
     private parsed_csses: string[] = [];
     private config: ICssViewConfig;
@@ -20,7 +22,7 @@ export class CssParser {
     constructor(classes: CssOnject[], config?: ICssViewConfig) {
         this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "" };
         this.classes = classes || [];
-        this.classes.forEach(i => this.parsed_csses.push(parseCss(i, this.config.selector)));
+        this.classes.forEach(i => this.parsed_csses.push(parseCss(i, this.config.selector, this.type)));
     }
 
     public Parse(): () => void {
@@ -31,11 +33,15 @@ export class CssParser {
 
 }
 
-function parseCss(css: CssOnject, selector: string) {
+function parseCss(css: CssOnject, selector: string, type: ViewEncapsulation) {
+    let attr_selector = `[${NgClassPrefix}-${selector}]`;
+    if (type === ViewEncapsulation.None) {
+        attr_selector = "";
+    }
     const maps = Object.keys(css);
     let str = "";
     maps.forEach(key => {
-        let item = `${key}[${NgClassPrefix}-${selector}] {`;
+        let item = `${key}${attr_selector} {`;
         const content = css[key];
         const subKeys = Object.keys(content);
         subKeys.forEach(i => {

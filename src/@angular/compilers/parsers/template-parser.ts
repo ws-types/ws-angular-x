@@ -11,6 +11,8 @@ export interface ITemplateViewConfig {
 
 export class TemplateParser {
 
+    private get type() { return this.config.encapsulation; }
+
     private config: ITemplateViewConfig;
 
     constructor(private template: string, config?: ITemplateViewConfig) {
@@ -18,12 +20,15 @@ export class TemplateParser {
     }
 
     public Parse(): string {
-        return parseTemplate(this.template, this.config.selector);
+        return parseTemplate(this.template, this.config.selector, this.type);
     }
 
 }
 
-function parseTemplate(tpl: string, selector: string) {
+function parseTemplate(tpl: string, selector: string, type: ViewEncapsulation) {
+    if (type === ViewEncapsulation.None) {
+        return tpl;
+    }
     const ngTpl = document.createElement("ng-template");
     ngTpl.innerHTML = tpl;
     $(ngTpl).children().each((index, element) => parseNode(element, selector));

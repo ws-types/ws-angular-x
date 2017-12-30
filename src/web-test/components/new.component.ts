@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular";
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
 
 
 @Component({
     selector: "new-component",
     template: require("./new.html"),
+    encapsulation: ViewEncapsulation.Emulated,
     styles: [
         require("./new.scss")
     ]
