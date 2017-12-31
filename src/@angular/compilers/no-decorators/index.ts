@@ -1,6 +1,7 @@
-import { $Component, $Directive } from "./../decoretors";
+import { $Component, $Directive, $Injectable } from "./../decoretors";
 
 export {
     $Component as Component,
-    $Directive as Directive
+    $Directive as Directive,
+    $Injectable as Injectable
 };

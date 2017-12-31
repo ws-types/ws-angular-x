@@ -2,7 +2,7 @@ import { IClass } from "./class";
 
 
 export interface IProviderConfig {
-    selector: string;
+    selector?: string;
 }
 
 export interface IProviderBundle extends Function { }
