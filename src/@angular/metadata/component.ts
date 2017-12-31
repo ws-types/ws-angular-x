@@ -14,9 +14,9 @@ export interface IComponentConfig {
 export interface IComponentBundle extends ng.IComponentOptions { }
 
 export interface IComponentClass extends IClass<IComponentBundle> {
-    $onInit?(...params: any[]): void;
-    $postLink?(...params: any[]): void;
-    $onChanges?(...params: any[]): void;
-    $onDestroy?(...params: any[]): void;
+    $onInit?(): void;
+    $postLink?(): void;
+    $onChanges?(changes: any): void;
+    $onDestroy?(): void;
 }
 

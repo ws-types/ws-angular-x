@@ -7,7 +7,13 @@ const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-l
 
 module.exports = {
     entry: {
-        vendor: ["angular", "bootstrap", "jquery"],
+        vendor: [
+            "angular",
+            "bootstrap",
+            "jquery",
+            "reflect-metadata",
+            "uuid"
+        ],
         index: "./src/web-test/index.ts"
     },
     output: {

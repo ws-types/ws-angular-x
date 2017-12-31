@@ -1,4 +1,5 @@
 <div class="new-back new-color">
-    <div>OUTER</div>
-    <div style="padding:8px;" ng-transclude></div>
+    <div>OUTER - {{vm.output}}</div>
+    <!-- <div style="padding:8px;" ng-transclude></div> -->
+    <new-component meta-test="{{vm.data.test}}" meta-number="vm.data.number" on-key-fuck="vm.onKeyFuck($event)"></new-component>
 </div>

@@ -6,7 +6,7 @@ import {
     IComponentConfig, GeneratorType, IComponentClass
 } from "@angular/metadata";
 
-interface IBindings { [key: string]: ">" | "="; }
+interface IBindings { [key: string]: "<" | "@" | "&"; }
 
 export class ComponentGenerator implements IComponentGenerator {
 
@@ -30,13 +30,13 @@ export class ComponentGenerator implements IComponentGenerator {
         return this;
     }
 
-    public Input(key: string, isTwoWay = true) {
-        this._bindings[key] = isTwoWay ? "=" : ">";
+    public Input(key: string, isObject = true) {
+        this._bindings[key] = isObject ? "<" : "@";
         return this;
     }
 
-    public Output(key: string, func: Function) {
-        this._bindings[key] = "=";
+    public Output(key: string) {
+        this._bindings[key] = "&";
         return this;
     }
 
@@ -48,6 +48,7 @@ export class ComponentGenerator implements IComponentGenerator {
             template: this._tpl.Parse(),
             transclude: true
         };
+        console.log(this._bindings);
         return component;
     }
 
