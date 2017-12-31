@@ -6,8 +6,7 @@ import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
     template: require("./outer.html"),
     styles: [
         require("./out.scss")
-    ],
-    encapsulation: ViewEncapsulation.Emulated
+    ]
 })
 export class OutComponent implements OnInit, OnDestroy {
 
