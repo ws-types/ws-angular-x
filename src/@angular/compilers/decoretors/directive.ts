@@ -30,7 +30,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const generator = CreateDirective(config);
     const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
-    (Object.keys(maps)).forEach(event => generator.OnEvent(event, maps[event]));
+    Object.keys(maps).forEach(event => generator.OnEvent(event, maps[event]));
     class DirectiveClass extends target {
         constructor(...params: any[]) {
             super(...params);
