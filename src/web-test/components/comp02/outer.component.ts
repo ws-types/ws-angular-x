@@ -12,9 +12,10 @@ import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
 export class OutComponent implements OnInit, OnDestroy {
 
     public data = {
-        test: "hahahahaha",
         number: 123456
     };
+
+    public show01 = true;
 
     public output: string;
 
@@ -26,8 +27,13 @@ export class OutComponent implements OnInit, OnDestroy {
         console.log("out component destroyed.");
     }
 
+    public changeChild() {
+        this.show01 = !this.show01;
+    }
+
     public onKeyFuck(output: string) {
         this.output = output;
+        this.data.number = this.data.number + 1;
     }
 
 }

@@ -1,4 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, Input, Output, EventEmitter } from "@angular";
+import {
+    Component, OnInit, OnDestroy,
+    ViewEncapsulation, Input, Output, EventEmitter,
+    OnChanges, DoCheck, SimpleChanges
+} from "@angular";
 
 @Component({
     selector: "new-component",
@@ -7,7 +11,7 @@ import { Component, OnInit, OnDestroy, ViewEncapsulation, Input, Output, EventEm
         require("./new.scss")
     ]
 })
-export class NewComponent implements OnInit, OnDestroy {
+export class NewComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input(true)
     private metaTest: string;
@@ -24,6 +28,14 @@ export class NewComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         console.log("component destroyed.");
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        // for (const propName in changes) {
+        //     if (propName) {
+        //         console.log(`changes : ${propName}`);
+        //     }
+        // }
     }
 
     public changes() {

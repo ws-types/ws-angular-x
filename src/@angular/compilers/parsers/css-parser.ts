@@ -57,7 +57,7 @@ function parseCss(css: CssOnject, selector: string, type: ViewEncapsulation) {
 }
 
 function loadCss(css: string, selector: string) {
-    const styleNode = $(`[attribute='${NgClassPrefix}-${selector}-${NgClassSheet}']`).get(0);
+    const styleNode = $(`[${NgClassPrefix}-${selector}-${NgClassSheet}='']`).get(0);
     if (!styleNode) {
         const node = document.createElement("style");
         node.innerHTML = css;

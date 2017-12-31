@@ -1,3 +1,12 @@
+export interface SimpleChanges {
+    [propName: string]: ISimpleChange;
+}
+
+export interface ISimpleChange {
+    currentValue: any;
+    previousValue: any;
+}
+
 export interface OnInit {
     ngOnInit(): void;
 }
@@ -7,5 +16,9 @@ export interface OnDestroy {
 }
 
 export interface OnChanges {
-    ngOnChanges(changes: any): void;
+    ngOnChanges(changes: SimpleChanges): void;
+}
+
+export interface DoCheck {
+    ngDoCheck(): void;
 }

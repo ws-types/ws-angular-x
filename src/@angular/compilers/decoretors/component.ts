@@ -23,6 +23,9 @@ export function Component(config: IComponentConfig) {
                 if (maps.ngOnChanges) {
                     this.$onChanges = maps.ngOnChanges;
                 }
+                if (maps.ngDoCheck) {
+                    this.$doCheck = maps.ngDoCheck;
+                }
                 generator.StylesLoad();
             }
         }
@@ -35,7 +38,7 @@ function parseLifeCycleHooks(proto: any) {
     const maps: { [name: string]: (...params: any[]) => void } = {};
     Object.getOwnPropertyNames(proto).forEach(name => {
         const propery = proto[name];
-        if (name === "ngOnInit" || name === "ngOnDestroy" || name === "ngOnChanges") {
+        if (name === "ngOnInit" || name === "ngOnDestroy" || name === "ngOnChanges" || name === "ngDoCheck") {
             maps[name] = propery;
         }
     });
