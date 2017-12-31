@@ -2,30 +2,28 @@ import { SelectorParse } from "../parsers/selector-parser";
 import { TemplateParser } from "@angular/compilers/parsers/template-parser";
 import { CssParser } from "@angular/compilers/parsers/css-parser";
 import {
-    IComponentGenerator, IComponentBundle,
+    IComponentGenerator, IComponentBundle, IGenerator,
     IComponentConfig, GeneratorType, IComponentClass
 } from "@angular/metadata";
 
-interface IBindings { [key: string]: "<" | "@" | "&"; }
+export interface IBindings { [key: string]: "<" | "@" | "&" | "="; }
 
-export class ComponentGenerator implements IComponentGenerator {
+export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector: string }> implements IGenerator<TBundle> {
 
     public get Selector(): string { return SelectorParse(this.config.selector); }
-    public get Type() { return GeneratorType.Component; }
+    public get Type() { return GeneratorType.None; }
 
-    public get StylesLoad(): Function { return this._css.Parse(); }
+    protected _ctrl: TClass;
+    protected _tpl: TemplateParser;
+    protected _css: CssParser;
+    protected _bindings: IBindings = {};
 
-    private _ctrl: IComponentClass;
-    private _tpl: TemplateParser;
-    private _css: CssParser;
-    private _bindings: IBindings = {};
-
-    constructor(private config: IComponentConfig) {
-        this._tpl = new TemplateParser(config);
-        this._css = new CssParser(config);
+    constructor(protected config: TConfig) {
+        this._tpl = new TemplateParser(<any>config);
+        this._css = new CssParser(<any>config);
     }
 
-    public Class(controller: IComponentClass) {
+    public Class(controller: TClass) {
         this._ctrl = controller;
         return this;
     }
@@ -40,6 +38,25 @@ export class ComponentGenerator implements IComponentGenerator {
         return this;
     }
 
+    public abstract Build(): TBundle;
+
+}
+
+export class ComponentGenerator
+    extends BaseGenerator<IComponentBundle, IComponentClass, IComponentConfig> implements IComponentGenerator {
+
+    public get Type() { return GeneratorType.Component; }
+    public get StylesLoad(): Function { return this._css.Parse(); }
+
+    protected _ctrl: IComponentClass;
+    protected _tpl: TemplateParser;
+    protected _css: CssParser;
+    protected _bindings: IBindings = {};
+
+    constructor(protected config: IComponentConfig) {
+        super(config);
+    }
+
     public Build(): IComponentBundle {
         const component: IComponentBundle = {
             bindings: this._bindings,
@@ -48,7 +65,6 @@ export class ComponentGenerator implements IComponentGenerator {
             template: this._tpl.Parse(),
             transclude: true
         };
-        console.log(this._bindings);
         return component;
     }
 

@@ -7,7 +7,8 @@ export enum GeneratorType {
     Component = "component",
     Directive = "directive",
     Provider = "provider",
-    Module = "ng_module"
+    Module = "ng_module",
+    None = "undefined"
 }
 
 export interface IGenerator<T> {
@@ -20,7 +21,9 @@ export interface IComponentGenerator extends IGenerator<IComponentBundle> {
     StylesLoad?: Function;
 }
 
-export interface IDirectiveGenerator extends IGenerator<IDirectiveBundle> { }
+export interface IDirectiveGenerator extends IGenerator<IDirectiveBundle> {
+    StylesLoad?: Function;
+}
 
 export interface IProviderGenerator extends IGenerator<IProviderBundle> { }
 

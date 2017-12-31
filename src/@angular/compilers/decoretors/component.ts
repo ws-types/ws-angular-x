@@ -49,7 +49,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     return generator;
 }
 
-function parseLifeCycleHooks(proto: any) {
+export function parseLifeCycleHooks(proto: any) {
     const maps: { [name: string]: (...params: any[]) => void } = {};
     Object.getOwnPropertyNames(proto).forEach(name => {
         const propery = proto[name];

@@ -1,5 +1,6 @@
-import { $Component } from "./../decoretors";
+import { $Component, $Directive } from "./../decoretors";
 
 export {
-    $Component as Component
+    $Component as Component,
+    $Directive as Directive
 };

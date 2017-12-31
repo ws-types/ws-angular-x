@@ -12,10 +12,13 @@ import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
 export class OutComponent implements OnInit, OnDestroy {
 
     public data = {
+        input: "abcdef",
         number: 123456
     };
 
     public show01 = true;
+
+    public showDirective = true;
 
     public output: string;
 
@@ -31,9 +34,14 @@ export class OutComponent implements OnInit, OnDestroy {
         this.show01 = !this.show01;
     }
 
+    public changeDirective() {
+        this.showDirective = !this.showDirective;
+    }
+
     public onKeyFuck(output: string) {
         this.output = output;
         this.data.number = this.data.number + 1;
+        this.data.input += "a";
     }
 
 }
