@@ -22,6 +22,8 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public output: string;
 
+    public direShow: string;
+
     ngOnInit(): void {
         console.log("out component init");
     }
@@ -42,6 +44,10 @@ export class OutComponent implements OnInit, OnDestroy {
         this.output = output;
         this.data.number = this.data.number + 1;
         this.data.input += "a";
+    }
+
+    public directiveChanges(changes: string) {
+        this.direShow = changes;
     }
 
 }

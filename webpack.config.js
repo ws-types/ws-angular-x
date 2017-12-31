@@ -12,7 +12,9 @@ module.exports = {
             "bootstrap",
             "jquery",
             "reflect-metadata",
-            "uuid"
+            "uuid",
+            "decamelize",
+            "camelcase"
         ],
         index: "./src/web-test/index.ts"
     },

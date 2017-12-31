@@ -7,6 +7,7 @@ import {
     IDirectiveConfig, GeneratorType, IDirectiveClass
 } from "@angular/metadata";
 import { EventEmitter } from "./../features/emit";
+import { UnisolateScopeBindingError } from "@angular/utils/errors";
 
 export class DirectiveGenerator
     extends BaseGenerator<IDirectiveBundle, IDirectiveClass, IDirectiveConfig> implements IDirectiveGenerator {
@@ -25,18 +26,26 @@ export class DirectiveGenerator
         } else {
             this.config.bindingToController = false;
         }
-        if (!this.config.isolate) {
+        if (!this.config.isolate && this.config.isolate !== false) {
+            this.config.isolate = true;
+        } else {
             this.config.isolate = false;
             this.config.bindingToController = false;
         }
     }
 
     public Input(key: string, isObject = true) {
+        if (!this.config.isolate) {
+            throw UnisolateScopeBindingError();
+        }
         this._bindings[key] = isObject ? "=" : "@";
         return this;
     }
 
     public Output(key: string) {
+        if (!this.config.isolate) {
+            throw UnisolateScopeBindingError();
+        }
         this._bindings[key] = "&";
         return this;
     }
