@@ -10,4 +10,8 @@ export class AnotherService {
 
     }
 
+    public getFuck() {
+        return this.fuck;
+    }
+
 }

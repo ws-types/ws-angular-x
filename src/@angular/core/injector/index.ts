@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/compilers/decoretors";
 import { DI } from "@angular/compilers/features/reflect";
-
+import { NgModule, Type } from "@angular";
+import { IControllerConstructor } from "angular";
 
 @Injectable()
 export class InjectorService {
@@ -9,13 +10,18 @@ export class InjectorService {
 
     constructor(private injector: ng.auto.IInjectorService) { }
 
-    public Get<T>(v: string | T) {
+    public Get<T>(v: Type<T> | string) {
         if (typeof (v) !== "string") {
             v = DI.GetKey(v);
-            console.log(v);
         }
-        // return this.injector.get(v) as T;
         return this.injector.has(v) ? this.injector.get(v) as T : null;
     }
+
+}
+
+@NgModule({
+    providers: [InjectorService]
+})
+export class InjectorModule {
 
 }

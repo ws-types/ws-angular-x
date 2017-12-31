@@ -29,11 +29,6 @@ export class OutComponent implements OnInit, OnDestroy {
 
     constructor(private app, private scope) {
         console.log(app);
-
-        // const aaa = Injector.Get(AppService);
-        // console.log(aaa);
-        // const anSrv = Injector.Get(AnotherService);
-        // console.log(anSrv);
     }
 
     ngOnInit(): void {

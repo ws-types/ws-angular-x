@@ -3,7 +3,10 @@ import {
     ViewEncapsulation, Input, Output, EventEmitter,
     OnChanges, DoCheck, SimpleChanges
 } from "@angular";
+
 import { AppService } from "@src/services/app.service";
+import { InjectorService } from "@angular/core/injector";
+import { AnotherService } from "@src/services/another.service";
 
 @Component({
     selector: "new-component",
@@ -23,8 +26,10 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     @Output()
     private onKeyFuck: EventEmitter<string>;
 
-    constructor(private app: AppService) {
+    constructor(private app: AppService, private injector: InjectorService) {
         console.log(app);
+        const anSrv = injector.Get(AnotherService);
+        console.log(anSrv.getFuck());
     }
 
     ngOnInit(): void {
