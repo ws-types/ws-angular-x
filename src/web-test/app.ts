@@ -20,8 +20,4 @@ import { InjectorService } from "@angular/core/injector";
 })
 export class AppModule {
 
-    // constructor(private injector: InjectorService) {
-    //     console.log(injector);
-    // }
-
 }
