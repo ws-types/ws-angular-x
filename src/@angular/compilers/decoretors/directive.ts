@@ -47,18 +47,23 @@ function parseIOProperties(proto: any, generator: DirectiveGenerator) {
     const IOKeys = Reflect.getMetadataKeys(proto);
     IOKeys.forEach(key => {
         (Reflect.getMetadata(key, proto) as any[]).forEach(prop => {
-            if (key === InputMetaKey) {
-                const input = prop as IInputProperty;
-                generator.Input(input.keyName, !input.isString);
-            } else if (key === OutputMetaKey) {
-                generator.Output(prop);
-                outputs.push(prop);
-            } else if (key === OnMetaKey) {
-                const on = prop as IOnProperty;
-                generator.On(on.eventKey, proto[on.FuncName]);
-            } else if (key === WatchMetaKey) {
-                const watch = prop as IWatchProperty;
-                generator.Watch(watch.watchKey, proto[watch.FuncName]);
+            switch (key) {
+                case InputMetaKey:
+                    const input = prop as IInputProperty;
+                    generator.Input(input.keyName, !input.isString);
+                    break;
+                case OutputMetaKey:
+                    generator.Output(prop);
+                    outputs.push(prop);
+                    break;
+                case OnMetaKey:
+                    const on = prop as IOnProperty;
+                    generator.On(on.eventKey, proto[on.FuncName]);
+                    break;
+                case WatchMetaKey:
+                    const watch = prop as IWatchProperty;
+                    generator.Watch(watch.watchKey, proto[watch.FuncName]);
+                    break;
             }
         });
     });
