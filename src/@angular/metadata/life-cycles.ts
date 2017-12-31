@@ -5,3 +5,7 @@ export interface OnInit {
 export interface OnDestroy {
     ngOnDestroy(): void;
 }
+
+export interface OnChanges {
+    ngOnChanges(changes: any): void;
+}

@@ -14,13 +14,16 @@ export function Component(config: IComponentConfig) {
             constructor(...params: any[]) {
                 super(...params);
                 outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
-                generator.StylesLoad();
                 if (maps.ngOnInit) {
                     this.$onInit = maps.ngOnInit;
                 }
                 if (maps.ngOnDestroy) {
                     this.$onDestroy = maps.ngOnDestroy;
                 }
+                if (maps.ngOnChanges) {
+                    this.$onChanges = maps.ngOnChanges;
+                }
+                generator.StylesLoad();
             }
         }
         generator.Class(ComponentClass);
@@ -32,7 +35,7 @@ function parseLifeCycleHooks(proto: any) {
     const maps: { [name: string]: (...params: any[]) => void } = {};
     Object.getOwnPropertyNames(proto).forEach(name => {
         const propery = proto[name];
-        if (name === "ngOnInit" || name === "ngOnDestroy") {
+        if (name === "ngOnInit" || name === "ngOnDestroy" || name === "ngOnChanges") {
             maps[name] = propery;
         }
     });
