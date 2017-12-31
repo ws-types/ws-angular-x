@@ -7,31 +7,46 @@ import { EventEmitter } from "./../features/emit";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
-        const generator = CreateComponent(config);
-        const maps = parseLifeCycleHooks(target.prototype);
-        const outputs = parseIOProperties(target.prototype, generator);
-        class ComponentClass extends target {
-            constructor(...params: any[]) {
-                super(...params);
-                outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
-                if (maps.ngOnInit) {
-                    this.$onInit = maps.ngOnInit;
-                }
-                if (maps.ngOnDestroy) {
-                    this.$onDestroy = maps.ngOnDestroy;
-                }
-                if (maps.ngOnChanges) {
-                    this.$onChanges = maps.ngOnChanges;
-                }
-                if (maps.ngDoCheck) {
-                    this.$doCheck = maps.ngDoCheck;
-                }
-                generator.StylesLoad();
-            }
-        }
-        generator.Class(ComponentClass);
+        const generator = createExtends(target, config);
         target.generator = generator;
     };
+}
+
+export function $Component(config: IComponentConfig) {
+    return {
+        Class: <T extends IComponentClass>(target: T): T => {
+            const generator = createExtends(target, config);
+            target.generator = generator;
+            return target;
+        }
+    };
+}
+
+function createExtends<T extends IComponentClass>(target: T, config: IComponentConfig) {
+    const generator = CreateComponent(config);
+    const maps = parseLifeCycleHooks(target.prototype);
+    const outputs = parseIOProperties(target.prototype, generator);
+    class ComponentClass extends target {
+        constructor(...params: any[]) {
+            super(...params);
+            outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            if (maps.ngOnInit) {
+                this.$onInit = maps.ngOnInit;
+            }
+            if (maps.ngOnDestroy) {
+                this.$onDestroy = maps.ngOnDestroy;
+            }
+            if (maps.ngOnChanges) {
+                this.$onChanges = maps.ngOnChanges;
+            }
+            if (maps.ngDoCheck) {
+                this.$doCheck = maps.ngDoCheck;
+            }
+            generator.StylesLoad();
+        }
+    }
+    generator.Class(ComponentClass);
+    return generator;
 }
 
 function parseLifeCycleHooks(proto: any) {
