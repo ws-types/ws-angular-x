@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { IProviderConfig, IProviderClass } from "@angular/metadata";
 import { CreateProvider } from "../creators/provider";
 import { ParamsTypeMetaKey } from "./others";
-import { DIContainer } from "@angular/compilers/features/reflect";
+import { DI } from "@angular/compilers/features/reflect";
 import { ProviderGenerator } from "./../generators";
 
 
@@ -26,7 +26,7 @@ export function $Injectable(config?: IProviderConfig | string) {
 function createExtends(config: string | IProviderConfig, target: IProviderClass) {
     const nConfig = !config ? { selector: null } : typeof (config) === "string" ? { selector: config } : config;
     const generator = CreateProvider(nConfig);
-    DIContainer.Register(generator.Selector, target = registerDI(target, generator));
+    DI.Register(generator.Selector, target = registerDI(target, generator));
     generator.Class(target);
     return generator;
 }
@@ -40,10 +40,10 @@ function registerDI(target: IProviderClass, generator: ProviderGenerator): IProv
 
 export function parseInjectsAndDI<T>(target: T, types: any[]): string[] {
     const injects: string[] = [...((<any>target).$inject || [])];
-    const argus = DIContainer.GetArguments(target);
+    const argus = DI.GetArguments(target);
     types.forEach((ctor, index) => {
         if (index + 1 > injects.length) {
-            injects.push(DIContainer.GetKey(ctor) || argus[index]);
+            injects.push(DI.GetKey(ctor) || argus[index]);
         }
     });
     return injects;

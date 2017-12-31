@@ -3,6 +3,7 @@ import {
     ViewEncapsulation, Input, Output, EventEmitter,
     OnChanges, DoCheck, SimpleChanges
 } from "@angular";
+import { AppService } from "@src/services/app.service";
 
 @Component({
     selector: "new-component",
@@ -21,6 +22,10 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
 
     @Output()
     private onKeyFuck: EventEmitter<string>;
+
+    constructor(private app: AppService) {
+        console.log(app);
+    }
 
     ngOnInit(): void {
         console.log("component init");

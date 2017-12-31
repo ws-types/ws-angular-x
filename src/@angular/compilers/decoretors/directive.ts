@@ -4,9 +4,10 @@ import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";
 import {
     OutputMetaKey, IInputProperty, InputMetaKey,
-    OnMetaKey, IOnProperty, WatchMetaKey, IWatchProperty
+    OnMetaKey, IOnProperty, WatchMetaKey, IWatchProperty, ParamsTypeMetaKey
 } from "./others";
 import { EventEmitter } from "./../features/emit";
+import { parseInjectsAndDI } from "./provider";
 
 
 export function Directive(config: IDirectiveConfig) {
@@ -30,8 +31,10 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const generator = CreateDirective(config);
     const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
+    const injects = createInjects(target);
     Object.keys(maps).forEach(event => generator.OnEvent(event, maps[event]));
     class DirectiveClass extends target {
+        public static $inject = injects;
         constructor(...params: any[]) {
             super(...params);
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
@@ -40,6 +43,10 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     }
     generator.Class(DirectiveClass);
     return generator;
+}
+
+function createInjects(target: IDirectiveClass) {
+    return parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
 }
 
 function parseIOProperties(proto: any, generator: DirectiveGenerator) {

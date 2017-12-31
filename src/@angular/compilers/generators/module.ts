@@ -8,7 +8,7 @@ import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
     IComponentGenerator, IProviderGenerator, IClass,
     Ng2Component, Ng2Directive, Ng2Declaration,
-    Ng2Provider, GeneratorType
+    Ng2Provider, GeneratorType, IModuleClass
 } from "@angular/metadata";
 
 import { errors } from "@angular/utils/errors";
@@ -19,10 +19,14 @@ export class ModuleGenerator implements IModuleGenerator {
     public get Selector() { return SelectorParse(this.config.selector); }
     public get Type() { return GeneratorType.Module; }
 
+    public get Controller() { return this._ctrl; }
+
     private _components: IComponentGenerator[];
     private _directives: IDirectiveGenerator[];
     private _providers: IProviderGenerator[];
     private _imports: IModuleGenerator[];
+
+    private _ctrl: IModuleClass;
 
     constructor(private config: IModuleConfig) {
         if (!config) {
@@ -73,6 +77,11 @@ export class ModuleGenerator implements IModuleGenerator {
             throw errors.DeclarationExist(grt.Selector);
         }
         this._providers.push(grt);
+        return this;
+    }
+
+    public Class(ctrl: IModuleClass) {
+        this._ctrl = ctrl;
         return this;
     }
 

@@ -1,10 +1,12 @@
 import "reflect-metadata";
+import * as angular from "angular";
+import { Injectable } from "./../decoretors";
 
 export class ReflectContainer {
 
     public get Providers() { return this._providers; }
 
-    private _providers: { [key: string]: any; }
+    private _providers: { [key: string]: any; };
 
     constructor() {
         this._providers = {};
@@ -29,7 +31,15 @@ export class ReflectContainer {
 
 }
 
-export const DIContainer = new ReflectContainer();
+export const DI = new ReflectContainer();
+
+export function Inject(func: ng.IController): string {
+    return DI.GetKey(func);
+}
+
+export function Injects(func_names: (ng.IController | string)[]): string[] {
+    return func_names.map(fn => typeof (fn) === "string" ? fn : DI.GetKey(fn));
+}
 
 const COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 const DEFAULT_PARAMS = /=[^,]+/mg;

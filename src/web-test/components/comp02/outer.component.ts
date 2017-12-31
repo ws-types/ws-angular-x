@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
+import { Component, OnInit, OnDestroy, ViewEncapsulation, $Inject, $Injects } from "@angular";
 import { AppService } from "@src/services/app.service";
+import { AnotherService } from "@src/services/another.service";
 
 
 @Component({
@@ -11,7 +12,7 @@ import { AppService } from "@src/services/app.service";
 })
 export class OutComponent implements OnInit, OnDestroy {
 
-    public static $inject = ["appService", "$scope"];
+    public static $inject = $Injects([AppService, "$scope"]);
 
     public data = {
         input: "abcdef",
@@ -26,8 +27,13 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public direShow: string;
 
-    constructor(private app: AppService) {
+    constructor(private app, private scope) {
         console.log(app);
+
+        // const aaa = Injector.Get(AppService);
+        // console.log(aaa);
+        // const anSrv = Injector.Get(AnotherService);
+        // console.log(anSrv);
     }
 
     ngOnInit(): void {
