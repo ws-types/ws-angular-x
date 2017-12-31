@@ -6,6 +6,7 @@ const NgContentPrefix = "_ngcontent-v2";
 export interface ITemplateViewConfig {
     encapsulation?: ViewEncapsulation;
     selector: string;
+    template?: string;
     [propName: string]: any;
 }
 
@@ -13,10 +14,12 @@ export class TemplateParser {
 
     private get type() { return this.config.encapsulation; }
 
+    private template: string;
     private config: ITemplateViewConfig;
 
-    constructor(private template: string, config?: ITemplateViewConfig) {
-        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "" };
+    constructor(config?: ITemplateViewConfig) {
+        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", template: "" };
+        this.template = config.template;
     }
 
     public Parse(): string {

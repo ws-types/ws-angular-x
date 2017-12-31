@@ -1,14 +1,17 @@
 import * as angular from "angular";
+import * as uuid from "uuid/v4";
 
 import { SelectorParse } from "@angular/compilers/parsers/selector-parser";
-import { DeclarationExistError, ElementTypeError } from "@angular/utils/errors";
 import { IModuleConfig, IModuleBundle } from "@angular/metadata";
+
 import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
     IComponentGenerator, IProviderGenerator, IClass,
     Ng2Component, Ng2Directive, Ng2Declaration,
     Ng2Provider, GeneratorType
 } from "@angular/metadata";
+
+import { errors } from "@angular/utils/errors";
 
 
 export class ModuleGenerator implements IModuleGenerator {
@@ -22,15 +25,36 @@ export class ModuleGenerator implements IModuleGenerator {
     private _imports: IModuleGenerator[];
 
     constructor(private config: IModuleConfig) {
+        if (!config) {
+            throw errors.ModuleConfigMissing();
+        }
+        this.selectorUnique(config);
+        this.elementsParse(config);
+    }
+
+    private elementsParse(config: IModuleConfig) {
         this._components = parseElements(<Ng2Component[]>config.declarations, GeneratorType.Component);
         this._directives = parseElements(<Ng2Directive[]>config.declarations, GeneratorType.Directive);
         this._providers = parseElements(config.providers);
         this._imports = parseElements(config.imports);
     }
 
+    private selectorUnique(config: IModuleConfig) {
+        if (!config.selector) {
+            config.selector = "module-" + uuid();
+        }
+    }
+
+    /**
+     * register a component generator
+     *
+     * @param {IComponentGenerator} grt
+     * @returns
+     * @memberof ModuleGenerator
+     */
     public Component(grt: IComponentGenerator) {
         if (this._components.findIndex(i => i.Selector === grt.Selector) >= 0) {
-            throw DeclarationExistError(grt.Selector);
+            throw errors.DeclarationExist(grt.Selector);
         }
         this._components.push(grt);
         return this;
@@ -38,7 +62,7 @@ export class ModuleGenerator implements IModuleGenerator {
 
     public Directive(grt: IDirectiveGenerator) {
         if (this._directives.findIndex(i => i.Selector === grt.Selector) >= 0) {
-            throw DeclarationExistError(grt.Selector);
+            throw errors.DeclarationExist(grt.Selector);
         }
         this._directives.push(grt);
         return this;
@@ -46,14 +70,23 @@ export class ModuleGenerator implements IModuleGenerator {
 
     public Provider<T>(grt: IProviderGenerator) {
         if (this._providers.findIndex(i => i.Selector === grt.Selector) >= 0) {
-            throw DeclarationExistError(grt.Selector);
+            throw errors.DeclarationExist(grt.Selector);
         }
         this._providers.push(grt);
         return this;
     }
 
     public Build(): IModuleBundle {
-        const module = angular.module(this.Selector, []);
+        const depts = [];
+        if (this._imports && this._imports.length > 0) {
+            this._imports.forEach(md => {
+                if (md.Selector === this.Selector) {
+                    throw errors.ModuleDuplicated(md.Selector);
+                }
+                depts.push(md.Build().name);
+            });
+        }
+        const module = angular.module(this.Selector, depts);
         if (this._directives && this._directives.length > 0) {
             this._directives.forEach(directive => module.directive(directive.Selector, directive.Build()));
         }
@@ -72,23 +105,34 @@ function parseElements<T>(elements: (IGenerator<T> | IClass<T>)[], flag?: string
     const results: IGenerator<T>[] = [];
     if (elements && elements.length > 0) {
         elements.forEach(e => {
-            let ele: IGenerator<T>;
-            if ((<IClass<T>>e).generator) {
-                // type is controller with generator payload, means from decoretor.
-                ele = (e as IClass<T>).generator;
-            } else {
-                // type is generator, comes from creating manually.
-                ele = e as IGenerator<T>;
-            }
-            if (!ele.Type) {
-                throw ElementTypeError(ele);
-            }
-            const valid = !flag ? true : flag === ele.Type;
-            if (valid) {
+            const ele = parseToGenerator(e);
+            if (!flag ? true : flag === ele.Type) {
+                if (checkDuplicated(results, ele)) {
+                    throw errors.ElementDuplicated(ele.Selector);
+                }
                 results.push(ele);
             }
         });
         return results;
     }
     return [];
+}
+
+function checkDuplicated<T>(results: IGenerator<T>[], ele: IGenerator<T>) {
+    return results.filter(i => i.Type === ele.Type).findIndex(i => i.Selector === ele.Selector) >= 0;
+}
+
+function parseToGenerator<T>(e: IGenerator<T> | IClass<T>): IGenerator<T> {
+    let ele: IGenerator<T>;
+    if ((<IClass<T>>e).generator) {
+        // type is controller with generator payload, means from decoretor.
+        ele = (e as IClass<T>).generator;
+    } else {
+        // type is generator, comes from creating manually.
+        ele = e as IGenerator<T>;
+    }
+    if (!ele.Type) {
+        throw errors.ElementType(ele);
+    }
+    return ele;
 }

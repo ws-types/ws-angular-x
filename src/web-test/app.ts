@@ -1,7 +1,8 @@
 import { Module } from "@angular/fluent";
 import { ModuleGenerator } from "@angular";
 import { NgModule } from "@angular";
-import { NewComponent } from "@src/components/new.component";
+import { ComponentsModule } from "@src/components/component.module";
+import { DirectivesModule } from "@src/directives/directive.module";
 
 // export const AppModule = Module({
 //     selector: "app-module",
@@ -11,9 +12,11 @@ import { NewComponent } from "@src/components/new.component";
 // });
 
 @NgModule({
-    selector: "app-module",
-    imports: [],
-    declarations: [NewComponent],
+    imports: [
+        ComponentsModule,
+        DirectivesModule
+    ],
+    declarations: [],
     providers: []
 })
 export class AppModule {

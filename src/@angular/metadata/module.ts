@@ -11,7 +11,7 @@ export type Ng2Directive = IDirectiveClass | IDirectiveGenerator;
 export type Ng2Declaration = Ng2Component | Ng2Directive;
 
 export interface IModuleConfig {
-    selector: string;
+    selector?: string;
     declarations?: Ng2Declaration[];
     imports?: Ng2Module[];
     providers?: Ng2Provider[];

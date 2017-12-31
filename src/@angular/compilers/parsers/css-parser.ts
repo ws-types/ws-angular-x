@@ -8,6 +8,8 @@ const NgClassSheet = "stylesheet";
 export interface ICssViewConfig {
     encapsulation?: ViewEncapsulation;
     selector: string;
+    styles?: CssOnject[];
+    style?: CssOnject;
     [propName: string]: any;
 }
 
@@ -19,9 +21,9 @@ export class CssParser {
     private parsed_csses: string[] = [];
     private config: ICssViewConfig;
 
-    constructor(classes: CssOnject[], config?: ICssViewConfig) {
-        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "" };
-        this.classes = classes || [];
+    constructor(config: ICssViewConfig) {
+        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", styles: [] };
+        this.classes = config.styles || (!config.style ? [] : [config.style]);
         this.classes.forEach(i => this.parsed_csses.push(parseCss(i, this.config.selector, this.type)));
     }
 
