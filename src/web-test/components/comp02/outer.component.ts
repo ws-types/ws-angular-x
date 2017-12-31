@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
+import { AppService } from "@src/services/app.service";
 
 
 @Component({
@@ -9,6 +10,8 @@ import { Component, OnInit, OnDestroy, ViewEncapsulation } from "@angular";
     ]
 })
 export class OutComponent implements OnInit, OnDestroy {
+
+    public static $inject = ["appService", "$scope"];
 
     public data = {
         input: "abcdef",
@@ -22,6 +25,10 @@ export class OutComponent implements OnInit, OnDestroy {
     public output: string;
 
     public direShow: string;
+
+    constructor(private app: AppService) {
+        console.log(app);
+    }
 
     ngOnInit(): void {
         console.log("out component init");

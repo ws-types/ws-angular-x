@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import { IComponentConfig, IComponentClass } from "@angular/metadata";
 import { CreateComponent } from "./../creators";
-import { InputMetaKey, OutputMetaKey, IInputProperty } from "./others";
+import { InputMetaKey, OutputMetaKey, IInputProperty, ParamsTypeMetaKey } from "./others";
 import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
+import { parseInjectsAndDI } from "./provider";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
@@ -26,9 +27,11 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     const generator = CreateComponent(config);
     const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
+    const injects = createInjects(target);
     class ComponentClass extends target {
-        constructor(...params: any[]) {
-            super(...params);
+        public static $inject = injects;
+        constructor(...args: any[]) {
+            super(...args);
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
             if (maps.ngOnInit) {
                 this.$onInit = maps.ngOnInit;
@@ -47,6 +50,10 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     }
     generator.Class(ComponentClass);
     return generator;
+}
+
+function createInjects(target: IComponentClass) {
+    return parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
 }
 
 export function parseLifeCycleHooks(proto: any) {

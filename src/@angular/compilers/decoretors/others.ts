@@ -5,6 +5,7 @@ export const InputMetaKey = Symbol("ng-metadata:Input");
 export const OutputMetaKey = Symbol("ng-metadata:Output");
 export const OnMetaKey = Symbol("ng-metadata:On");
 export const WatchMetaKey = Symbol("ng-metadata:Watch");
+export const ParamsTypeMetaKey = "design:paramtypes";
 
 export interface IInputProperty {
     isString: boolean;
