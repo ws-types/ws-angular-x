@@ -27,13 +27,22 @@ export class ModuleGenerator implements IModuleGenerator {
     private _imports: IModuleGenerator[];
 
     private _ctrl: IModuleClass;
+    private _isOldMd = false;
 
-    constructor(private config: IModuleConfig) {
+    private config: IModuleConfig;
+
+    constructor(config: IModuleConfig | string) {
         if (!config) {
             throw errors.ModuleConfigMissing();
         }
-        this.selectorUnique(config);
-        this.elementsParse(config);
+        if (typeof (config) === "string") {
+            this.config = { selector: config };
+            this._isOldMd = true;
+        } else {
+            this.config = config;
+            this.selectorUnique(config);
+            this.elementsParse(config);
+        }
     }
 
     private elementsParse(config: IModuleConfig) {
@@ -57,6 +66,9 @@ export class ModuleGenerator implements IModuleGenerator {
      * @memberof ModuleGenerator
      */
     public Component(grt: IComponentGenerator) {
+        if (this._isOldMd) {
+            throw errors.OldModuleActions();
+        }
         if (this._components.findIndex(i => i.Selector === grt.Selector) >= 0) {
             throw errors.DeclarationExist(grt.Selector);
         }
@@ -65,6 +77,9 @@ export class ModuleGenerator implements IModuleGenerator {
     }
 
     public Directive(grt: IDirectiveGenerator) {
+        if (this._isOldMd) {
+            throw errors.OldModuleActions();
+        }
         if (this._directives.findIndex(i => i.Selector === grt.Selector) >= 0) {
             throw errors.DeclarationExist(grt.Selector);
         }
@@ -73,6 +88,9 @@ export class ModuleGenerator implements IModuleGenerator {
     }
 
     public Provider<T>(grt: IProviderGenerator) {
+        if (this._isOldMd) {
+            throw errors.OldModuleActions();
+        }
         if (this._providers.findIndex(i => i.Selector === grt.Selector) >= 0) {
             throw errors.DeclarationExist(grt.Selector);
         }
@@ -81,11 +99,17 @@ export class ModuleGenerator implements IModuleGenerator {
     }
 
     public Class(ctrl: IModuleClass) {
+        if (this._isOldMd) {
+            throw errors.OldModuleActions();
+        }
         this._ctrl = ctrl;
         return this;
     }
 
     public Build(): IModuleBundle {
+        if (this._isOldMd) {
+            return angular.module(this.config.selector);
+        }
         const depts = [];
         if (this._imports && this._imports.length > 0) {
             this._imports.forEach(md => {

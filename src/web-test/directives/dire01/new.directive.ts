@@ -1,4 +1,5 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter } from "@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects } from "@angular";
+import { AppService } from "@src/services/app.service";
 
 
 @Directive({
@@ -11,11 +12,18 @@ import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter } 
 })
 export class NewDirective implements OnInit {
 
+    public static $inject = $Injects([AppService, "$scope"]);
+
     @Input()
     private inputMeta: string;
 
     @Output()
     private onChanges: EventEmitter<string>;
+
+    constructor(private app, private scope) {
+        console.log(app);
+        console.log(scope);
+    }
 
     ngOnInit(): void {
         console.log("directive init");

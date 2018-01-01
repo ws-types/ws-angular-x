@@ -11,6 +11,8 @@ module.exports = {
             "angular",
             "bootstrap",
             "jquery",
+            "angular-animate",
+            "@uirouter/angularjs",
             "reflect-metadata",
             "uuid",
             "decamelize",

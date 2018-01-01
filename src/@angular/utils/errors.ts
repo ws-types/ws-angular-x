@@ -36,11 +36,17 @@ export function UnisolateScopeBindingError() {
     ${errorPrefix} : the directive's scope is not isolate, you can't bind any element into it.`);
 }
 
+export function OldModuleActionsError() {
+    return new SyntaxError(`
+    ${errorPrefix} : the old module can't be edit, any action is forbidden.`);
+}
+
 export const errors = {
     DeclarationExist: DeclarationExistError,
     ElementType: ElementTypeError,
     ModuleDuplicated: ModuleDuplicatedError,
     ElementDuplicated: ElementDuplicatedError,
     ModuleConfigMissing: ModuleConfigMissedError,
-    UnisolateScopeBinding: UnisolateScopeBindingError
+    UnisolateScopeBinding: UnisolateScopeBindingError,
+    OldModuleActions: OldModuleActionsError
 };
