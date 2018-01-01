@@ -14,6 +14,7 @@ module.exports = {
             "angular-animate",
             "@uirouter/angularjs",
             "reflect-metadata",
+            "rxjs",
             "uuid",
             "decamelize",
             "camelcase"

@@ -1,4 +1,4 @@
-import { IClass } from "./class";
+import { IClass, ICommenClass, ICommonController } from "./class";
 
 
 export interface IProviderConfig {
@@ -7,4 +7,6 @@ export interface IProviderConfig {
 
 export interface IProviderBundle extends Function { }
 
-export interface IProviderClass extends IClass<IProviderBundle> { }
+export interface IProviderClass extends IClass<IProviderBundle, ICommonController> {
+    new(...args: any[]): ICommonController;
+}

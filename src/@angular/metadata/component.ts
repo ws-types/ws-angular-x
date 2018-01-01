@@ -1,5 +1,5 @@
 import { ViewEncapsulation } from "./enums";
-import { IClass } from "./class";
+import { IClass, ICommonController } from "./class";
 import { CssOnject } from "./common";
 
 export interface IComponentConfig {
@@ -13,10 +13,13 @@ export interface IComponentConfig {
 
 export interface IComponentBundle extends ng.IComponentOptions { }
 
-export interface IComponentClass extends IClass<IComponentBundle> {
+export interface IComponentController extends ICommonController {
     $onInit?(): void;
     $postLink?(): void;
     $onChanges?(changes: any): void;
     $onDestroy?(): void;
+    $doCheck?(): void;
 }
+
+export interface IComponentClass extends IClass<IComponentBundle, IComponentController> { }
 

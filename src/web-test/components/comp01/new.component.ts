@@ -1,7 +1,7 @@
 import {
     Component, OnInit, OnDestroy,
     ViewEncapsulation, Input, Output, EventEmitter,
-    OnChanges, DoCheck, SimpleChanges
+    OnChanges, DoCheck, SimpleChanges, IProviderClass
 } from "@angular";
 
 import { AppService } from "@src/services/app.service";

@@ -1,7 +1,8 @@
-import { $Component, $Directive, $Injectable } from "./../decoretors";
+import { $Component, $Directive, $Injectable, $NgModule } from "./../decoretors";
 
 export {
     $Component as Component,
     $Directive as Directive,
-    $Injectable as Injectable
+    $Injectable as Injectable,
+    $NgModule as NgModule
 };

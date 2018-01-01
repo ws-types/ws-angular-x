@@ -41,6 +41,11 @@ export function OldModuleActionsError() {
     ${errorPrefix} : the old module can't be edit, any action is forbidden.`);
 }
 
+export function RouterRootDuplicatedError() {
+    return new SyntaxError(`
+    ${errorPrefix} : the root config of router module is duplicated.`);
+}
+
 export const errors = {
     DeclarationExist: DeclarationExistError,
     ElementType: ElementTypeError,
@@ -48,5 +53,6 @@ export const errors = {
     ElementDuplicated: ElementDuplicatedError,
     ModuleConfigMissing: ModuleConfigMissedError,
     UnisolateScopeBinding: UnisolateScopeBindingError,
-    OldModuleActions: OldModuleActionsError
+    OldModuleActions: OldModuleActionsError,
+    RouterRootDuplicated: RouterRootDuplicatedError
 };

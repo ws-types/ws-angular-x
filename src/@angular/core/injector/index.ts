@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/compilers/decoretors";
 import { DI } from "@angular/compilers/features/reflect";
-import { NgModule, Type } from "@angular";
+import { NgModule, Type, $Injectable, IProviderClass } from "@angular";
 import { IControllerConstructor } from "angular";
 
 @Injectable()

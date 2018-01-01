@@ -1,5 +1,5 @@
 import { ViewEncapsulation } from "./enums";
-import { IClass } from "./class";
+import { IClass, ICommonController } from "./class";
 import { CssOnject } from "./common";
 
 
@@ -19,4 +19,4 @@ export type IDirectiveFn = () => ng.IDirective;
 
 export interface IDirectiveBundle extends IDirectiveFn { }
 
-export interface IDirectiveClass extends IClass<IDirectiveBundle> { }
+export interface IDirectiveClass extends IClass<IDirectiveBundle, ICommonController> { }

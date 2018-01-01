@@ -14,6 +14,19 @@ export function NgModule(config: IModuleConfig) {
     };
 }
 
+export function $NgModule(config: IModuleConfig) {
+    return {
+        Class: <T extends IModuleClass>(target: T): T => {
+            const generator = Module(config);
+            const injects = createInjects(target);
+            target.$inject = injects;
+            generator.Class(target);
+            target.generator = generator;
+            return target;
+        }
+    };
+}
+
 function createInjects(target: IModuleClass) {
     return parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
 }

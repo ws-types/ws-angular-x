@@ -12,6 +12,7 @@ import {
 } from "@angular/metadata";
 
 import { errors } from "@angular/utils/errors";
+import { DI } from "../features/reflect";
 
 
 export class ModuleGenerator implements IModuleGenerator {
@@ -110,6 +111,7 @@ export class ModuleGenerator implements IModuleGenerator {
         if (this._isOldMd) {
             return angular.module(this.config.selector);
         }
+        const instance = this.moduleConstructions();
         const depts = [];
         if (this._imports && this._imports.length > 0) {
             this._imports.forEach(md => {
@@ -132,9 +134,19 @@ export class ModuleGenerator implements IModuleGenerator {
         return module;
     }
 
+
+    private moduleConstructions() {
+        // const injects: string[] = this.Controller.prototype.$inject || [];
+        // const params: any[] = [];
+        // console.log(DI.Providers);
+        // injects.forEach(key => params.push(DI.GetValue(key)));
+        // console.log(params);
+        const instance = new (this.Controller)();
+        return instance;
+    }
 }
 
-function parseElements<T>(elements: (IGenerator<T> | IClass<T>)[], flag?: string): IGenerator<T>[] {
+function parseElements<T>(elements: (IGenerator<T> | IClass<T, any>)[], flag?: string): IGenerator<T>[] {
     const results: IGenerator<T>[] = [];
     if (elements && elements.length > 0) {
         elements.forEach(e => {
@@ -155,11 +167,11 @@ function checkDuplicated<T>(results: IGenerator<T>[], ele: IGenerator<T>) {
     return results.filter(i => i.Type === ele.Type).findIndex(i => i.Selector === ele.Selector) >= 0;
 }
 
-function parseToGenerator<T>(e: IGenerator<T> | IClass<T>): IGenerator<T> {
+function parseToGenerator<T>(e: IGenerator<T> | IClass<T, any>): IGenerator<T> {
     let ele: IGenerator<T>;
-    if ((<IClass<T>>e).generator) {
+    if ((<IClass<T, any>>e).generator) {
         // type is controller with generator payload, means from decoretor.
-        ele = (e as IClass<T>).generator;
+        ele = (e as IClass<T, any>).generator;
     } else {
         // type is generator, comes from creating manually.
         ele = e as IGenerator<T>;
