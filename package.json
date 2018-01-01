@@ -1,12 +1,14 @@
 {
   "name": "ws-angular-x",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "the new syntax of angular 1.x",
-  "main": "index.js",
+  "main": "dist/angular-x.js",
+  "types": "dist/@types/@angular/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "package": "webpack --config webpack-angular.config.js"
   },
   "repository": {
     "type": "git",
