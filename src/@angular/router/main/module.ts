@@ -10,13 +10,15 @@ import { RouterRootDuplicatedError } from "@angular/utils/errors";
 import { Route } from "@angular/router";
 import { Router } from "@angular/router/services/router.service";
 import { StateProvider, UrlRouterProvider, Ng1StateDeclaration } from "@uirouter/angularjs";
+import { RouterOutletDirective } from "@angular/router/directives/router-outlet.directive";
 
 export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
 export const uirouter = new ModuleGenerator("ui.router");
 
 const mdconfig: IModuleConfig = {
     imports: [uirouter],
-    providers: [Router]
+    providers: [Router],
+    declarations: [RouterOutletDirective]
 };
 
 @NgModule(mdconfig)
