@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import * as uuid from "uuid/v4";
+import * as decamel from "decamelize";
 import { IProviderConfig, IProviderClass } from "@angular/metadata";
 import { CreateProvider } from "../creators/provider";
 import { ParamsTypeMetaKey } from "./others";
@@ -24,7 +26,9 @@ export function $Injectable(config?: IProviderConfig | string) {
 }
 
 function createExtends(config: string | IProviderConfig, target: IProviderClass) {
-    const nConfig = !config ? { selector: null } : typeof (config) === "string" ? { selector: config } : config;
+    const nConfig = !config ? { selector: `${decamel(target.name, "-")}-${uuid()}` } :
+        typeof (config) === "string" ? { selector: config } :
+            config;
     const generator = CreateProvider(nConfig);
     DI.Register(generator.Selector, target = registerDI(target, generator));
     generator.Class(target);

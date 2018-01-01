@@ -1,4 +1,4 @@
-import { ModuleGenerator, $Injects } from "@angular";
+import { ModuleGenerator, $Injects, ModuleConfig } from "@angular";
 import { NgModule } from "@angular";
 import { ComponentsModule } from "@src/components/component.module";
 import { DirectivesModule } from "@src/directives/directive.module";

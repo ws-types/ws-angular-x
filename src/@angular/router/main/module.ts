@@ -1,15 +1,21 @@
 import * as uuid from "uuid/v4";
-import { ModuleGenerator, NgModule, $NgModule, ComponentGenerator, IComponentClass } from "@angular";
+import {
+    ModuleGenerator, NgModule, $NgModule,
+    ComponentGenerator, IComponentClass,
+    ModuleConfig, IModuleConfig
+} from "@angular";
 import { Routes } from "@angular/router/main/config";
 import { DI } from "../../compilers/features/reflect";
 import { RouterRootDuplicatedError } from "@angular/utils/errors";
 import { Route } from "@angular/router";
+import { Router } from "@angular/router/services/router.service";
 
 const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
 const uirouter = new ModuleGenerator("ui.router");
 
-const mdconfig = {
-    imports: [uirouter]
+const mdconfig: IModuleConfig = {
+    imports: [uirouter],
+    providers: [Router]
 };
 
 @NgModule(mdconfig)
@@ -21,7 +27,8 @@ export class RouterModule {
     public childRouters: Routes = [];
 
     constructor() {
-        console.log(DI.GetValue(uirouter_stamp));
+        // console.log(DI.Providers);
+        // console.log(DI.GetValue(uirouter_stamp));
         if (DI.GetValue(uirouter_stamp)) {
             return;
         }
@@ -54,6 +61,11 @@ export class RouterModule {
         const router = getRouterModule();
         router.childRouters.push(routes);
         return $NgModule(mdconfig).Class(RouterModule);
+    }
+
+    @ModuleConfig()
+    public configRoutes($stateProvider) {
+
     }
 
 }

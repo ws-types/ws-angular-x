@@ -5,6 +5,7 @@ export const InputMetaKey = Symbol("ng-metadata:Input");
 export const OutputMetaKey = Symbol("ng-metadata:Output");
 export const OnMetaKey = Symbol("ng-metadata:On");
 export const WatchMetaKey = Symbol("ng-metadata:Watch");
+export const ModuleConfigMetaKey = Symbol("ng-metadata:ModuleConfig");
 export const ParamsTypeMetaKey = "design:paramtypes";
 
 export interface IInputProperty {
@@ -19,6 +20,10 @@ export interface IOnProperty {
 
 export interface IWatchProperty {
     watchKey: string;
+    FuncName: string;
+}
+
+export interface IModuleConfigProperty {
     FuncName: string;
 }
 
@@ -51,5 +56,13 @@ export function Watch(key: string) {
         const values: IWatchProperty[] = Reflect.getMetadata(WatchMetaKey, target) || [];
         values.push({ watchKey: key, FuncName: propertyKey || uuid() });
         Reflect.defineMetadata(WatchMetaKey, values, target);
+    };
+}
+
+export function ModuleConfig(key?: string) {
+    return function mdConfigDecorator(target, propertyKey: string) {
+        const values: IModuleConfigProperty[] = Reflect.getMetadata(ModuleConfigMetaKey, target) || [];
+        values.push({ FuncName: propertyKey || uuid() });
+        Reflect.defineMetadata(ModuleConfigMetaKey, values, target);
     };
 }
