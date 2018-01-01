@@ -17,7 +17,7 @@ export function Injectable(config?: IProviderConfig | string) {
 
 export function $Injectable(config?: IProviderConfig | string) {
     return {
-        Class: <T extends IProviderClass>(target: T): T => {
+        Decorate: <T extends IProviderClass>(target: T): T => {
             const generator = createExtends(config, target);
             target.generator = generator;
             return target;

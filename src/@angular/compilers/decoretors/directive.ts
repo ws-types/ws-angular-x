@@ -19,7 +19,7 @@ export function Directive(config: IDirectiveConfig) {
 
 export function $Directive(config: IDirectiveConfig) {
     return {
-        Class: <T extends IDirectiveClass>(target: T): T => {
+        Decorate: <T extends IDirectiveClass>(target: T): T => {
             const generator = createExtends(config, target);
             target.generator = generator;
             return target;

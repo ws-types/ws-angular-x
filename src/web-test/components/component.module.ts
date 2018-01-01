@@ -6,8 +6,8 @@ import { Routes, Route } from "@angular/router";
 
 const childRoutes: Route = {
     state: "settings", children: [
-        { state: "index", path: "index", component: OutComponent },
-        { state: "details", path: ":statusid/details", component: OutComponent },
+        { state: "index", path: "index", component: NewComponent },
+        { state: "details", path: "details", component: OutComponent },
         { path: "", redirectTo: "index", pathMatch: "full" },
         { path: "**", redirectTo: "errors.404", pathMatch: "full" }
     ]

@@ -2,16 +2,17 @@ import * as uuid from "uuid/v4";
 import {
     ModuleGenerator, NgModule, $NgModule,
     ComponentGenerator, IComponentClass,
-    ModuleConfig, IModuleConfig
+    Config, IModuleConfig
 } from "@angular";
 import { Routes } from "@angular/router/main/config";
 import { DI } from "../../compilers/features/reflect";
 import { RouterRootDuplicatedError } from "@angular/utils/errors";
 import { Route } from "@angular/router";
 import { Router } from "@angular/router/services/router.service";
+import { ui } from "angular";
 
-const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
-const uirouter = new ModuleGenerator("ui.router");
+export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
+export const uirouter = new ModuleGenerator("ui.router");
 
 const mdconfig: IModuleConfig = {
     imports: [uirouter],
@@ -54,20 +55,51 @@ export class RouterModule {
         } else {
             throw RouterRootDuplicatedError();
         }
-        return $NgModule(mdconfig).Class(RouterModule);
+        return $NgModule(mdconfig).Decorate(RouterModule);
     }
 
     public static forChild(routes: Route) {
         const router = getRouterModule();
         router.childRouters.push(routes);
-        return $NgModule(mdconfig).Class(RouterModule);
+        return $NgModule(mdconfig).Decorate(RouterModule);
     }
 
-    @ModuleConfig()
-    public configRoutes($stateProvider) {
+    @Config("$stateProvider")
+    public configRoutes(state: angular.ui.IStateProvider) {
+        console.log("conf routers #########");
 
+        const router = getRouterModule();
+        const mains = router.mainRouters;
+        mains.forEach(subRt => setStates(subRt, state));
+        console.log(router);
+
+        console.log("######################");
     }
 
+}
+
+function setStates(subRt: Route, state: ui.IStateProvider) {
+    if (!subRt.children || subRt.children.length === 0) {
+        setState(state, subRt);
+    } else {
+        subRt.children.forEach(smRt => setStates(smRt, state));
+    }
+}
+
+function setState(state: ui.IStateProvider, subRt: Route) {
+    if (subRt.state) {
+        console.log({
+            name: subRt.state,
+            url: subRt.path ? "/" + subRt.path : "",
+            component: <string>subRt.component
+        });
+        state.state({
+            name: subRt.state,
+            url: subRt.path ? "/" + subRt.path : "",
+            component: <string>subRt.component,
+            redirectTo: subRt.redirectTo
+        });
+    }
 }
 
 function parseRoutesParent(router: RouterModule, route: Route) {
@@ -78,7 +110,13 @@ function parseRoutesParent(router: RouterModule, route: Route) {
 }
 
 function parseRoutesState(route: Route, prefix: string) {
-    route.children.filter(child => !!child.state).forEach(child => child.state = `${prefix}.${child.state}`);
+    route.children.filter(child => !!child.state || child.path === "").forEach(child => {
+        if (child.path === "") {
+            child.state = prefix; // for redirect .
+        } else {
+            child.state = `${prefix}.${child.state}`;
+        }
+    });
 }
 
 function parseRoutesComponent(route: Route) {

@@ -15,7 +15,7 @@ export function Component(config: IComponentConfig) {
 
 export function $Component(config: IComponentConfig) {
     return {
-        Class: <T extends IComponentClass>(target: T): T => {
+        Decorate: <T extends IComponentClass>(target: T): T => {
             const generator = createExtends(target, config);
             target.generator = generator;
             return target;

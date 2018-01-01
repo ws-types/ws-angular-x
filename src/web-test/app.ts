@@ -1,4 +1,4 @@
-import { ModuleGenerator, $Injects, ModuleConfig } from "@angular";
+import { ModuleGenerator, $Injects, Config, Run } from "@angular";
 import { NgModule } from "@angular";
 import { ComponentsModule } from "@src/components/component.module";
 import { DirectivesModule } from "@src/directives/directive.module";
@@ -33,6 +33,14 @@ export class AppModule {
 
     constructor() {
         console.log("app module created");
+    }
+
+    @Run("@injector", "appService", "$state")
+    public configInjects(injector: InjectorService, app: AppService, state) {
+        // console.log(injector);
+        // console.log(app);
+        // console.log(state);
+        console.log("conf injector");
     }
 
 }

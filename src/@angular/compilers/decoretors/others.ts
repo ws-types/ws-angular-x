@@ -6,6 +6,7 @@ export const OutputMetaKey = Symbol("ng-metadata:Output");
 export const OnMetaKey = Symbol("ng-metadata:On");
 export const WatchMetaKey = Symbol("ng-metadata:Watch");
 export const ModuleConfigMetaKey = Symbol("ng-metadata:ModuleConfig");
+export const ModuleRunMetaKey = Symbol("ng-metadata:ModuleRun");
 export const ParamsTypeMetaKey = "design:paramtypes";
 
 export interface IInputProperty {
@@ -24,6 +25,7 @@ export interface IWatchProperty {
 }
 
 export interface IModuleConfigProperty {
+    depts?: string[];
     FuncName: string;
 }
 
@@ -59,10 +61,18 @@ export function Watch(key: string) {
     };
 }
 
-export function ModuleConfig(key?: string) {
+export function Config(...depts: string[]) {
     return function mdConfigDecorator(target, propertyKey: string) {
         const values: IModuleConfigProperty[] = Reflect.getMetadata(ModuleConfigMetaKey, target) || [];
-        values.push({ FuncName: propertyKey || uuid() });
+        values.push({ depts: depts, FuncName: propertyKey || uuid() });
         Reflect.defineMetadata(ModuleConfigMetaKey, values, target);
+    };
+}
+
+export function Run(...depts: string[]) {
+    return function mdRunDecorator(target, propertyKey: string) {
+        const values: IModuleConfigProperty[] = Reflect.getMetadata(ModuleRunMetaKey, target) || [];
+        values.push({ depts: depts, FuncName: propertyKey || uuid() });
+        Reflect.defineMetadata(ModuleRunMetaKey, values, target);
     };
 }

@@ -12,7 +12,7 @@ import { AnotherService } from "@src/services/another.service";
 })
 export class OutComponent implements OnInit, OnDestroy {
 
-    public static $inject = $Injects([AppService, "$scope"]);
+    public static $inject = $Injects([AppService, "$scope", "$state"]);
 
     public data = {
         input: "abcdef",
@@ -27,8 +27,9 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public direShow: string;
 
-    constructor(private app, private scope) {
-        console.log(app);
+    constructor(private app, private scope, private state) {
+        // console.log(app);
+        console.log(state);
     }
 
     ngOnInit(): void {
@@ -55,6 +56,11 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public directiveChanges(changes: string) {
         this.direShow = changes;
+    }
+
+    public changeRoute(state: string) {
+        console.log(state);
+        this.state.go(state);
     }
 
 }

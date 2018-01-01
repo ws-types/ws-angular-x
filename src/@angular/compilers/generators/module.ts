@@ -13,11 +13,12 @@ import {
 
 import { errors } from "@angular/utils/errors";
 import { DI } from "../features/reflect";
+import { Injectable } from "angular";
 
 
 export class ModuleGenerator implements IModuleGenerator {
 
-    public get Selector() { return SelectorParse(this.config.selector); }
+    public get Selector() { return this._isOldMd ? this.config.selector : SelectorParse(this.config.selector); }
     public get Type() { return GeneratorType.Module; }
 
     public get Controller() { return this._ctrl; }
@@ -26,6 +27,9 @@ export class ModuleGenerator implements IModuleGenerator {
     private _directives: IDirectiveGenerator[];
     private _providers: IProviderGenerator[];
     private _imports: IModuleGenerator[];
+
+    private _configs: Injectable<Function>[] = [];
+    private _runs: Injectable<Function>[] = [];
 
     private _ctrl: IModuleClass;
     private _isOldMd = false;
@@ -44,6 +48,7 @@ export class ModuleGenerator implements IModuleGenerator {
             this.selectorUnique(config);
             this.elementsParse(config);
         }
+        console.log(this.Selector);
     }
 
     private elementsParse(config: IModuleConfig) {
@@ -107,6 +112,16 @@ export class ModuleGenerator implements IModuleGenerator {
         return this;
     }
 
+    public Config(func: Injectable<Function>) {
+        this._configs.push(func);
+        return this;
+    }
+
+    public Run(func: Injectable<Function>) {
+        this._runs.push(func);
+        return this;
+    }
+
     public Build(): IModuleBundle {
         if (this._isOldMd) {
             return angular.module(this.config.selector);
@@ -130,6 +145,12 @@ export class ModuleGenerator implements IModuleGenerator {
         }
         if (this._providers && this._providers.length > 0) {
             this._providers.forEach(provider => module.service(provider.Selector, provider.Build()));
+        }
+        if (this._configs && this._configs.length > 0) {
+            this._configs.forEach(configFn => module.config(configFn));
+        }
+        if (this._runs && this._runs.length > 0) {
+            this._runs.forEach(runFn => module.run(runFn));
         }
         return module;
     }

@@ -27,9 +27,9 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     private onKeyFuck: EventEmitter<string>;
 
     constructor(private app: AppService, private injector: InjectorService) {
-        console.log(app);
+        // console.log(app);
         const anSrv = injector.Get(AnotherService);
-        console.log(anSrv.getFuck());
+        // console.log(anSrv.getFuck());
     }
 
     ngOnInit(): void {

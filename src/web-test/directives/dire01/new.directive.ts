@@ -21,8 +21,8 @@ export class NewDirective implements OnInit {
     private onChanges: EventEmitter<string>;
 
     constructor(private app, private scope) {
-        console.log(app);
-        console.log(scope);
+        // console.log(app);
+        // console.log(scope);
     }
 
     ngOnInit(): void {
