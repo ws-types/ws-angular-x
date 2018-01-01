@@ -7,7 +7,7 @@ import { Routes, Route } from "@angular/router";
 const childRoutes: Route = {
     state: "settings", children: [
         { state: "index", path: "index", component: NewComponent },
-        { state: "details", path: "details", component: OutComponent },
+        { state: "details", path: "details/:detailsId?{homeId}&{seed}", params: ["detailsId", "homeId", "seed"], component: OutComponent },
         { path: "", redirectTo: "index", pathMatch: "full" },
         { path: "**", redirectTo: "errors.404", pathMatch: "full" }
     ]
@@ -24,9 +24,5 @@ const childRoutes: Route = {
     providers: []
 })
 export class ComponentsModule {
-
-    constructor() {
-        console.log("comp module created");
-    }
 
 }

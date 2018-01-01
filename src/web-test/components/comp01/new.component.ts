@@ -33,11 +33,11 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnInit(): void {
-        console.log("component init");
+        // console.log("component init");
     }
 
     ngOnDestroy(): void {
-        console.log("component destroyed.");
+        // console.log("component destroyed.");
     }
 
     ngOnChanges(changes: SimpleChanges): void {

@@ -18,6 +18,7 @@ export interface Route {
     children?: Routes;
     loadChildren?: LoadChildren;
     // runGuardsAndResolvers?: RunGuardsAndResolvers;
+    params?: string[];
 }
 
 export type LoadChildren = string | LoadChildrenCallback;

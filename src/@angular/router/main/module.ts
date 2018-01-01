@@ -4,12 +4,12 @@ import {
     ComponentGenerator, IComponentClass,
     Config, IModuleConfig
 } from "@angular";
-import { Routes } from "@angular/router/main/config";
+import { Routes } from "@angular/router/config/config";
 import { DI } from "../../compilers/features/reflect";
 import { RouterRootDuplicatedError } from "@angular/utils/errors";
 import { Route } from "@angular/router";
 import { Router } from "@angular/router/services/router.service";
-import { ui } from "angular";
+import { StateProvider, UrlRouterProvider, Ng1StateDeclaration } from "@uirouter/angularjs";
 
 export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
 export const uirouter = new ModuleGenerator("ui.router");
@@ -26,6 +26,7 @@ export class RouterModule {
 
     public mainRouters: Routes;
     public childRouters: Routes = [];
+    public routesConfig: any;
 
     constructor() {
         // console.log(DI.Providers);
@@ -64,41 +65,55 @@ export class RouterModule {
         return $NgModule(mdconfig).Decorate(RouterModule);
     }
 
-    @Config("$stateProvider")
-    public configRoutes(state: angular.ui.IStateProvider) {
-        console.log("conf routers #########");
+    @Config("$stateProvider", "$urlRouterProvider")
+    public configRoutes(state: StateProvider, urlProvider: UrlRouterProvider) {
+        // console.log("conf routers #########");
 
+        const states = [];
         const router = getRouterModule();
         const mains = router.mainRouters;
-        mains.forEach(subRt => setStates(subRt, state));
-        console.log(router);
+        const home = mains.find(i => !i.state && i.path === "");
+        if (home) {
+            const redrect = mains.find(ind => ind.state === home.redirectTo);
+            urlProvider.otherwise(!redrect ? "/" : redrect.path);
+        }
+        mains.forEach(subRt => setStates(subRt, state, states));
+        router.routesConfig = states;
+        // console.log(router);
 
-        console.log("######################");
+        // console.log("######################");
     }
 
 }
 
-function setStates(subRt: Route, state: ui.IStateProvider) {
+function setStates(subRt: Route, state: StateProvider, savings: any[]) {
     if (!subRt.children || subRt.children.length === 0) {
-        setState(state, subRt);
+        setState(state, subRt, savings);
     } else {
-        subRt.children.forEach(smRt => setStates(smRt, state));
+        subRt.children.forEach(smRt => setStates(smRt, state, savings));
     }
 }
 
-function setState(state: ui.IStateProvider, subRt: Route) {
+function setState(state: StateProvider, subRt: Route, savings: any[]) {
     if (subRt.state) {
-        console.log({
+        const comp = <string>subRt.component;
+        const params = subRt.params || [];
+        const config: Ng1StateDeclaration = {
             name: subRt.state,
             url: subRt.path ? "/" + subRt.path : "",
-            component: <string>subRt.component
-        });
-        state.state({
-            name: subRt.state,
-            url: subRt.path ? "/" + subRt.path : "",
-            component: <string>subRt.component,
             redirectTo: subRt.redirectTo
-        });
+        };
+        if (comp) {
+            config.component = comp;
+        } else {
+            config.abstract = true;
+        }
+        if (params.length > 0) {
+            config.params = {};
+            params.forEach(name => config.params[name] = "");
+        }
+        state.state(config);
+        savings.push(config);
     }
 }
 

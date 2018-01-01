@@ -26,7 +26,7 @@ export class NewDirective implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log("directive init");
+        // console.log("directive init");
     }
 
     // ngOnDestroy(): void {
@@ -35,12 +35,12 @@ export class NewDirective implements OnInit {
 
     @On("destroy")
     public destroy(scope, attr, ele) {
-        console.log("directive destroyed");
+        // console.log("directive destroyed");
     }
 
     @Watch("inputMeta")
     public watchInputMeta(scope, attr, ele) {
-        console.log("inputMeta changes");
+        // console.log("inputMeta changes");
     }
 
     public changes() {

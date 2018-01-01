@@ -6,12 +6,11 @@ import { AppService } from "@src/services/app.service";
 import { AnotherService } from "@src/services/another.service";
 import { InjectorModule, InjectorService } from "@angular/core/injector";
 import { BrowserAnimationsModule } from "@angular/core/animations";
-import { Routes, RouterModule } from "@angular/router";
+import { Routes, RouterModule, Router } from "@angular/router";
 
 const rootRoutes: Routes = [
-    { state: "index", path: "index", component: null },
     { state: "settings", path: "settings", loadChildren: "./../settings/settings.module#SettingsModule" },
-    { path: "", redirectTo: "index", pathMatch: "full" },
+    { path: "", redirectTo: "settings", pathMatch: "full" },
     { path: "**", redirectTo: "errors.404", pathMatch: "full" }
 ];
 
@@ -31,16 +30,9 @@ const rootRoutes: Routes = [
 })
 export class AppModule {
 
-    constructor() {
-        console.log("app module created");
-    }
+    @Run("@injector")
+    public configInjects(injector: InjectorService) {
 
-    @Run("@injector", "appService", "$state")
-    public configInjects(injector: InjectorService, app: AppService, state) {
-        // console.log(injector);
-        // console.log(app);
-        // console.log(state);
-        console.log("conf injector");
     }
 
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, $Inject, $Injects } from "@angular";
 import { AppService } from "@src/services/app.service";
 import { AnotherService } from "@src/services/another.service";
+import { Router } from "@angular/router";
+import { Subscription } from "rxjs/Subscription";
 
 
 @Component({
@@ -12,7 +14,7 @@ import { AnotherService } from "@src/services/another.service";
 })
 export class OutComponent implements OnInit, OnDestroy {
 
-    public static $inject = $Injects([AppService, "$scope", "$state"]);
+    public static $inject = $Injects([AppService, "$scope", "@router"]);
 
     public data = {
         input: "abcdef",
@@ -27,9 +29,14 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public direShow: string;
 
-    constructor(private app, private scope, private state) {
+    private routerSubp: Subscription;
+
+    constructor(private app, private scope, private router: Router) {
         // console.log(app);
-        console.log(state);
+        // console.log(state);
+        this.routerSubp = router.params.subscribe(queryParams => {
+            console.log(queryParams);
+        });
     }
 
     ngOnInit(): void {
@@ -37,7 +44,8 @@ export class OutComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        console.log("out component destroyed.");
+        this.routerSubp.unsubscribe();
+        // console.log("out component destroyed.");
     }
 
     public changeChild() {
@@ -56,11 +64,6 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public directiveChanges(changes: string) {
         this.direShow = changes;
-    }
-
-    public changeRoute(state: string) {
-        console.log(state);
-        this.state.go(state);
     }
 
 }

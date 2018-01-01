@@ -48,7 +48,6 @@ export class ModuleGenerator implements IModuleGenerator {
             this.selectorUnique(config);
             this.elementsParse(config);
         }
-        console.log(this.Selector);
     }
 
     private elementsParse(config: IModuleConfig) {
