@@ -1,6 +1,6 @@
 {
   "name": "ws-angular-x",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-beta",
   "description": "the new syntax of angular 1.x",
   "main": "dist/angular-x.js",
   "types": "dist/@types/@angular/index.d.ts",

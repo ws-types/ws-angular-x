@@ -44,11 +44,14 @@ function parseCss(css: CssOnject, selector: string, type: ViewEncapsulation) {
     let str = "";
     maps.forEach(key => {
         let item = `${key}${attr_selector} {`;
+        if (key.includes(" ::ng-global")) {
+            item = `${key.replace(" ::ng-global", "")} {`;
+        }
         const content = css[key];
         const subKeys = Object.keys(content);
         subKeys.forEach(i => {
             const value = content[i];
-            item += `${i}:${value}`;
+            item += `${i}:${value};`;
         });
         item += "}";
         str += item;
