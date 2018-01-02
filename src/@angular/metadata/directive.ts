@@ -19,4 +19,12 @@ export type IDirectiveFn = () => ng.IDirective;
 
 export interface IDirectiveBundle extends IDirectiveFn { }
 
-export interface IDirectiveClass extends IClass<IDirectiveBundle, ICommonController> { }
+export interface IDirectiveController extends ICommonController {
+    $onInit?(): void;
+    $postLink?(): void;
+    $onChanges?(changes: any): void;
+    $onDestroy?(): void;
+    $doCheck?(): void;
+}
+
+export interface IDirectiveClass extends IClass<IDirectiveBundle, IDirectiveController> { }

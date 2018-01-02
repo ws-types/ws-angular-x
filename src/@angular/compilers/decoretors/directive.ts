@@ -32,12 +32,23 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
-    Object.keys(maps).forEach(event => generator.OnEvent(event, maps[event]));
     class DirectiveClass extends target {
         public static $inject = injects;
         constructor(...params: any[]) {
             super(...params);
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            if (maps.ngOnInit) {
+                this.$onInit = maps.ngOnInit;
+            }
+            if (maps.ngOnDestroy) {
+                this.$onDestroy = maps.ngOnDestroy;
+            }
+            if (maps.ngOnChanges) {
+                this.$onChanges = maps.ngOnChanges;
+            }
+            if (maps.ngDoCheck) {
+                this.$doCheck = maps.ngDoCheck;
+            }
             generator.StylesLoad();
         }
     }

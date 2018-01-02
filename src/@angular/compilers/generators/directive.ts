@@ -15,7 +15,6 @@ export class DirectiveGenerator
     public get Type() { return GeneratorType.Directive; }
     public get StylesLoad(): Function { return this._css.Parse(); }
 
-    public eventMaps: { [methodName: string]: Function } = {};
     public onMaps: { [methodName: string]: (...params: any[]) => void } = {};
     public watchMaps: { [methodName: string]: (...params: any[]) => void } = {};
 
@@ -50,11 +49,6 @@ export class DirectiveGenerator
         return this;
     }
 
-    public OnEvent(key: string, func: Function) {
-        this.eventMaps[key] = func;
-        return this;
-    }
-
     public On(key: string, func: (...params: any[]) => void) {
         this.onMaps[key] = func;
         return this;
@@ -77,23 +71,17 @@ export class DirectiveGenerator
                 replace: false,
                 transclude: true,
                 link: (scope, attr, element, controller) => {
-                    if (this.eventMaps.ngOnInit) {
-                        this.eventMaps.ngOnInit();
-                    }
-                    if (this.eventMaps.ngOnDestroy) {
-                        scope.$on("$destroy", () => this.eventMaps.ngOnDestroy());
-                    }
                     if (this.onMaps) {
                         Object.keys(this.onMaps).forEach(name => {
                             scope.$on("$" + name, () => {
-                                this.onMaps[name](scope, attr, element);
+                                this.onMaps[name](scope, attr, element, controller);
                             });
                         });
                     }
                     if (this.watchMaps) {
                         Object.keys(this.watchMaps).forEach(name => {
                             scope.$watch((this.config.bindingToController ? `${this.config.alias || "vm"}.` : "") + name, () => {
-                                this.watchMaps[name](scope, attr, element);
+                                this.watchMaps[name](scope, attr, element, controller);
                             });
                         });
                     }
