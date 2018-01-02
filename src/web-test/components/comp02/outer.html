@@ -1,0 +1,9 @@
+<div class="new-back new-color">
+    <div>OUTER - {{vm.output}} - {{vm.direShow}}</div>
+    <!-- <div style="padding:8px;" ng-transclude></div> -->
+    <button ng-click="vm.changeChild()">Change</button>
+    <button ng-click="vm.changeDirective()">Show Directive?</button>
+    <new-component ng-if="vm.show01" meta-test="aaa" meta-number="vm.data.number" on-key-fuck="vm.onKeyFuck($event)"></new-component>
+    <new-component ng-if="!vm.show01" meta-test="bbb" meta-number="vm.data.number" on-key-fuck="vm.onKeyFuck($event)"></new-component>
+    <div ng-if="vm.showDirective" new-directive input-meta="vm.data.input" on-changes="vm.directiveChanges($event)"></div>
+</div>
