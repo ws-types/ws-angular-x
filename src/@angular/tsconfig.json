@@ -1,0 +1,29 @@
+{
+    "extends": "./../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./../../dist",
+        "baseUrl": ".",
+        "sourceMap": true,
+        "declaration": true,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es5",
+        "module": "commonjs",
+        "typeRoots": [
+            "./../../node_modules/@types"
+        ],
+        "paths": {
+            "@angular": [
+                "./index"
+            ],
+            "@angular/*": [
+                "./*"
+            ]
+        },
+        "lib": [
+            "es2016",
+            "dom"
+        ]
+    }
+}
