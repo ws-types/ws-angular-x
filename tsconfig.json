@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./@types",
+        "outDir": "./dist",
         "baseUrl": ".",
         "sourceMap": true,
         "declaration": true,

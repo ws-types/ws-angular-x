@@ -1,0 +1,1 @@
+{"version":3,"file":"router-outlet.directive.js","sourceRoot":"","sources":["../../../src/@angular/router/directives/router-outlet.directive.ts"],"names":[],"mappings":";;;;;;;;AAAA,qCAAqC;AAQrC;IAAA;IAEA,CAAC;IAFY,qBAAqB;QALjC,oBAAS,CAAC;YACP,QAAQ,EAAE,eAAe;YACzB,QAAQ,EAAE,qBAAqB;YAC/B,OAAO,EAAE,KAAK;SACjB,CAAC;OACW,qBAAqB,CAEjC;IAAD,4BAAC;CAAA,AAFD,IAEC;AAFY,sDAAqB"}
