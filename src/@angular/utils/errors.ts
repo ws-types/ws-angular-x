@@ -46,6 +46,11 @@ export function RouterRootDuplicatedError() {
     ${errorPrefix} : the root config of router module is duplicated.`);
 }
 
+export function RoutersConfigUndefinedError() {
+    return new SyntaxError(`
+    ${errorPrefix} : the routes config is empty.`);
+}
+
 export const errors = {
     DeclarationExist: DeclarationExistError,
     ElementType: ElementTypeError,
@@ -54,5 +59,6 @@ export const errors = {
     ModuleConfigMissing: ModuleConfigMissedError,
     UnisolateScopeBinding: UnisolateScopeBindingError,
     OldModuleActions: OldModuleActionsError,
-    RouterRootDuplicated: RouterRootDuplicatedError
+    RouterRootDuplicated: RouterRootDuplicatedError,
+    RoutersConfigUndefined: RoutersConfigUndefinedError
 };

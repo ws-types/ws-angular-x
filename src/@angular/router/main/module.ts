@@ -6,7 +6,7 @@ import {
 } from "@angular";
 import { Routes } from "@angular/router/config/config";
 import { DI } from "../../compilers/features/reflect";
-import { RouterRootDuplicatedError } from "@angular/utils/errors";
+import { RouterRootDuplicatedError, RoutersConfigUndefinedError } from "@angular/utils/errors";
 import { Route, uirouter_stamp } from "./../config/config";
 import { Router } from "@angular/router/services/router.service";
 import { StateProvider, UrlRouterProvider, Ng1StateDeclaration } from "@uirouter/angularjs";
@@ -38,7 +38,12 @@ export class RouterModule {
         DI.Register(uirouter_stamp, this);
     }
 
-    public static forRoot(routes: Routes, config?: any) {
+    public static forRoot(routes?: Routes, config?: any) {
+
+        if (!routes) {
+            throw RoutersConfigUndefinedError()
+        }
+
         const router = getRouterModule();
         if (!router.mainRouters) {
             router.mainRouters = routes;
