@@ -5,7 +5,7 @@ import { Module } from "./../creators/module";
 import { parseInjectsAndDI } from "./provider";
 import { ParamsTypeMetaKey, ModuleRunMetaKey } from "./others";
 import { ModuleGenerator } from "./../generators";
-import { ModuleConfigMetaKey, IModuleConfigProperty } from "@angular";
+import { ModuleConfigMetaKey, IModuleConfigProperty } from "./others";
 import { Injectable } from "angular";
 
 

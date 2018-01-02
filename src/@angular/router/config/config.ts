@@ -1,6 +1,8 @@
 import { Type, IClass, IGenerator } from "@angular";
 import { Observable } from "rxjs/Observable";
 
+export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
+
 export interface Route {
     state?: string;
     path?: string;

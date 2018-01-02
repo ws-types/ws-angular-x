@@ -7,12 +7,11 @@ import {
 import { Routes } from "@angular/router/config/config";
 import { DI } from "../../compilers/features/reflect";
 import { RouterRootDuplicatedError } from "@angular/utils/errors";
-import { Route } from "@angular/router";
+import { Route, uirouter_stamp } from "./../config/config";
 import { Router } from "@angular/router/services/router.service";
 import { StateProvider, UrlRouterProvider, Ng1StateDeclaration } from "@uirouter/angularjs";
 import { RouterOutletDirective } from "@angular/router/directives/router-outlet.directive";
 
-export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
 export const uirouter = new ModuleGenerator("ui.router");
 
 const mdconfig: IModuleConfig = {
