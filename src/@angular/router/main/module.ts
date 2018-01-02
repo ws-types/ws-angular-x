@@ -41,18 +41,20 @@ export class RouterModule {
     public static forRoot(routes?: Routes, config?: any) {
 
         if (!routes) {
-            throw RoutersConfigUndefinedError()
+            throw RoutersConfigUndefinedError();
         }
 
         const router = getRouterModule();
         if (!router.mainRouters) {
             router.mainRouters = routes;
 
+            parseRoutesComponent(routes);
+
             router.childRouters.forEach(route => {
                 const prefix = route.state;
                 if (prefix) {
                     parseRoutesState(route, prefix);
-                    parseRoutesComponent(route);
+                    parseRoutesComponent(route.children);
                     parseRoutesParent(router, route);
                 }
             });
@@ -140,8 +142,8 @@ function parseRoutesState(route: Route, prefix: string) {
     });
 }
 
-function parseRoutesComponent(route: Route) {
-    route.children.filter(child => !!child.component).forEach(child => {
+function parseRoutesComponent(routes: Routes) {
+    routes.filter(child => !!child.component).forEach(child => {
         if (typeof (child.component) !== "string") {
             if ((<IComponentClass>(child.component)).generator) {
                 child.component = (<IComponentClass>(child.component)).generator.Selector;
