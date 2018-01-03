@@ -1,6 +1,6 @@
 import * as uuid from "uuid/v4";
 import * as decamel from "decamelize";
-import { IModuleConfig, IModuleGenerator, IModuleClass } from "@angular/metadata";
+import { IModuleConfig, IModuleGenerator, IModuleClass } from "./../../metadata";
 import { Module } from "./../creators/module";
 import { parseInjectsAndDI } from "./provider";
 import { ParamsTypeMetaKey, ModuleRunMetaKey } from "./others";

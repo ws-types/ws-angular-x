@@ -2,7 +2,7 @@ import { Injectable } from "../../compilers/decoretors/provider";
 import { Subject } from "rxjs/Subject";
 import { Transition, StateService, StateDeclaration, RawParams } from "@uirouter/angularjs";
 import { uirouter_stamp } from "./../config/config";
-import { DI } from "@angular/compilers/features/reflect";
+import { DI } from "./../../compilers/features/reflect";
 import { RouterModule } from "../main/module";
 import { Routes } from "./../config/config";
 

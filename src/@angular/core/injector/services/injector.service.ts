@@ -1,5 +1,5 @@
 import { Injectable, Type } from "@angular";
-import { DI } from "@angular/compilers/features/reflect";
+import { DI } from "./../../../compilers/features/reflect";
 
 
 @Injectable("@injector")

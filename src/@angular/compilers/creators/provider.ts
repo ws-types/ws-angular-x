@@ -1,4 +1,4 @@
-import { IProviderConfig } from "@angular/metadata";
+import { IProviderConfig } from "./../../metadata";
 import { ProviderGenerator } from "./../generators/provider";
 
 

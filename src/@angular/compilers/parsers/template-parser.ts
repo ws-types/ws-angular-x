@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import { ViewEncapsulation } from "@angular/metadata";
+import { ViewEncapsulation } from "./../../metadata";
 
 const NgContentPrefix = "_ngcontent-v2";
 

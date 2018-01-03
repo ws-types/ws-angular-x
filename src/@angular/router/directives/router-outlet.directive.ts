@@ -1,4 +1,4 @@
-import { Directive } from "@angular";
+import { Directive } from "./../../compilers";
 
 
 @Directive({

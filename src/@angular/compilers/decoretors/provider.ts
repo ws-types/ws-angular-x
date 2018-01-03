@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import * as uuid from "uuid/v4";
 import * as decamel from "decamelize";
-import { IProviderConfig, IProviderClass } from "@angular/metadata";
+import { IProviderConfig, IProviderClass } from "./../../metadata";
 import { CreateProvider } from "../creators/provider";
 import { ParamsTypeMetaKey } from "./others";
-import { DI } from "@angular/compilers/features/reflect";
+import { DI } from "./../features/reflect";
 import { ProviderGenerator } from "./../generators";
 
 

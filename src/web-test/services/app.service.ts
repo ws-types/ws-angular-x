@@ -1,4 +1,4 @@
-import { Injectable } from "@angular";
+import { Injectable } from "./../../@angular";
 import { AnotherService } from "@src/services/another.service";
 
 

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { IComponentConfig, IComponentClass } from "@angular/metadata";
+import { IComponentConfig, IComponentClass } from "./../../metadata";
 import { CreateComponent } from "./../creators";
 import { InputMetaKey, OutputMetaKey, IInputProperty, ParamsTypeMetaKey } from "./others";
 import { ComponentGenerator } from "./../generators";

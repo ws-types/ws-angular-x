@@ -13,12 +13,6 @@
             "node_modules/@types"
         ],
         "paths": {
-            "@angular": [
-                "src/@angular/index"
-            ],
-            "@angular/*": [
-                "src/@angular/*"
-            ],
             "@src": [
                 "src/web-test/index"
             ],

@@ -1,16 +1,16 @@
 import * as uuid from "uuid/v4";
 import {
     ModuleGenerator, NgModule, $NgModule,
-    ComponentGenerator, IComponentClass,
-    Config, IModuleConfig
-} from "@angular";
-import { Routes } from "@angular/router/config/config";
+    ComponentGenerator, Config
+} from "./../../compilers";
+import { Routes } from "./../config/config";
 import { DI } from "../../compilers/features/reflect";
-import { RouterRootDuplicatedError, RoutersConfigUndefinedError } from "@angular/utils/errors";
+import { RouterRootDuplicatedError, RoutersConfigUndefinedError } from "./../../utils/errors";
 import { Route, uirouter_stamp } from "./../config/config";
 import { Router } from "@angular/router/services/router.service";
 import { StateProvider, UrlRouterProvider, Ng1StateDeclaration } from "@uirouter/angularjs";
-import { RouterOutletDirective } from "@angular/router/directives/router-outlet.directive";
+import { RouterOutletDirective } from "./../directives/router-outlet.directive";
+import { IModuleConfig, IComponentClass } from "./../../metadata";
 
 export const uirouter = new ModuleGenerator("ui.router");
 

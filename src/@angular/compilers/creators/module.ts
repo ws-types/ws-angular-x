@@ -1,4 +1,4 @@
-import { IModuleConfig } from "@angular/metadata";
+import { IModuleConfig } from "./../../metadata";
 import { ModuleGenerator } from "../generators/module";
 
 

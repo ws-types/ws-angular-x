@@ -1,17 +1,17 @@
 import * as angular from "angular";
 import * as uuid from "uuid/v4";
 
-import { SelectorParse } from "@angular/compilers/parsers/selector-parser";
-import { IModuleConfig, IModuleBundle } from "@angular/metadata";
+import { SelectorParse } from "../parsers/selector-parser";
+import { IModuleConfig, IModuleBundle } from "./../../metadata";
 
 import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
     IComponentGenerator, IProviderGenerator, IClass,
     Ng2Component, Ng2Directive, Ng2Declaration,
     Ng2Provider, GeneratorType, IModuleClass
-} from "@angular/metadata";
+} from "./../../metadata";
 
-import { errors } from "@angular/utils/errors";
+import { errors } from "./../../utils/errors";
 import { DI } from "../features/reflect";
 import { Injectable } from "angular";
 

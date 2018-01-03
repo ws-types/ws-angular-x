@@ -1,4 +1,4 @@
-import { IDirectiveConfig } from "@angular/metadata";
+import { IDirectiveConfig } from "./../../metadata";
 import { DirectiveGenerator } from "./../generators/directive";
 
 

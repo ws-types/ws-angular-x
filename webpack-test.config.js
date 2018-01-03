@@ -51,7 +51,6 @@ module.exports = {
         ],
         extensions: [".js", ".json", ".ts"],
         alias: {
-            "@angular": path.resolve(__dirname, "src/@angular"),
             "@src": path.resolve(__dirname, "src/web-test")
         },
     },

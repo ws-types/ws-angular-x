@@ -2,8 +2,8 @@ import * as uuid from "uuid/v4";
 import {
     IProviderGenerator, IProviderBundle, IProviderConfig,
     GeneratorType, IProviderClass
-} from "@angular/metadata";
-import { SelectorParse } from "@angular/compilers/parsers/selector-parser";
+} from "./../../metadata";
+import { SelectorParse } from "../parsers/selector-parser";
 
 
 export class ProviderGenerator implements IProviderGenerator {

@@ -1,10 +1,10 @@
 import { SelectorParse } from "../parsers/selector-parser";
-import { TemplateParser } from "@angular/compilers/parsers/template-parser";
-import { CssParser } from "@angular/compilers/parsers/css-parser";
+import { TemplateParser } from "../parsers/template-parser";
+import { CssParser } from "../parsers/css-parser";
 import {
     IComponentGenerator, IComponentBundle, IGenerator,
     IComponentConfig, GeneratorType, IComponentClass
-} from "@angular/metadata";
+} from "./../../metadata";
 
 export interface IBindings { [key: string]: "<" | "@" | "&" | "="; }
 

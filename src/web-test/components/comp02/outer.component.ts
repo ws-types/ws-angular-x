@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, $Inject, $Injects } from "@angular";
+import { Component, OnInit, OnDestroy, ViewEncapsulation, $Inject, $Injects } from "./../../../@angular";
 import { AppService } from "@src/services/app.service";
 import { AnotherService } from "@src/services/another.service";
-import { Router } from "@angular/router";
+import { Router } from "./../../../@angular/router";
 import { Subscription } from "rxjs/Subscription";
 
 

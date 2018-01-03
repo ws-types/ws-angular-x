@@ -1,13 +1,13 @@
 import { SelectorParse } from "../parsers/selector-parser";
-import { TemplateParser } from "@angular/compilers/parsers/template-parser";
-import { CssParser } from "@angular/compilers/parsers/css-parser";
+import { TemplateParser } from "../parsers/template-parser";
+import { CssParser } from "../parsers/css-parser";
 import { ComponentGenerator, BaseGenerator } from "./component";
 import {
     IDirectiveGenerator, IDirectiveBundle,
     IDirectiveConfig, GeneratorType, IDirectiveClass
-} from "@angular/metadata";
+} from "./../../metadata";
 import { EventEmitter } from "./../features/emit";
-import { UnisolateScopeBindingError } from "@angular/utils/errors";
+import { UnisolateScopeBindingError } from "./../../utils/errors";
 
 export class DirectiveGenerator
     extends BaseGenerator<IDirectiveBundle, IDirectiveClass, IDirectiveConfig> implements IDirectiveGenerator {

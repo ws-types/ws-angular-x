@@ -25,9 +25,7 @@ module.exports = {
             path.resolve(__dirname, "src")
         ],
         extensions: [".js", ".json", ".ts"],
-        alias: {
-            "@angular": path.resolve(__dirname, "src/@angular")
-        },
+        alias: {},
     },
     devtool: "inline-source-map",
     performance: {},

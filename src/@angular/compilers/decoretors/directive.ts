@@ -1,4 +1,4 @@
-import { IDirectiveConfig, IDirectiveClass } from "@angular/metadata";
+import { IDirectiveConfig, IDirectiveClass } from "./../../metadata";
 import { parseLifeCycleHooks } from "./component";
 import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";

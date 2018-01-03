@@ -1,6 +1,6 @@
 import * as $ from "jquery";
-import { ViewEncapsulation } from "@angular/metadata/enums";
-import { CssOnject } from "@angular/metadata";
+import { ViewEncapsulation } from "./../../metadata/enums";
+import { CssOnject } from "./../../metadata";
 
 const NgClassPrefix = "_ngcontent-v2";
 const NgClassSheet = "stylesheet";
