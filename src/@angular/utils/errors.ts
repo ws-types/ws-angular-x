@@ -51,6 +51,21 @@ export function RoutersConfigUndefinedError() {
     ${errorPrefix} : the routes config is empty.`);
 }
 
+export function RoutersDefaultHomeUndefinedError() {
+    return new SyntaxError(`
+    ${errorPrefix} : the routes' default home page url is not defined, or your default route config is wrong, please check..`);
+}
+
+export function SubRoutesNoPathError() {
+    return new SyntaxError(`
+    ${errorPrefix} : the sub route is set wthout a path and state, it's meaningless, please check.`);
+}
+
+export function OtherwiseRoutesDefineError() {
+    return new SyntaxError(`
+    ${errorPrefix} : the otherwise route is messing or badly defined, please check.`);
+}
+
 export const errors = {
     DeclarationExist: DeclarationExistError,
     ElementType: ElementTypeError,
@@ -60,5 +75,8 @@ export const errors = {
     UnisolateScopeBinding: UnisolateScopeBindingError,
     OldModuleActions: OldModuleActionsError,
     RouterRootDuplicated: RouterRootDuplicatedError,
-    RoutersConfigUndefined: RoutersConfigUndefinedError
+    RoutersConfigUndefined: RoutersConfigUndefinedError,
+    RoutersDefaultHomeUndefined: RoutersDefaultHomeUndefinedError,
+    SubRoutesNoPath: SubRoutesNoPathError,
+    OtherwiseRoutesDefine: OtherwiseRoutesDefineError
 };

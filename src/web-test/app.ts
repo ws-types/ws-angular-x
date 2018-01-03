@@ -9,9 +9,9 @@ import { BrowserAnimationsModule } from "./../@angular/core/animations";
 import { Routes, RouterModule, Router } from "./../@angular/router";
 
 const rootRoutes: Routes = [
-    { state: "settings", path: "settings", loadChildren: "./../settings/settings.module#SettingsModule" },
+    { state: "settings", loadChildren: "./../settings/settings.module#SettingsModule" },
     { path: "", redirectTo: "settings", pathMatch: "full" },
-    { path: "**", redirectTo: "errors.404", pathMatch: "full" }
+    { path: "**", redirectToPath: "errors/notfound", pathMatch: "full" }
 ];
 
 @NgModule({
@@ -30,9 +30,9 @@ const rootRoutes: Routes = [
 })
 export class AppModule {
 
-    @Run("@injector")
-    public configInjects(injector: InjectorService) {
-
+    @Run("@injector", "@router")
+    public configInjects(injector: InjectorService, router: Router) {
+        // console.log(router.RoutesTree);
     }
 
 }

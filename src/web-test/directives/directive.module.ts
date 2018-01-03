@@ -1,4 +1,4 @@
-import { NgModule } from "@angular";
+import { NgModule } from "./../../@angular";
 import { NewDirective } from "@src/directives/dire01/new.directive";
 
 

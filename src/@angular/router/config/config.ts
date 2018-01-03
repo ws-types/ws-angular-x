@@ -3,6 +3,13 @@ import { Observable } from "rxjs/Observable";
 
 export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
 
+export interface ITreeRoute {
+    state: string;
+    url: string;
+    component?: string;
+    redirect?: String;
+}
+
 export interface Route {
     state?: string;
     path?: string;
@@ -10,6 +17,7 @@ export interface Route {
     // matcher?: UrlMatcher;
     component?: IClass<any, any> | IGenerator<any> | string;
     redirectTo?: string;
+    redirectToPath?: string;
     outlet?: string;
     canActivate?: any[];
     canActivateChild?: any[];
