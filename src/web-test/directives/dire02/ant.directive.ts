@@ -13,8 +13,6 @@ import { Router } from "./../../../@angular/router";
 })
 export class AntDirective implements OnInit, OnDestroy {
 
-    // public static $inject = [AppService, "$scope", Router];
-
     @Input()
     private inputMeta: string;
 
