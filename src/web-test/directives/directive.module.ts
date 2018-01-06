@@ -1,4 +1,4 @@
-import { NgModule } from "./../../@angular";
+import { NgModule, Config } from "./../../@angular";
 import { NewDirective } from "@src/directives/dire01/new.directive";
 import { AntDirective } from "@src/directives/dire02/ant.directive";
 
@@ -12,5 +12,10 @@ import { AntDirective } from "@src/directives/dire02/ant.directive";
     providers: []
 })
 export class DirectivesModule {
+
+    @Config()
+    public config($httpProvider) {
+        console.log($httpProvider);
+    }
 
 }
