@@ -48,12 +48,3 @@ export class NewDirective implements OnInit, OnDestroy {
     }
 
 }
-
-const a = $Directive({
-    selector: "new-directive",
-    template: require("./new.html"),
-    restrict: "A",
-    styles: [
-        require("./new.scss")
-    ]
-}).Decorate(NewDirective);
