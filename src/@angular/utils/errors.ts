@@ -31,6 +31,11 @@ export function ModuleConfigMissedError() {
     ${errorPrefix} : the module's creation config must be provided.`);
 }
 
+export function DirectiveConfigMissedError() {
+    return new ReferenceError(`
+    ${errorPrefix} : the directive or component's pre-creating config must be provided.`);
+}
+
 export function UnisolateScopeBindingError() {
     return new SyntaxError(`
     ${errorPrefix} : the directive's scope is not isolate, you can't bind any element into it.`);
@@ -72,6 +77,7 @@ export const errors = {
     ModuleDuplicated: ModuleDuplicatedError,
     ElementDuplicated: ElementDuplicatedError,
     ModuleConfigMissing: ModuleConfigMissedError,
+    DirectiveConfigMissed: DirectiveConfigMissedError,
     UnisolateScopeBinding: UnisolateScopeBindingError,
     OldModuleActions: OldModuleActionsError,
     RouterRootDuplicated: RouterRootDuplicatedError,

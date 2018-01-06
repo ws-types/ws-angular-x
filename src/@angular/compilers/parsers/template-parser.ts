@@ -18,7 +18,7 @@ export class TemplateParser {
     private config: ITemplateViewConfig;
 
     constructor(config?: ITemplateViewConfig) {
-        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", template: "" };
+        this.config = this.config || { encapsulation: ViewEncapsulation.Emulated, selector: "", template: "" };
         this.template = config.template;
     }
 

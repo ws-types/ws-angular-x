@@ -1,4 +1,4 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects } from "./../../../@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "./../../../@angular";
 import { AppService } from "@src/services/app.service";
 
 
@@ -12,7 +12,7 @@ import { AppService } from "@src/services/app.service";
 })
 export class NewDirective implements OnInit, OnDestroy {
 
-    public static $inject = $Injects([AppService, "$scope"]);
+    public static $inject = [AppService, "$scope"];
 
     @Input()
     private inputMeta: string;
@@ -48,3 +48,12 @@ export class NewDirective implements OnInit, OnDestroy {
     }
 
 }
+
+const a = $Directive({
+    selector: "new-directive",
+    template: require("./new.html"),
+    restrict: "A",
+    styles: [
+        require("./new.scss")
+    ]
+}).Decorate(NewDirective);

@@ -1,4 +1,4 @@
-import { IDirectiveConfig, IDirectiveClass } from "./../../metadata";
+import { IDirectiveConfig, IDirectiveClass, Type } from "./../../metadata";
 import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";
 import {
