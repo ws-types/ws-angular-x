@@ -22,3 +22,7 @@ export interface OnChanges {
 export interface DoCheck {
     ngDoCheck(): void;
 }
+
+export interface AfterViewInit {
+    ngAfterViewInit(): void;
+}

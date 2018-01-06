@@ -1,4 +1,5 @@
-import { Injectable, Type } from "@angular";
+import { Injectable } from "./../../../compilers";
+import { Type } from "./../../../metadata";
 import { DI } from "./../../../compilers/features/reflect";
 
 

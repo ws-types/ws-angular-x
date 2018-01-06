@@ -1,7 +1,7 @@
 import * as angular from "angular";
 import * as $ from "jquery";
 
-import { Ng2Module, IModuleClass, IModuleGenerator } from "@angular/metadata";
+import { Ng2Module, IModuleClass, IModuleGenerator } from "./../metadata";
 
 const CoreModule = angular.module("ws-angular-x-v1", []);
 

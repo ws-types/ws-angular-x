@@ -1,3 +1,4 @@
+import { IComponentClass, IComponentController } from './component';
 import { ViewEncapsulation } from "./enums";
 import { IClass, ICommonController } from "./class";
 import { CssOnject } from "./common";
@@ -19,12 +20,8 @@ export type IDirectiveFn = () => ng.IDirective;
 
 export interface IDirectiveBundle extends IDirectiveFn { }
 
-export interface IDirectiveController extends ICommonController {
-    $onInit?(): void;
-    $postLink?(): void;
-    $onChanges?(changes: any): void;
-    $onDestroy?(): void;
-    $doCheck?(): void;
-}
+export interface IDirectiveController extends IComponentController { }
 
-export interface IDirectiveClass extends IClass<IDirectiveBundle, IDirectiveController> { }
+export interface IDirectiveClass extends IClass<IDirectiveBundle, IDirectiveController> {
+    prototype: IDirectiveController;
+}

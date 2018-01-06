@@ -8,6 +8,7 @@ import {
 } from "./others";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
+import { bindPolyfill } from "./../../utils/bind.polyfill";
 
 
 export function Directive(config: IDirectiveConfig) {
@@ -32,26 +33,24 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
+    bindPolyfill();
     class DirectiveClass extends target {
         public static $inject = injects;
-        constructor(...params: any[]) {
-            super(...params);
-            outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
-            if (maps.ngOnInit) {
-                this.$onInit = maps.ngOnInit;
-            }
-            if (maps.ngOnDestroy) {
-                this.$onDestroy = maps.ngOnDestroy;
-            }
-            if (maps.ngOnChanges) {
-                this.$onChanges = maps.ngOnChanges;
-            }
-            if (maps.ngDoCheck) {
-                this.$doCheck = maps.ngDoCheck;
-            }
+        constructor(...args: any[]) {
+            super(...args);
             generator.StylesLoad();
+            target.prototype.$onInit = () => {
+                outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+                if (target.prototype.ngOnInit) {
+                    target.prototype.ngOnInit.bind(this)();
+                }
+            };
         }
     }
+    target.prototype.$onDestroy = target.prototype.ngOnDestroy;
+    target.prototype.$postLink = target.prototype.ngAfterViewInit;
+    target.prototype.$onChanges = target.prototype.ngChanges;
+    target.prototype.$doCheck = target.prototype.ngDoCheck;
     generator.Class(DirectiveClass);
     return generator;
 }

@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import * as uuid from "uuid/v4";
 import * as decamel from "decamelize";
-import { IProviderConfig, IProviderClass } from "./../../metadata";
+import { IProviderConfig, IProviderClass, IClass, ICommonController } from "./../../metadata";
 import { CreateProvider } from "../creators/provider";
 import { ParamsTypeMetaKey } from "./others";
-import { DI } from "./../features/reflect";
+import { DI, Inject } from "./../features/reflect";
 import { ProviderGenerator } from "./../generators";
 
 
@@ -42,14 +42,15 @@ function registerDI(target: IProviderClass, generator: ProviderGenerator): IProv
     return target;
 }
 
-export function parseInjectsAndDI<T>(target: T, types: any[]): string[] {
-    const injects: string[] = [...((<any>target).$inject || [])];
+export function parseInjectsAndDI<T extends IClass<any, ICommonController>>(target: T, types: any[]): string[] {
+    const injects: (Function | string)[] = [...(target.$inject || [])];
+    const INJECTS: string[] = [];
+    injects.forEach(i => INJECTS.push(typeof (i) === "string" ? i : Inject(i)));
     const argus = DI.GetArguments(target);
-    types.forEach((ctor, index) => {
-        if (index + 1 > injects.length) {
-            injects.push(DI.GetKey(ctor) || argus[index]);
-        }
-    });
-    return injects;
+    // console.log(argus);
+    const depts: string[] = [];
+    types.forEach((ctor, index) => depts.push(DI.GetKey(ctor) || (INJECTS[index] || argus[index]) || ""));
+    // console.log(depts);
+    return depts;
 }
 

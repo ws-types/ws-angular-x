@@ -5,6 +5,7 @@ import { InputMetaKey, OutputMetaKey, IInputProperty, ParamsTypeMetaKey } from "
 import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
+import { bindPolyfill } from "./../../utils/bind.polyfill";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
@@ -28,26 +29,24 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
+    bindPolyfill();
     class ComponentClass extends target {
         public static $inject = injects;
         constructor(...args: any[]) {
             super(...args);
-            outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
-            if (maps.ngOnInit) {
-                this.$onInit = maps.ngOnInit;
-            }
-            if (maps.ngOnDestroy) {
-                this.$onDestroy = maps.ngOnDestroy;
-            }
-            if (maps.ngOnChanges) {
-                this.$onChanges = maps.ngOnChanges;
-            }
-            if (maps.ngDoCheck) {
-                this.$doCheck = maps.ngDoCheck;
-            }
             generator.StylesLoad();
+            target.prototype.$onInit = () => {
+                outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+                if (target.prototype.ngOnInit) {
+                    target.prototype.ngOnInit.bind(this)();
+                }
+            };
         }
     }
+    target.prototype.$onDestroy = target.prototype.ngOnDestroy;
+    target.prototype.$postLink = target.prototype.ngAfterViewInit;
+    target.prototype.$onChanges = target.prototype.ngChanges;
+    target.prototype.$doCheck = target.prototype.ngDoCheck;
     generator.Class(ComponentClass);
     return generator;
 }

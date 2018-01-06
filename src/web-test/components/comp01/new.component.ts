@@ -24,16 +24,17 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     private metaNumber: number;
 
     @Output()
-    private onKeyFuck: EventEmitter<string>;
+    // private onKeyFuck: EventEmitter<string>;
+    private onKeyFuck: any;
 
     constructor(private app: AppService, private injector: InjectorService) {
-        // console.log(app);
-        const anSrv = injector.Get(AnotherService);
-        // console.log(anSrv.getFuck());
+
     }
 
     ngOnInit(): void {
-        // console.log("component init");
+        console.log("new component init");
+        console.log(this);
+        // console.log(this.onKeyFuck({ $event: "hahahahahahah----666666" }));
     }
 
     ngOnDestroy(): void {

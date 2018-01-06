@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader.js");
 
@@ -42,7 +43,8 @@ module.exports = {
             $: "jquery",
             jQuery: 'jquery',
             "window.jQuery": "jquery"
-        })
+        }),
+        new ForkTsCheckerWebpackPlugin()
     ],
     resolve: {
         modules: [
@@ -70,11 +72,18 @@ module.exports = {
                     path.resolve(__dirname, "src/web-test")
                 ],
                 loader: "babel-loader",
+                query: {
+                    plugins: ['transform-runtime'],
+                    presets: ['stage-0'],
+                }
             },
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                options: {
+                    transpileOnly: true
+                }
             },
             {
                 test: /\.css$/,

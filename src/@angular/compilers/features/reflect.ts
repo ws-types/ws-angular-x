@@ -26,33 +26,53 @@ export class ReflectContainer {
     }
 
     public GetArguments(func: any): string[] {
-        return getParameterNames(func);
+        return ClassMetadataParser.GetES6CtorParamsName(func);
     }
 
 }
 
 export const DI = new ReflectContainer();
 
-export function Inject(func: ng.IController): string {
+export function Inject(func: any): string {
     return DI.GetKey(func);
 }
 
-export function Injects(func_names: (ng.IController | string)[]): string[] {
+export function Injects(func_names: any[]): string[] {
     return func_names.map(fn => typeof (fn) === "string" ? fn : DI.GetKey(fn));
 }
 
-const COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-const DEFAULT_PARAMS = /=[^,]+/mg;
-const FAT_ARROWS = /=>.*$/mg;
+class ClassMetadataParser {
 
-function getParameterNames(fn): string[] {
-    const code = fn.toString()
-        .replace(COMMENTS, "")
-        .replace(FAT_ARROWS, "")
-        .replace(DEFAULT_PARAMS, "");
+    static COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+    static DEFAULT_PARAMS = /=[^,]+/mg;
+    static FAT_ARROWS = /=>.*$/mg;
+    static CLASS_HEAD = /class.+{/;
+    static CTOR_HEAD = /constructor.+{/;
 
-    const result = code.slice(code.indexOf("(") + 1, code.indexOf(")"))
-        .match(/([^\s,]+)/g);
+    static GetES5CtorParamsName(fn): string[] {
+        const code = fn.toString()
+            .replace(ClassMetadataParser.COMMENTS, "")
+            .replace(ClassMetadataParser.FAT_ARROWS, "")
+            .replace(ClassMetadataParser.DEFAULT_PARAMS, "");
 
-    return result === null ? [] : result;
+        const result = code.slice(code.indexOf("(") + 1, code.indexOf(")"))
+            .match(/([^\s,]+)/g);
+
+        return result === null ? [] : result;
+    }
+
+    static GetES6CtorParamsName(c) {
+        const code = c.toString();
+        if (!ClassMetadataParser.CLASS_HEAD.test(code) || !ClassMetadataParser.CTOR_HEAD.test(code)) {
+            return null;
+        }
+        code.replace(ClassMetadataParser.COMMENTS, "")
+            .replace(ClassMetadataParser.FAT_ARROWS, "")
+            .replace(ClassMetadataParser.DEFAULT_PARAMS, "")
+            .replace(ClassMetadataParser.CLASS_HEAD, "");
+        const result = code.slice(code.indexOf("(") + 1, code.indexOf(")"))
+            .match(/([^\s,]+)/g);
+        return result === null ? null : result;
+    }
+
 }
