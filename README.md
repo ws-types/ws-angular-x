@@ -4,7 +4,7 @@ the new syntax of angular 1.x (1.5.8+)
 ## NOTES:
 ### 1. All code are built in ES6 mode, conf typescript file - (tsconfig.json)'s "target" should be set in "es6", "module" is "commonjs";
 ### 2. Please don't run this code in the ES5/ES3 environment if you work with javascript.
-### 3. If running in the prod mode ,conf the UglifyJS to ignore mangle options because the injection service of angular1.x will breaks by uglify. Keep mangle off or try to provide a reversed arr list to prevent uglify breaks the constructor'params name. I'll provide all the injections in need later if posible.
+### 3. If running in the prod mode ,conf the UglifyJS to ignore mangle options because the injection service of angular1.x will breaks by uglify. Keep mangle off or try to provide a reversed arr list to prevent uglify breaks the constructor'params name. I'll provide all the injections in need later if posible. (now you can use the reserved list in "./webpack/@ngtools/uglify-reserved.js", all the angular ang ui-router injections service will work well in uglifyjs.)
 
 ## 1. Module in Declaration
 
