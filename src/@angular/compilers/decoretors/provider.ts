@@ -43,7 +43,13 @@ function registerDI(target: IProviderClass, generator: ProviderGenerator): IProv
 }
 
 export function parseInjectsAndDI<T extends IClass<any, ICommonController>>(target: T, types: any[]): string[] {
-    const injects: (Function | string)[] = [...(target.$inject || [])];
+    const injects: (Function | string)[] = [];
+    if (target.$injector) {
+        injects.push(...target.$injector());
+        console.log(injects);
+    } else {
+        injects.push(...(target.$inject || []));
+    }
     const INJECTS: string[] = [];
     injects.forEach(i => INJECTS.push(typeof (i) === "string" ? i : Inject(i)));
     const argus = DI.GetArguments(target);
