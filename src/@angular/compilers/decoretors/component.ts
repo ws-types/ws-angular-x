@@ -26,7 +26,6 @@ export function $Component(config: IComponentConfig) {
 
 function createExtends<T extends IComponentClass>(target: T, config: IComponentConfig) {
     const generator = CreateComponent(config);
-    const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
     bindPolyfill();
@@ -53,17 +52,6 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
 
 function createInjects(target: IComponentClass) {
     return parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
-}
-
-export function parseLifeCycleHooks(proto: any) {
-    const maps: { [name: string]: (...params: any[]) => void } = {};
-    Object.getOwnPropertyNames(proto).forEach(name => {
-        const propery = proto[name];
-        if (name === "ngOnInit" || name === "ngOnDestroy" || name === "ngOnChanges" || name === "ngDoCheck") {
-            maps[name] = propery;
-        }
-    });
-    return maps;
 }
 
 function parseIOProperties(proto: any, generator: ComponentGenerator) {

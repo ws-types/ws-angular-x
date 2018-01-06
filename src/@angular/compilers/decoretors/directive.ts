@@ -1,5 +1,4 @@
 import { IDirectiveConfig, IDirectiveClass } from "./../../metadata";
-import { parseLifeCycleHooks } from "./component";
 import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";
 import {
@@ -30,7 +29,6 @@ export function $Directive(config: IDirectiveConfig) {
 
 function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, target: T) {
     const generator = CreateDirective(config);
-    const maps = parseLifeCycleHooks(target.prototype);
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
     bindPolyfill();
