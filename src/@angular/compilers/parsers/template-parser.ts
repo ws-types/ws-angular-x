@@ -18,8 +18,8 @@ export class TemplateParser {
     private config: ITemplateViewConfig;
 
     constructor(config?: ITemplateViewConfig) {
-        this.config = this.config || { encapsulation: ViewEncapsulation.Emulated, selector: "", template: "" };
-        this.template = config.template;
+        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", template: "" };
+        this.template = this.config.template;
     }
 
     public Parse(): string {

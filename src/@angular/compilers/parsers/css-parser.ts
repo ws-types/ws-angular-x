@@ -22,7 +22,7 @@ export class CssParser {
     private config: ICssViewConfig;
 
     constructor(config: ICssViewConfig) {
-        this.config = this.config || { encapsulation: ViewEncapsulation.Emulated, selector: "", styles: [] };
+        this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", styles: [] };
         this.classes = this.config.styles || (!this.config.style ? [] : [this.config.style]);
         this.classes.forEach(i => this.parsed_csses.push(parseCss(i, this.config.selector, this.type)));
     }
