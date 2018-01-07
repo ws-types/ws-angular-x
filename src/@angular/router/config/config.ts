@@ -5,13 +5,16 @@ export const uirouter_stamp = "reflect:ng-module-router-angular-x-v1";
 
 export interface ITreeRoute {
     state: string;
+    parent?: any;
     url: string;
     component?: string;
     redirect?: String;
+    loadChildren?: any;
 }
 
 export interface Route {
     state?: string;
+    parent?: string;
     path?: string;
     pathMatch?: string;
     // matcher?: UrlMatcher;

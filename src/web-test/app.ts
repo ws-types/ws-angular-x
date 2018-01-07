@@ -7,11 +7,13 @@ import { AnotherService } from "@src/services/another.service";
 import { InjectorModule, InjectorService } from "@angular/core/injector";
 import { BrowserAnimationsModule } from "@angular/core/animations";
 import { Routes, RouterModule, Router } from "@angular/router";
+import { FirstComponent } from "@src/root.component";
 
 const rootRoutes: Routes = [
-    { state: "settings", loadChildren: "./../settings/settings.module#SettingsModule" },
-    { path: "", redirectTo: "settings", pathMatch: "full" },
-    { path: "**", redirectToPath: "errors/notfound", pathMatch: "full" }
+    { state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" },
+    { state: "home", component: FirstComponent },
+    { path: "", redirectTo: "home" },
+    { path: "**", redirectToPath: "errors/notfound" }
 ];
 
 @NgModule({
@@ -22,7 +24,9 @@ const rootRoutes: Routes = [
         ComponentsModule,
         DirectivesModule
     ],
-    declarations: [],
+    declarations: [
+        FirstComponent
+    ],
     providers: [
         AppService,
         AnotherService

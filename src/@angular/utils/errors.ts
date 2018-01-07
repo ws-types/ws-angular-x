@@ -71,6 +71,12 @@ export function OtherwiseRoutesDefineError() {
     ${errorPrefix} : the otherwise route is messing or badly defined, please check.`);
 }
 
+export function InjectionKeyDepulicateError(key?: string) {
+    return new Error(`
+    ${errorPrefix} : the key of element to be injected is duplicated, please check.
+        ${key ? "the key of element is : " + key : ""}`);
+}
+
 export const errors = {
     DeclarationExist: DeclarationExistError,
     ElementType: ElementTypeError,
@@ -84,5 +90,6 @@ export const errors = {
     RoutersConfigUndefined: RoutersConfigUndefinedError,
     RoutersDefaultHomeUndefined: RoutersDefaultHomeUndefinedError,
     SubRoutesNoPath: SubRoutesNoPathError,
-    OtherwiseRoutesDefine: OtherwiseRoutesDefineError
+    OtherwiseRoutesDefine: OtherwiseRoutesDefineError,
+    InjectionKeyDepulicate: InjectionKeyDepulicateError,
 };

@@ -3,7 +3,8 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader.js");
+const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader");
+const angularXRouterLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-router-loader");
 
 module.exports = {
     entry: {
@@ -13,6 +14,7 @@ module.exports = {
             "jquery",
             "angular-animate",
             "@uirouter/angularjs",
+            "oclazyload",
             "reflect-metadata",
             "rxjs",
             "uuid",
@@ -58,19 +60,33 @@ module.exports = {
                     path.resolve(__dirname, "src/web-test"),
                     path.resolve(__dirname, "src/@angular")
                 ],
-                loader: "babel-loader",
-                options: {
-                    plugins: ['transform-runtime', 'transform-decorators-legacy'],
-                    presets: ['stage-0', 'es2015'],
-                }
+                use: [
+                    {
+                        loader: "babel-loader",
+                        options: {
+                            plugins: ['transform-runtime', 'transform-decorators-legacy'],
+                            presets: ['stage-0', 'es2015'],
+                        }
+                    },
+                    {
+                        loader: angularXRouterLoader + "?debug=false&loader=system"
+                    }
+                ]
             },
             {
                 test: /\.ts$/,
-                loader: 'ts-loader',
                 exclude: /node_modules/,
-                options: {
-                    transpileOnly: true
-                }
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: true
+                        },
+                    },
+                    {
+                        loader: angularXRouterLoader + "?debug=false&loader=system"
+                    }
+                ]
             },
             {
                 test: /\.css$/,

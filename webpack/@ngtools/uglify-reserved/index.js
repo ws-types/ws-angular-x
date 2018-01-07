@@ -112,6 +112,7 @@ module.exports = {
         "$transitions",
         "$state",
         "$stateRegistry",
+        "$stateRegistryProvider",
         "$urlService",
         "$uiRouterGlobals",
         "$uiViewScroll",

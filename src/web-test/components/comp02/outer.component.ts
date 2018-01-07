@@ -34,8 +34,8 @@ export class OutComponent implements OnInit, OnDestroy {
     constructor(private app, private scope, private router: Router) {
         // console.log(app);
         // console.log(state);
-        this.routerSubp = router.params.subscribe(queryParams => {
-            console.log(queryParams);
+        this.routerSubp = router.stateChanges.subscribe(state => {
+            console.log(state.name);
         });
     }
 

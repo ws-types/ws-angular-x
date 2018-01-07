@@ -3,7 +3,7 @@ const merge = require("webpack-merge");
 const path = require("path");
 
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const allReserved = require("./webpack/@ngtools/uglify-reserved.js");
+const allReserved = require("./webpack/@ngtools/uglify-reserved");
 
 module.exports = merge(common, {
     output: {

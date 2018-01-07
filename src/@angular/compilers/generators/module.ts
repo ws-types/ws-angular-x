@@ -2,13 +2,13 @@ import * as angular from "angular";
 import * as uuid from "uuid/v4";
 
 import { SelectorParse } from "../parsers/selector-parser";
-import { IModuleConfig, IModuleBundle } from "./../../metadata";
+import { IModuleConfig, IModuleBundle, IModulePayload } from "./../../metadata";
 
 import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
     IComponentGenerator, IProviderGenerator, IClass,
     Ng2Component, Ng2Directive, Ng2Declaration,
-    Ng2Provider, GeneratorType, IModuleClass
+    Ng2Provider, Ng2Module, GeneratorType, IModuleClass
 } from "./../../metadata";
 
 import { errors } from "./../../utils/errors";
@@ -51,10 +51,10 @@ export class ModuleGenerator implements IModuleGenerator {
     }
 
     private elementsParse(config: IModuleConfig) {
+        this._imports = parseElements(parseModulePayload(config, this));
         this._components = parseElements(<Ng2Component[]>config.declarations, GeneratorType.Component);
         this._directives = parseElements(<Ng2Directive[]>config.declarations, GeneratorType.Directive);
         this._providers = parseElements(config.providers);
-        this._imports = parseElements(config.imports);
     }
 
     private selectorUnique(config: IModuleConfig) {
@@ -164,6 +164,18 @@ export class ModuleGenerator implements IModuleGenerator {
         const instance = new (this.Controller)();
         return instance;
     }
+}
+
+function parseModulePayload(config: IModuleConfig, generator: ModuleGenerator) {
+    const imports: Ng2Module[] = [];
+    (config.imports || []).forEach(ipt => {
+        if ((<IModulePayload>ipt)._ngConfig) {
+            ((<IModulePayload>ipt)._ngConfig || []).forEach(conf => generator.Config(conf));
+        } else {
+            imports.push(<Ng2Module>ipt);
+        }
+    });
+    return imports;
 }
 
 function parseElements<T>(elements: (IGenerator<T> | IClass<T, any>)[], flag?: string): IGenerator<T>[] {
