@@ -1,1 +1,10 @@
 extends: airbnb-base
+parser: babel-eslint
+plugins:
+  - babel
+parserOptions:
+  sourceType: module
+  allowImportExportEverywhere: false
+  codeFrame: false
+rules: 
+  strict: 0

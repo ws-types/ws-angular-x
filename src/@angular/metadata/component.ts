@@ -5,8 +5,10 @@ import { CssOnject } from "./common";
 export interface IComponentConfig {
     selector: string;
     template: string;
+    // templateUrl?: string;
     style?: CssOnject;
     styles?: CssOnject[];
+    // styleUrls?: string[];
     alias?: string;
     encapsulation?: ViewEncapsulation;
 }

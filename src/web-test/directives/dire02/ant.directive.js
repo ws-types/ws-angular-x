@@ -1,6 +1,6 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "./../../../@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "@angular";
 import { AppService } from "@src/services/app.service";
-import { Router } from "./../../../@angular/router";
+import { Router } from "@angular/router";
 
 
 @Directive({
@@ -11,43 +11,44 @@ import { Router } from "./../../../@angular/router";
         require("./ant.scss")
     ]
 })
-export class AntDirective implements OnInit, OnDestroy {
+export class AntDirective {
 
     @Input()
-    private inputMeta: string;
+    inputMeta
 
     @Output()
-    private onChanges: EventEmitter<string>;
+    onChanges;
 
-    public static $injector() { return [AppService, "$scope", Router]; }
+    static $injector() { return [AppService, "$scope"]; }
 
-    constructor(private app, private $scope, private router) {
+    constructor(app, $scope) {
+        this.app = app;
+        this.$scope = $scope;
         console.log($scope);
-        console.log(router);
         // console.log(app);
         // console.log(scope);
     }
 
-    ngOnInit(): void {
+    ngOnInit() {
         console.log("ant directive is on.");
         // console.log("directive init");
     }
 
-    ngOnDestroy(): void {
+    ngOnDestroy() {
         // console.log("directive destroyed");
     }
 
     @On("destroy")
-    public destroy(scope, attr, ele, ctrl) {
+    destroy(scope, attr, ele, ctrl) {
         // console.log("directive destroyed");
     }
 
     @Watch("inputMeta")
-    public watchInputMeta(scope, attr, ele, ctrl) {
+    watchInputMeta(scope, attr, ele, ctrl) {
         // console.log("inputMeta changes");
     }
 
-    public changes() {
+    changes() {
         this.onChanges.emit("fuck : " + new Date().getTime().toString());
     }
 

@@ -46,6 +46,7 @@ export function parseInjectsAndDI<T extends IClass<any, ICommonController>>(targ
     const injects: (Function | string)[] = [];
     if (target.$injector) {
         injects.push(...target.$injector());
+        console.log(target.$injector);
         console.log(injects);
     } else {
         injects.push(...(target.$inject || []));

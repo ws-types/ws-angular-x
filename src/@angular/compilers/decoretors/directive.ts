@@ -32,11 +32,13 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
     bindPolyfill();
+    setTimeout(() => console.log(JSON.stringify(target)));
     class DirectiveClass extends target {
         public static $inject = injects;
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            console.log(this);
             target.prototype.$onInit = () => {
                 outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
                 if (target.prototype.ngOnInit) {

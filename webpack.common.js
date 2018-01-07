@@ -58,7 +58,7 @@ module.exports = {
                 ],
                 loader: "babel-loader",
                 query: {
-                    plugins: ['transform-runtime'],
+                    plugins: ['transform-runtime', 'transform-decorators-legacy'],
                     presets: ['stage-0'],
                 }
             },

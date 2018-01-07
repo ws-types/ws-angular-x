@@ -1,7 +1,6 @@
 {
-    "extends": "./../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "./../../dist",
+        "outDir": "./../../@angular",
         "baseUrl": ".",
         "sourceMap": true,
         "declaration": true,

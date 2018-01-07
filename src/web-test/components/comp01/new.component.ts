@@ -2,10 +2,10 @@ import {
     Component, OnInit, OnDestroy,
     ViewEncapsulation, Input, Output, EventEmitter,
     OnChanges, DoCheck, SimpleChanges, IProviderClass
-} from "./../../../@angular";
+} from "@angular";
 
 import { AppService } from "@src/services/app.service";
-import { InjectorService } from "./../../../@angular/core/injector";
+import { InjectorService } from "@angular/core/injector";
 import { AnotherService } from "@src/services/another.service";
 
 @Component({

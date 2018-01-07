@@ -1,4 +1,4 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "./../../../@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "@angular";
 import { AppService } from "@src/services/app.service";
 
 
