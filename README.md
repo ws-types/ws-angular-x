@@ -2,9 +2,9 @@
 the new syntax of angular 1.x (1.5.8+)
 
 ## NOTES:
-### 1. All code are built in ES5(commonjs) mode, if you're use higher version, please use babel-loader;
+### 1. All code are built in ES5(commonjs) mode, if you're using a higher version, please use babel-loader;
 ### 2. Anyway, better not run this code in the ES3 environment if you work with javascript, try ES6/ES5 or babel-loader.
-### 3. If running in the prod mode ,conf the UglifyJS to ignore mangle options because the injection service of angular1.x will breaks by uglify. Keep mangle off or try to provide a reversed arr list to prevent uglify breaks the constructor'params name. I'll provide all the injections in need later if posible. (now you can use the reserved list in "./webpack/@ngtools/uglify-reserved.js", all the angular ang ui-router injections service will work well in uglifyjs.)
+### 3. If running in the prod mode ,conf the UglifyJS to ignore mangle options because the injection service of angular1.x will breaks by uglify. Keep mangle off or try to provide a reserved arr list to prevent uglify breaks the constructor's params name. I'll provide all the injections need later if possible. (now you can use the reserved list in "./webpack/@ngtools/uglify-reserved/index.js", all the angular and ui-router's injection-services will work well with uglifyjs.)
 
 ## 1. Module in Declaration
 
@@ -67,35 +67,33 @@ const path = require('path');
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
 
 // you may get this loader in this package, try to get from "ws-angular-x/webpack/@ngtools/css-object-loader.js", 
 // you can't get it from npm ...
 // your component css/scss/less will not work without this loader.
-const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader.js");
+const cssObjectLoader = path.resolve(__dirname, "node_modules/ws-angular-x/webpack/@ngtools/css-object-loader");
+
+// the router-loader for angular-x
+// you can conf lazy-load module by example like `{ state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" }` to create lazy router instead of use "import(......)"
+const angularXRouterLoader = path.resolve(__dirname, "node_modules/ws-angular-x/webpack/@ngtools/angularX-router-loader");
+
+// prod mode .
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// a reserved list is provided.
+const allReserved = require("node_modules/ws-angular-x/webpack/@ngtools/uglify-reserved");
 
 module.exports = {
-    entry: {
-        vendor: [
-            "angular",
-            "bootstrap",
-            "jquery",
-            "angular-animate",
-            "@uirouter/angularjs",
-            "reflect-metadata",
-            "rxjs",
-            "uuid",
-            "decamelize",
-            "camelcase"
-        ],
-        index: "./src/web-test/index.ts"
+entry: {
+        vendor: [ "ws-angular-x" ],
+        index: [ "src/app/index.ts" ]
     },
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].bundle.js",
         publicPath: "",
-        pathinfo: true,
-        chunkFilename: "[name].chunk.js",
-        sourceMapFilename: "[file].map",
+        chunkFilename: "[name].chunk.js"
     },
     plugins: [
         new CleanWebpackPlugin(['dist']),
@@ -106,24 +104,28 @@ module.exports = {
             name: 'vendor',
             chunks: ['index']
         }),
+        // if "$" is needed as global, conf this.
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: 'jquery',
             "window.jQuery": "jquery"
+        }),
+        new ForkTsCheckerWebpackPlugin(),
+        // add this plugin for production mode.
+        new UglifyJsPlugin({
+            uglifyOptions: {
+                mangle: { // add reserved list for injections
+                    reserved: allReserved.all(allReserved)
+                }
+            }
         })
     ],
     resolve: {
-        modules: [
-            "node_modules",
-            path.resolve(__dirname, "src")
-        ],
-        extensions: [".js", ".json", ".ts"],
         alias: { // ignore this, or you can change this by what your want.
-            "@src": path.resolve(__dirname, "src/web-test")
+            "@app": path.resolve(__dirname, "src/app")
         },
     },
     devtool: "source-map",
-    performance: {},
     devServer: {
         contentBase: './dist'
     },
@@ -135,18 +137,43 @@ module.exports = {
             {
                 test: /\.js$/,
                 include: [
-                    path.resolve(__dirname, "src/web-test")
+                    path.resolve(__dirname, "src/app")
                 ],
-                loader: "babel-loader",
+                use: [
+                    {
+                        loader: "babel-loader",
+                        options: {
+                            // support ES7 decorators 
+                            plugins: ['transform-runtime', 'transform-decorators-legacy'],
+                            // support ES7 decorators and transform ES6 js to "commonjs"
+                            presets: ['stage-0', 'es2015'],
+                        }
+                    },
+                    {
+                        // router-loader
+                        loader: angularXRouterLoader + "?debug=false&loader=system"
+                    }
+                ]
             },
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: { // disable type check to make building action faster
+                            transpileOnly: true
+                        },
+                    },
+                    {
+                        loader: angularXRouterLoader + "?debug=false&loader=system"
+                    }
+                ]
             },
             {
                 test: /\.css$/,
                 use: [
+                    // load css as object
                     cssObjectLoader,
                     'css-loader'
                 ]
@@ -184,20 +211,20 @@ module.exports = {
 ```
 3. import ws-angular-x into your code, and create your module
 ```typescript
-import { ModuleGenerator, $Injects, Config, Run } from "./../@angular";
-import { NgModule } from "./../@angular";
-import { ComponentsModule } from "@src/components/component.module";
-import { DirectivesModule } from "@src/directives/directive.module";
-import { AppService } from "@src/services/app.service";
-import { AnotherService } from "@src/services/another.service";
-import { InjectorModule, InjectorService } from "./../@angular/core/injector";
-import { BrowserAnimationsModule } from "./../@angular/core/animations";
-import { Routes, RouterModule, Router } from "./../@angular/router";
+import { Config, Run, NgModule } from "ws-angular-x";
+import { ComponentsModule } from "@app/components/component.module";
+import { DirectivesModule } from "@app/directives/directive.module";
+import { AppService } from "@app/services/app.service";
+import { AnotherService } from "@app/services/another.service";
+import { InjectorModule, InjectorService } from "ws-angular-x/core/injector";
+import { BrowserAnimationsModule } from "ws-angular-x/core/animations";
+import { Routes, RouterModule, Router } from "ws-angular-x/router";
 
 const rootRoutes: Routes = [
-    { state: "settings", loadChildren: "./../settings/settings.module#SettingsModule" },
-    { path: "", redirectTo: "settings", pathMatch: "full" },
-    { path: "**", redirectToPath: "errors/notfound", pathMatch: "full" }
+    { state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" },
+    { state: "home", component: FirstComponent },
+    { path: "", redirectTo: "home" },
+    { path: "**", redirectToPath: "errors/notfound" }
 ];
 
 // your module mey like this.
@@ -209,7 +236,9 @@ const rootRoutes: Routes = [
         ComponentsModule,
         DirectivesModule
     ],
-    declarations: [],
+    declarations: [
+        FirstComponent
+    ],
     providers: [
         AppService,
         AnotherService
@@ -219,7 +248,7 @@ export class AppModule {
 
     @Run("@injector", "@router")
     public configInjects(injector: InjectorService, router: Router) {
-        // console.log(router.RoutesTree);
+        console.log(router.RoutesTree);
     }
 
 }
@@ -227,13 +256,68 @@ export class AppModule {
 ```
 4. bootstrap your app now!
 ```typescript
-import { browserDynamic } from "./../@angular";
+import { browserDynamic } from "ws-angular-x";
 import { AppModule } from "./app";
 
 browserDynamic().bootstrapModule(AppModule);
 
 ```
 
+5. don't for get your tsconfig.json if you work with typescript
+```json
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "baseUrl": ".",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowJs": true,
+        "target": "es5",
+        "module": "commonjs",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "paths": {
+            "@app": [
+                "src/app/index"
+            ],
+            "@app/*": [
+                "src/app/*"
+            ]
+        },
+        "lib": [
+            "es2016",
+            "dom"
+        ]
+    }
+}
+```
+6. if you work with javascript and eslint, you should conf your eslintrc.yml (or maybe *.json) to enable decorators. (as example)
+
+```json
+ "babel-core": "^6.26.0",
+ "babel-eslint": "^8.1.2",
+ "babel-plugin-transform-decorators-legacy": "^1.3.4",
+ "babel-plugin-transform-runtime": "^6.23.0",
+ "babel-preset-es2015": "^6.24.1",
+ "babel-preset-stage-0": "^6.24.1",
+ "eslint-plugin-babel": "^4.1.2",
+```
+
+```yaml
+parser: babel-eslint
+plugins:
+  - babel
+parserOptions:
+  sourceType: module
+  allowImportExportEverywhere: false
+  codeFrame: false
+rules: 
+  strict: 0
+```
 ============================
 
-### working continue....
+### animation module and other features are still in working....
