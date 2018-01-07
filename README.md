@@ -77,7 +77,9 @@ const cssObjectLoader = path.resolve(__dirname, "node_modules/ws-angular-x/webpa
 
 // the router-loader for angular-x
 // you can conf lazy-load module by example like `{ state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" }` to create lazy router instead of use "import(......)"
-const angularXRouterLoader = path.resolve(__dirname, "node_modules/ws-angular-x/webpack/@ngtools/angularX-router-loader");
+const NgXRouterLoader = path.resolve(__dirname, "node_modules/ws-angular-x/webpack/@ngtools/angularX-router-loader");
+// you can only provider css and template's url instead of require(......) by this loader
+const NgXTemplateLoader = path.resolve(__dirname, "node_modules/ws-angular-x/webpack/@ngtools/angularX-template-loader");
 
 // prod mode .
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -149,10 +151,8 @@ entry: {
                             presets: ['stage-0', 'es2015'],
                         }
                     },
-                    {
-                        // router-loader
-                        loader: angularXRouterLoader + "?debug=false&loader=system"
-                    }
+                    { loader: NgXTemplateLoader + "?keepUrl=false" },
+                    { loader: NgXRouterLoader + "?debug=false&loader=system" }
                 ]
             },
             {
@@ -165,9 +165,8 @@ entry: {
                             transpileOnly: true
                         },
                     },
-                    {
-                        loader: angularXRouterLoader + "?debug=false&loader=system"
-                    }
+                    { loader: NgXTemplateLoader + "?keepUrl=false" },
+                    { loader: NgXRouterLoader + "?debug=false&loader=system" }
                 ]
             },
             {
