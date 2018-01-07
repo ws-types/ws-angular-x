@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./../../@angular",
+        "outDir": "./../../dist",
         "baseUrl": ".",
         "sourceMap": true,
         "declaration": true,
