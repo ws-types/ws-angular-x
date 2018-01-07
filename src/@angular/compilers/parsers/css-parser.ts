@@ -24,18 +24,18 @@ export class CssParser {
     constructor(config: ICssViewConfig) {
         this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", styles: [] };
         this.classes = this.config.styles || (!this.config.style ? [] : [this.config.style]);
-        this.classes.forEach(i => this.parsed_csses.push(parseCss(i, this.config.selector, this.type)));
+        this.classes.forEach((i, index) => this.parsed_csses.push(parseCss(i, index, this.config.selector, this.type)));
     }
 
     public Parse(): () => void {
         return () => {
-            this.parsed_csses.forEach(css => loadCss(css, this.config.selector));
+            this.parsed_csses.forEach((css, index) => loadCss(css, index, this.config.selector));
         };
     }
 
 }
 
-function parseCss(css: CssOnject, selector: string, type: ViewEncapsulation) {
+function parseCss(css: CssOnject, index: number, selector: string, type: ViewEncapsulation) {
     let attr_selector = `[${NgClassPrefix}-${selector}]`;
     if (type === ViewEncapsulation.None) {
         attr_selector = "";
@@ -59,12 +59,12 @@ function parseCss(css: CssOnject, selector: string, type: ViewEncapsulation) {
     return str;
 }
 
-function loadCss(css: string, selector: string) {
-    const styleNode = $(`[${NgClassPrefix}-${selector}-${NgClassSheet}='']`).get(0);
+function loadCss(css: string, index: number, selector: string) {
+    const styleNode = $(`[${NgClassPrefix}-${selector}-${NgClassSheet}='${index}']`).get(0);
     if (!styleNode) {
         const node = document.createElement("style");
         node.innerHTML = css;
-        $(node).attr(`${NgClassPrefix}-${selector}-${NgClassSheet}`, "");
+        $(node).attr(`${NgClassPrefix}-${selector}-${NgClassSheet}`, index);
         $("head").get(0).appendChild(node);
     }
 }

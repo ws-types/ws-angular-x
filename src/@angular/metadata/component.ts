@@ -4,11 +4,11 @@ import { CssOnject } from "./common";
 
 export interface IComponentConfig {
     selector: string;
-    template: string;
-    // templateUrl?: string;
+    template?: string;
+    templateUrl?: string;
     style?: CssOnject;
     styles?: CssOnject[];
-    // styleUrls?: string[];
+    styleUrls?: string[];
     alias?: string;
     encapsulation?: ViewEncapsulation;
 }

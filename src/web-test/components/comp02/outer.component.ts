@@ -7,9 +7,10 @@ import { Subscription } from "rxjs/Subscription";
 
 @Component({
     selector: "out-component",
-    template: require("./outer.html"),
-    styles: [
-        require("./out.scss")
+    templateUrl: "./outer.html",
+    styleUrls: [
+        "./out.scss",
+        "./out2.scss"
     ]
 })
 export class OutComponent implements OnInit, OnDestroy {

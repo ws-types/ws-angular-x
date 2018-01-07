@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader");
-const angularXRouterLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-router-loader");
+const NgXRouterLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-router-loader");
+const NgXTemplateLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-template-loader");
 
 module.exports = {
     entry: {
@@ -68,9 +69,8 @@ module.exports = {
                             presets: ['stage-0', 'es2015'],
                         }
                     },
-                    {
-                        loader: angularXRouterLoader + "?debug=false&loader=system"
-                    }
+                    { loader: NgXTemplateLoader + "?keepUrl=false" },
+                    { loader: NgXRouterLoader + "?debug=false&loader=system" }
                 ]
             },
             {
@@ -83,9 +83,8 @@ module.exports = {
                             transpileOnly: true
                         },
                     },
-                    {
-                        loader: angularXRouterLoader + "?debug=false&loader=system"
-                    }
+                    { loader: NgXTemplateLoader + "?keepUrl=false" },
+                    { loader: NgXRouterLoader + "?debug=false&loader=system" }
                 ]
             },
             {
