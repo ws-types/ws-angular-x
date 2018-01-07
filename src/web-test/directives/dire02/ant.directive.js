@@ -14,19 +14,21 @@ import { Router } from "@angular/router";
 export class AntDirective {
 
     @Input()
-    inputMeta
+    get inputMeta() { return this._input; }
+    set inputMeta(value) { this._input = value; }
 
     @Output()
-    onChanges;
+    get onChanges() { return this._onchanges; }
+    set onChanges(value) { this._onchanges = value; }
 
-    static $injector() { return [AppService, "$scope"]; }
+    static $injector() { return [AppService, "$scope", Router]; }
 
-    constructor(app, $scope) {
+    constructor(app, $scope, router) {
         this.app = app;
+        this.router = router;
         this.$scope = $scope;
-        console.log($scope);
-        // console.log(app);
-        // console.log(scope);
+        // console.log($scope);
+        // console.log(this.inputMeta);
     }
 
     ngOnInit() {

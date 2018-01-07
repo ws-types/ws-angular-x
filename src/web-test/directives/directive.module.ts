@@ -15,7 +15,7 @@ export class DirectivesModule {
 
     @Config()
     public config($httpProvider) {
-        console.log($httpProvider);
+        // console.log($httpProvider);
     }
 
 }

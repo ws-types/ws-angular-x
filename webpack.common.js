@@ -43,7 +43,8 @@ module.exports = {
         ],
         extensions: [".js", ".json", ".ts"],
         alias: {
-            "@src": path.resolve(__dirname, "src/web-test")
+            "@src": path.resolve(__dirname, "src/web-test"),
+            "@angular": path.resolve(__dirname, "src/@angular")
         },
     },
     node: {
@@ -54,12 +55,13 @@ module.exports = {
             {
                 test: /\.js$/,
                 include: [
-                    path.resolve(__dirname, "src/web-test")
+                    path.resolve(__dirname, "src/web-test"),
+                    path.resolve(__dirname, "src/@angular")
                 ],
                 loader: "babel-loader",
-                query: {
+                options: {
                     plugins: ['transform-runtime', 'transform-decorators-legacy'],
-                    presets: ['stage-0'],
+                    presets: ['stage-0', 'es2015'],
                 }
             },
             {
@@ -73,19 +75,14 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    // 'style-loader',
                     cssObjectLoader,
-                    // 'exports-loader?=module.exports.toString()',
                     'css-loader'
                 ]
             },
             {
                 test: /\.(sass|scss)$/,
                 use: [
-                    // 'style-loader',
-                    // 'exports-loader?=module.exports.toString()',
                     cssObjectLoader,
-                    // 'css-loader',
                     'sass-loader'
                 ]
             },

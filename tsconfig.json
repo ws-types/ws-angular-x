@@ -8,7 +8,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowJs": true,
-        "target": "es6",
+        "target": "es5",
         "module": "commonjs",
         "typeRoots": [
             "node_modules/@types"
@@ -19,6 +19,12 @@
             ],
             "@src/*": [
                 "src/web-test/*"
+            ],
+            "@angular": [
+                "src/@angular/index"
+            ],
+            "@angular/*": [
+                "src/@angular/*"
             ]
         },
         "lib": [

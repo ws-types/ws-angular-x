@@ -42,10 +42,18 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
             };
         }
     }
-    target.prototype.$onDestroy = target.prototype.ngOnDestroy;
-    target.prototype.$postLink = target.prototype.ngAfterViewInit;
-    target.prototype.$onChanges = target.prototype.ngChanges;
-    target.prototype.$doCheck = target.prototype.ngDoCheck;
+    if (target.prototype.ngOnDestroy) {
+        target.prototype.$onDestroy = target.prototype.ngOnDestroy;
+    }
+    if (target.prototype.ngAfterViewInit) {
+        target.prototype.$postLink = target.prototype.ngAfterViewInit;
+    }
+    if (target.prototype.ngChanges) {
+        target.prototype.$onChanges = target.prototype.ngChanges;
+    }
+    if (target.prototype.ngDoCheck) {
+        target.prototype.$doCheck = target.prototype.ngDoCheck;
+    }
     generator.Class(ComponentClass);
     return generator;
 }

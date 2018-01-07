@@ -32,13 +32,11 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
     bindPolyfill();
-    setTimeout(() => console.log(JSON.stringify(target)));
     class DirectiveClass extends target {
         public static $inject = injects;
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
-            console.log(this);
             target.prototype.$onInit = () => {
                 outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
                 if (target.prototype.ngOnInit) {
@@ -47,10 +45,18 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
             };
         }
     }
-    target.prototype.$onDestroy = target.prototype.ngOnDestroy;
-    target.prototype.$postLink = target.prototype.ngAfterViewInit;
-    target.prototype.$onChanges = target.prototype.ngChanges;
-    target.prototype.$doCheck = target.prototype.ngDoCheck;
+    if (target.prototype.ngOnDestroy) {
+        target.prototype.$onDestroy = target.prototype.ngOnDestroy;
+    }
+    if (target.prototype.ngAfterViewInit) {
+        target.prototype.$postLink = target.prototype.ngAfterViewInit;
+    }
+    if (target.prototype.ngChanges) {
+        target.prototype.$onChanges = target.prototype.ngChanges;
+    }
+    if (target.prototype.ngDoCheck) {
+        target.prototype.$doCheck = target.prototype.ngDoCheck;
+    }
     generator.Class(DirectiveClass);
     return generator;
 }

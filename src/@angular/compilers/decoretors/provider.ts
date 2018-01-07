@@ -46,8 +46,6 @@ export function parseInjectsAndDI<T extends IClass<any, ICommonController>>(targ
     const injects: (Function | string)[] = [];
     if (target.$injector) {
         injects.push(...target.$injector());
-        console.log(target.$injector);
-        console.log(injects);
     } else {
         injects.push(...(target.$inject || []));
     }
@@ -55,7 +53,7 @@ export function parseInjectsAndDI<T extends IClass<any, ICommonController>>(targ
     injects.forEach(i => INJECTS.push(typeof (i) === "string" ? i : Inject(i)));
     const argus = DI.GetArguments(target);
     const depts: string[] = [];
-    types.forEach((ctor, index) => depts.push(DI.GetKey(ctor) || (INJECTS[index] || argus[index]) || ""));
+    argus.forEach((arg, index) => depts.push(DI.GetKey(types[index]) || (INJECTS[index] || arg) || ""));
     return depts;
 }
 

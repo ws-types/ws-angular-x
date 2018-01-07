@@ -26,7 +26,7 @@ export class ReflectContainer {
     }
 
     public GetArguments(func: any): string[] {
-        return ClassMetadataParser.GetES6CtorParamsName(func);
+        return ClassMetadataParser.GetES5CtorParamsName(func);
     }
 
 }
