@@ -9,7 +9,7 @@ import { Routes } from "./../config/config";
 @Injectable("@router")
 export class Router {
 
-    public static $inject = ["$state", "$transitions"];
+    public static $inject = ["$state", "$transitions", "$location"];
 
     public get RoutesTree(): Routes {
         const rtmd: RouterModule = DI.GetValue(uirouter_stamp);
@@ -25,7 +25,7 @@ export class Router {
     private _errorsOcc = new Subject<StateDeclaration>();
     public get errors() { return this._errorsOcc; }
 
-    constructor(private state: StateService, private transitions: Transition) {
+    constructor(private state: StateService, private transitions: Transition, private $location: ng.ILocationService) {
         this.initHooks();
     }
 
@@ -41,6 +41,10 @@ export class Router {
 
     public GoTo(state: string, params?: RawParams) {
         this.state.go(state, params);
+    }
+
+    public GoToPath(path: string, params?: RawParams) {
+        this.$location.path(path).search(params);
     }
 
 }
