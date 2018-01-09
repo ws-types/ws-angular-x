@@ -1,6 +1,8 @@
 # ws-angular-x
 the new syntax of angular 1.x (1.5.8+)
 
+[![Build Status](https://travis-ci.org/ws-types/ws-angular-x.svg?branch=master)](https://travis-ci.org/ws-types/ws-angular-x)
+
 ## Break changes:
 #### 2018-01-09 [ version : 1.1.2 ] - [old : 1.1.1] :
   in Router(service), the "params" Subject is not provided anymore and the "stateChanges" Subject's type is changed. you can get each transition result { to, from, params, path} in this Subjevt's subscription.
