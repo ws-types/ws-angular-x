@@ -90,7 +90,7 @@ const NgXTemplateLoader = path.resolve(__dirname, "node_modules/ws-angular-x/web
 // prod mode .
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // a reserved list is provided.
-const allReserved = require("node_modules/ws-angular-x/webpack/@ngtools/uglify-reserved");
+const allReserved = require("ws-angular-x/webpack/@ngtools/uglify-reserved");
 
 module.exports = {
 entry: {
