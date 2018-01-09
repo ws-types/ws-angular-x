@@ -6,6 +6,13 @@ import { DI } from "./../../compilers/features/reflect";
 import { RouterModule } from "../main/module";
 import { Routes } from "./../config/config";
 
+export interface IRouteBundle {
+    from?: StateDeclaration;
+    to?: StateDeclaration;
+    params?: RawParams;
+    url?: string;
+}
+
 @Injectable("@router")
 export class Router {
 
@@ -16,13 +23,10 @@ export class Router {
         return !rtmd ? null : rtmd.routesConfig;
     }
 
-    private _params = new Subject<any>();
-    public get params() { return this._params; }
-
-    private _stateChanges = new Subject<StateDeclaration>();
+    private _stateChanges = new Subject<IRouteBundle>();
     public get stateChanges() { return this._stateChanges; }
 
-    private _errorsOcc = new Subject<StateDeclaration>();
+    private _errorsOcc = new Subject<string>();
     public get errors() { return this._errorsOcc; }
 
     constructor(private state: StateService, private transitions: Transition, private $location: ng.ILocationService) {
@@ -31,11 +35,18 @@ export class Router {
 
     private initHooks() {
         this.transitions.onSuccess({}, transitions => {
-            this._stateChanges.next(transitions.to());
-            this._params.next(transitions.params("to"));
+            this._stateChanges.next({
+                from: transitions.from(),
+                to: transitions.to(),
+                params: transitions.params("to"),
+                url: this.$location.path()
+            });
         });
         this.transitions.onError({}, transtions => {
-            this._errorsOcc.next(transtions.error());
+            const error = transtions.error();
+            if (typeof (error) === "string") {
+                this._errorsOcc.next(error);
+            }
         });
     }
 
@@ -43,8 +54,12 @@ export class Router {
         this.state.go(state, params);
     }
 
-    public GoToPath(path: string, params?: RawParams) {
-        this.$location.path(path).search(params);
+    public navigate(url: string[] | string, params?: RawParams) {
+        if (url instanceof Array) {
+            this.$location.path(url.join("/")).search(params);
+        } else {
+            this.$location.path(url).search(params);
+        }
     }
 
 }
