@@ -20,12 +20,12 @@ export class DirectiveGenerator
 
     constructor(protected config: IDirectiveConfig) {
         super(config);
-        if (!this.config.bindingToController && this.config.bindingToController !== false) {
+        if (!this.config.bindingToController || this.config.bindingToController === true) {
             this.config.bindingToController = true;
         } else {
             this.config.bindingToController = false;
         }
-        if (!this.config.isolate && this.config.isolate !== false) {
+        if (!this.config.isolate || this.config.isolate === true) {
             this.config.isolate = true;
         } else {
             this.config.isolate = false;
