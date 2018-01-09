@@ -12,7 +12,6 @@ import {
 } from "./../../metadata";
 
 import { errors } from "./../../utils/errors";
-import { DI } from "../features/reflect";
 import { Injectable } from "angular";
 
 

@@ -5,7 +5,6 @@ import {
     ComponentGenerator, Config
 } from "./../../compilers";
 import { Routes, ITreeRoute } from "./../config/config";
-import { DI } from "../../compilers/features/reflect";
 import {
     RouterRootDuplicatedError,
     RoutersConfigUndefinedError,
@@ -13,6 +12,7 @@ import {
     SubRoutesNoPathError,
     OtherwiseRoutesDefineError
 } from "./../../utils/errors";
+import { DI } from "../../di/container";
 import { Route, uirouter_stamp } from "./../config/config";
 import { Router } from "../services/router.service";
 import { StateProvider, UrlRouterProvider, Ng1StateDeclaration, LocationServices, StateRegistry } from "@uirouter/angularjs";

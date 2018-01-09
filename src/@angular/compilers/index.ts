@@ -5,5 +5,5 @@ export * from "./features/emit";
 export {
     Inject as $Inject,
     Injects as $Injects
-} from "./features/reflect";
+} from "./../di/container";
 

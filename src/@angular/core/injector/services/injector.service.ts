@@ -1,6 +1,6 @@
+import { DI } from "../../../di/container";
 import { Injectable } from "./../../../compilers";
 import { Type } from "./../../../metadata";
-import { DI } from "./../../../compilers/features/reflect";
 
 
 @Injectable("@injector")
@@ -11,10 +11,13 @@ export class InjectorService {
     constructor(private injector: ng.auto.IInjectorService) { }
 
     public Get<T>(v: Type<T> | string) {
+        let key: string;
         if (typeof (v) !== "string") {
-            v = DI.GetKey(v);
+            key = DI.GetKey(v);
+        } else {
+            key = v;
         }
-        return this.injector.has(v) ? this.injector.get(v) as T : null;
+        return this.injector.has(key) ? this.injector.get(key) as T : null;
     }
 
 }

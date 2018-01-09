@@ -4,7 +4,7 @@ import * as decamel from "decamelize";
 import { IProviderConfig, IProviderClass, IClass, ICommonController } from "./../../metadata";
 import { CreateProvider } from "../creators/provider";
 import { ParamsTypeMetaKey } from "./others";
-import { DI, Inject } from "./../features/reflect";
+import { DI, Inject } from "../../di/container";
 import { ProviderGenerator } from "./../generators";
 
 
