@@ -165,7 +165,10 @@ export class RouterHandler {
             }
             if (params.length > 0) {
                 config.params = {};
-                params.forEach(name => config.params[name] = "");
+                params.forEach(name => config.params[name] = {
+                    value: "",
+                    dynamic: true
+                });
             }
         }
         if (state instanceof StateProvider) {
