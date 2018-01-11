@@ -52,7 +52,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         target.prototype.$postLink = target.prototype.ngAfterViewInit;
     }
     if (target.prototype.ngChanges) {
-        target.prototype.$onChanges = target.prototype.ngChanges;
+        target.prototype.$onChanges = target.prototype.ngOnChanges;
     }
     if (target.prototype.ngDoCheck) {
         target.prototype.$doCheck = target.prototype.ngDoCheck;

@@ -23,7 +23,7 @@ export interface IComponentController extends ICommonController {
     $doCheck?: () => void;
     ngOnInit?(): void;
     ngAfterViewInit?(): void;
-    ngChanges?(changes: any): void;
+    ngOnChanges?(changes: any): void;
     ngOnDestroy?(): void;
     ngDoCheck?(): void;
 }

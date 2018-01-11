@@ -49,7 +49,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         target.prototype.$postLink = target.prototype.ngAfterViewInit;
     }
     if (target.prototype.ngChanges) {
-        target.prototype.$onChanges = target.prototype.ngChanges;
+        target.prototype.$onChanges = target.prototype.ngOnChanges;
     }
     if (target.prototype.ngDoCheck) {
         target.prototype.$doCheck = target.prototype.ngDoCheck;
