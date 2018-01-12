@@ -166,7 +166,7 @@ export class RouterHandler {
             if (params.length > 0) {
                 config.params = {};
                 params.forEach(name => config.params[name] = {
-                    value: "",
+                    value: null,
                     dynamic: true
                 });
             }
