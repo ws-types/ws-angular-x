@@ -5,8 +5,6 @@ import { Pipe, PipeTransform } from "@angular";
 export class FormatPipe implements PipeTransform {
 
     transform(value: string, length?: number) {
-        console.log(value);
-        console.log(length);
         if (typeof (value) !== "string") {
             return "";
         }
