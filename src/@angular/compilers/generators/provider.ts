@@ -8,14 +8,19 @@ import { SelectorParse } from "../parsers/selector-parser";
 
 export class ProviderGenerator implements IProviderGenerator {
 
-    public get Selector(): string { return SelectorParse(this.config.selector); }
+    public get Selector(): string { return this._selector; }
     public get Type() { return GeneratorType.Provider; }
 
+    private _selector: string;
     private _ctrl: IProviderClass;
 
     constructor(private config: IProviderConfig) {
-        if (!config.selector) {
-            config.selector = "service-" + uuid();
+        if (config.name) {
+            this._selector = config.name;
+        } else if (!config.selector) {
+            this._selector = SelectorParse("service-" + uuid());
+        } else {
+            this._selector = SelectorParse(config.selector);
         }
     }
 

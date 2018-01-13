@@ -27,7 +27,7 @@ export function $Injectable(config?: IProviderConfig | string) {
 
 function createExtends(config: string | IProviderConfig, target: IProviderClass) {
     const nConfig = !config ? { selector: `${decamel(target.name, "-")}-${uuid()}` } :
-        typeof (config) === "string" ? { selector: config } :
+        typeof (config) === "string" ? { name: config } :
             config;
     const generator = CreateProvider(nConfig);
     DI.Register(generator.Selector, target = registerDI(target, generator));

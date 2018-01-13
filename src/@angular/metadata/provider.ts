@@ -3,6 +3,7 @@ import { IClass, ICommenClass, ICommonController } from "./class";
 
 export interface IProviderConfig {
     selector?: string;
+    name?: string;
 }
 
 export interface IProviderBundle extends Function { }
