@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import { ViewEncapsulation } from "./../../metadata";
 
-const NgContentPrefix = "_ngcontent-v2";
+export const NgContentPrefix = "_ngcontent-v2";
 
 export interface ITemplateViewConfig {
     encapsulation?: ViewEncapsulation;
@@ -23,13 +23,15 @@ export class TemplateParser {
     }
 
     public Parse(): string {
-        return parseTemplate(this.template, this.config.selector, this.type);
+        return parseTemplate(this.template, this.config.selector, this.type) || undefined;
     }
 
 }
 
 function parseTemplate(tpl: string, selector: string, type: ViewEncapsulation) {
     if (type === ViewEncapsulation.None) {
+        return tpl;
+    } else if (!tpl) {
         return tpl;
     }
     const ngTpl = document.createElement("ng-template");

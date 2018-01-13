@@ -20,16 +20,21 @@ export class DirectiveGenerator
 
     constructor(protected config: IDirectiveConfig) {
         super(config);
-        if (!this.config.bindingToController || this.config.bindingToController === true) {
+        if ((!this.config.bindingToController && this.config.bindingToController !== false) || this.config.bindingToController) {
             this.config.bindingToController = true;
         } else {
             this.config.bindingToController = false;
         }
-        if (!this.config.isolate || this.config.isolate === true) {
+        if ((!this.config.isolate && this.config.isolate !== false) || this.config.isolate) {
             this.config.isolate = true;
         } else {
             this.config.isolate = false;
             this.config.bindingToController = false;
+        }
+        if ((!this.config.transclude && this.config.transclude !== false) || this.config.transclude) {
+            this.config.transclude = true;
+        } else {
+            this.config.transclude = false;
         }
     }
 
@@ -62,26 +67,30 @@ export class DirectiveGenerator
     public Build(): IDirectiveBundle {
         const directive: IDirectiveBundle = () => {
             return {
-                scope: this.config.isolate ? this._bindings : true,
+                scope: this.config.isolate ? this._bindings : undefined,
                 bindToController: this.config.bindingToController,
                 restrict: this.config.restrict || "E",
                 template: this._tpl.Parse(),
                 controller: this._ctrl,
                 controllerAs: this.config.alias || "vm",
                 replace: this.config.replace || false,
-                transclude: true,
-                link: (scope, attr, element, controller) => {
+                transclude: this.config.transclude,
+                link: (scope, element, attrs, controller) => {
                     if (this.onMaps) {
                         Object.keys(this.onMaps).forEach(name => {
+                            if (name === "ngxParse") {
+                                this.onMaps[name](scope, element, attrs, controller);
+                                return;
+                            }
                             scope.$on("$" + name, () => {
-                                this.onMaps[name](scope, attr, element, controller);
+                                this.onMaps[name](scope, element, attrs, controller);
                             });
                         });
                     }
                     if (this.watchMaps) {
                         Object.keys(this.watchMaps).forEach(name => {
                             scope.$watch((this.config.bindingToController ? `${this.config.alias || "vm"}.` : "") + name, () => {
-                                this.watchMaps[name](scope, attr, element, controller);
+                                this.watchMaps[name](scope, element, attrs, controller);
                             });
                         });
                     }

@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from "@angular/core/animations";
 import { Routes, RouterModule, Router } from "@angular/router";
 import { FirstComponent } from "@src/root.component";
 import { FormatPipe } from "@src/pipes/format/fmt.pipe";
+import { CommonModule } from "@angular/common";
 
 const rootRoutes: Routes = [
     { state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" },
@@ -20,6 +21,7 @@ const rootRoutes: Routes = [
 @NgModule({
     imports: [
         InjectorModule,
+        CommonModule,
         RouterModule.forRoot(rootRoutes),
         BrowserAnimationsModule,
         ComponentsModule,
