@@ -4,12 +4,7 @@ the new syntax of angular 1.x (1.5.8+)
 [![Build Status](https://travis-ci.org/ws-types/ws-angular-x.svg?branch=master)](https://travis-ci.org/ws-types/ws-angular-x)
 
 ## Break changes:
-#### 2018-01-13 [version:1.1.6] - [old: 1.1.5] : 
-  default provider name now is changes. selector will not be set in if you pass a string into Injectable decorator, it will set into "name" of the config, and the format should be camel, which is used to be registerd in the module.
-  
-  example :  if you create a service like this "@Injectable("mockService")", the name of this service is "mockService". But if you do like this : "@Injectable("mock-service")", the name will not be changed into "mockService" anymore. 
-#### 2018-01-09 [ version : 1.1.2 ] - [old : 1.1.1] :
-  in Router(service), the "params" Subject is not provided anymore and the "stateChanges" Subject's type is changed. you can get each transition result { to, from, params, path} in this Subjevt's subscription.
+#### more changes and updates are here in wiki: [Go to wiki](https://github.com/ws-types/ws-angular-x/wiki/Update-logs)
 
 ## NOTES:
 ### 1. All code are built in ES5(commonjs) mode, if you're using a higher version, please use babel-loader;
