@@ -68,7 +68,7 @@ export class DirectiveGenerator
                 template: this._tpl.Parse(),
                 controller: this._ctrl,
                 controllerAs: this.config.alias || "vm",
-                replace: false,
+                replace: this.config.replace || false,
                 transclude: true,
                 link: (scope, attr, element, controller) => {
                     if (this.onMaps) {

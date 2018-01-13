@@ -7,6 +7,7 @@ export interface IDirectiveConfig extends IComponentConfig {
     isolate?: boolean;
     restrict?: string;
     alias?: string;
+    replace?: boolean;
     bindingToController?: boolean;
 }
 

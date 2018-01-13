@@ -39,6 +39,11 @@ function parseTemplate(tpl: string, selector: string, type: ViewEncapsulation) {
 }
 
 function parseNode(element: HTMLElement, selector: string) {
-    $(element).attr(`${NgContentPrefix}-${selector}`, "");
-    $(element).children().each((index, ele) => parseNode(ele, selector));
+    const eleRoot = $(element);
+    eleRoot.attr(`${NgContentPrefix}-${selector}`, "");
+    const childPayload = eleRoot.attr("ngx-child");
+    if (childPayload === "") {
+        eleRoot.attr("ngx-child", element.tagName.toLowerCase());
+    }
+    eleRoot.children().each((index, ele) => parseNode(ele, selector));
 }

@@ -5,6 +5,9 @@ import { CssOnject } from "./../../metadata";
 const NgClassPrefix = "_ngcontent-v2";
 const NgClassSheet = "stylesheet";
 
+const ngCover = /^::ng[x]?-cover( [^#]{1}[^\s]+)?\s/;
+const ngGlobal = /\s::ng[x]?-global/;
+
 export interface ICssViewConfig {
     encapsulation?: ViewEncapsulation;
     selector: string;
@@ -36,24 +39,27 @@ export class CssParser {
 }
 
 function parseCss(css: CssOnject, index: number, selector: string, type: ViewEncapsulation) {
-    let attr_selector = `[${NgClassPrefix}-${selector}]`;
-    if (type === ViewEncapsulation.None) {
-        attr_selector = "";
-    }
+    const attr_selector = `[${NgClassPrefix}-${selector}]`;
     const maps = Object.keys(css);
     let str = "";
     maps.forEach(key => {
         let item = `${key}${attr_selector} {`;
-        if (key.includes(" ::ng-global")) {
-            item = `${key.replace(" ::ng-global", "")} {`;
+        let important = false;
+        if (type === ViewEncapsulation.None) {
+            item = `${key} {`;
+        } else if (ngGlobal.test(key)) {
+            item = `${key.replace(ngGlobal, "").replace(ngCover, "")} {`;
+        } else if (ngCover.test(key)) {
+            item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$1.trim()}"] ` : `${selector} `)} {`;
+            important = true;
         }
         const content = css[key];
         const subKeys = Object.keys(content);
         subKeys.forEach(i => {
             const value = content[i];
-            item += `${i}:${value};`;
+            item += `${i}:${value}${important ? " !important" : ""};`;
         });
-        item += "}";
+        item += "} ";
         str += item;
     });
     return str;
