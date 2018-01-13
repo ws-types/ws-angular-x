@@ -8,6 +8,7 @@ import { InjectorModule, InjectorService } from "@angular/core/injector";
 import { BrowserAnimationsModule } from "@angular/core/animations";
 import { Routes, RouterModule, Router } from "@angular/router";
 import { FirstComponent } from "@src/root.component";
+import { FormatPipe } from "@src/pipes/format/fmt.pipe";
 
 const rootRoutes: Routes = [
     { state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" },
@@ -25,7 +26,8 @@ const rootRoutes: Routes = [
         DirectivesModule
     ],
     declarations: [
-        FirstComponent
+        FirstComponent,
+        FormatPipe
     ],
     providers: [
         AppService,

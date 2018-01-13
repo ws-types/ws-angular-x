@@ -1,14 +1,19 @@
-import { IDirectiveGenerator, IComponentGenerator, IModuleGenerator, IProviderGenerator } from "./generator";
+import {
+    IDirectiveGenerator, IComponentGenerator, IModuleGenerator,
+    IProviderGenerator, IPipeGenerator
+} from "./generator";
 import { IClass, ICommonController } from "./class";
 import { IDirectiveClass } from "./directive";
 import { IComponentClass } from "./component";
 import { IProviderClass } from "./provider";
+import { IPipeClass } from "./pipe";
 
 export type Ng2Module = IModuleClass | IModuleGenerator;
 export type Ng2Provider = IProviderGenerator | IProviderClass;
 export type Ng2Component = IComponentGenerator | IComponentClass;
 export type Ng2Directive = IDirectiveClass | IDirectiveGenerator;
-export type Ng2Declaration = Ng2Component | Ng2Directive;
+export type Ng2Pipe = IPipeClass | IPipeGenerator;
+export type Ng2Declaration = Ng2Component | Ng2Directive | Ng2Pipe;
 
 export interface IModuleConfig {
     selector?: string;

@@ -2,7 +2,10 @@ import * as angular from "angular";
 import * as uuid from "uuid/v4";
 
 import { SelectorParse } from "../parsers/selector-parser";
-import { IModuleConfig, IModuleBundle, IModulePayload } from "./../../metadata";
+import {
+    IModuleConfig, IModuleBundle,
+    IModulePayload, IPipeGenerator, Ng2Pipe
+} from "./../../metadata";
 
 import {
     IGenerator, IDirectiveGenerator, IModuleGenerator,
@@ -25,6 +28,7 @@ export class ModuleGenerator implements IModuleGenerator {
     private _components: IComponentGenerator[];
     private _directives: IDirectiveGenerator[];
     private _providers: IProviderGenerator[];
+    private _pipes: IPipeGenerator[];
     private _imports: IModuleGenerator[];
 
     private _configs: Injectable<Function>[] = [];
@@ -53,6 +57,7 @@ export class ModuleGenerator implements IModuleGenerator {
         this._imports = parseElements(parseModulePayload(config, this));
         this._components = parseElements(<Ng2Component[]>config.declarations, GeneratorType.Component);
         this._directives = parseElements(<Ng2Directive[]>config.declarations, GeneratorType.Directive);
+        this._pipes = parseElements(<Ng2Pipe[]>config.declarations, GeneratorType.Pipe);
         this._providers = parseElements(config.providers);
     }
 
@@ -102,6 +107,17 @@ export class ModuleGenerator implements IModuleGenerator {
         return this;
     }
 
+    public Pipe<T>(grt: IPipeGenerator) {
+        if (this._isOldMd) {
+            throw errors.OldModuleActions();
+        }
+        if (this._pipes.findIndex(i => i.Selector === grt.Selector) >= 0) {
+            throw errors.DeclarationExist(grt.Selector);
+        }
+        this._pipes.push(grt);
+        return this;
+    }
+
     public Class(ctrl: IModuleClass) {
         if (this._isOldMd) {
             throw errors.OldModuleActions();
@@ -141,6 +157,9 @@ export class ModuleGenerator implements IModuleGenerator {
         if (this._components && this._components.length > 0) {
             this._components.forEach(component => module.component(component.Selector, component.Build()));
         }
+        if (this._pipes && this._pipes.length > 0) {
+            this._pipes.forEach(pipe => module.filter(pipe.Selector, pipe.Build()));
+        }
         if (this._providers && this._providers.length > 0) {
             this._providers.forEach(provider => module.service(provider.Selector, provider.Build()));
         }
@@ -155,11 +174,6 @@ export class ModuleGenerator implements IModuleGenerator {
 
 
     private moduleConstructions() {
-        // const injects: string[] = this.Controller.prototype.$inject || [];
-        // const params: any[] = [];
-        // console.log(DI.Providers);
-        // injects.forEach(key => params.push(DI.GetValue(key)));
-        // console.log(params);
         const instance = new (this.Controller)();
         return instance;
     }
