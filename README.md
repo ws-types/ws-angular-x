@@ -7,9 +7,9 @@ the new syntax of angular 1.x (1.5.8+)
 #### more changes and updates are here in wiki: [Go to wiki](https://github.com/ws-types/ws-angular-x/wiki/Update-logs)
 
 ## NOTES:
-### 1. All code are built in ES5(commonjs) mode, if you're using a higher version, please use babel-loader;
-### 2. Anyway, better not run this code in the ES3 environment if you work with javascript, try ES6/ES5 or babel-loader.
-### 3. If running in the prod mode ,conf the UglifyJS to ignore mangle options because the injection service of angular1.x will breaks by uglify. Keep mangle off or try to provide a reserved arr list to prevent uglify breaks the constructor's params name. I'll provide all the injections need later if possible. (now you can use the reserved list in "./webpack/@ngtools/uglify-reserved/index.js", all the angular and ui-router's injection-services will work well with uglifyjs.)
+#### 1. All code are built in ES5(commonjs) mode, if you're using a higher version, please use babel-loader;
+#### 2. Anyway, better not run this code in the ES3 environment if you work with javascript, try ES6/ES5 or babel-loader.
+#### 3. If running in the prod mode ,conf the UglifyJS to ignore mangle options because the injection service of angular1.x will breaks by uglify. Keep mangle off or try to provide a reserved arr list to prevent uglify breaks the constructor's params name. I'll provide all the injections need later if possible. (now you can use the reserved list in "./webpack/@ngtools/uglify-reserved/index.js", all the angular and ui-router's injection-services will work well with uglifyjs.)
 
 ## 1. Module in Declaration
 
