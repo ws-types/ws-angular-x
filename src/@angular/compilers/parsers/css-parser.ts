@@ -5,7 +5,7 @@ import { CssOnject } from "./../../metadata";
 const NgClassPrefix = "_ngcontent-v2";
 const NgClassSheet = "stylesheet";
 
-const ngCover = /^::ng[x]?-cover( [^#]{1}[^\s]+)?\s/;
+const ngCover = /^::ng[x]?-cover(\[([^\s]+)\])?\s/;
 const ngGlobal = /\s::ng[x]?-global/;
 
 export interface ICssViewConfig {
@@ -50,7 +50,7 @@ function parseCss(css: CssOnject, index: number, selector: string, type: ViewEnc
         } else if (ngGlobal.test(key)) {
             item = `${key.replace(ngGlobal, "").replace(ngCover, "")} {`;
         } else if (ngCover.test(key)) {
-            item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$1.trim()}"] ` : `${selector} `)} {`;
+            item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$2}"] ` : `${selector} `)} {`;
             important = true;
         }
         const content = css[key];

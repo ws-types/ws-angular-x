@@ -3,6 +3,8 @@ the new syntax of angular 1.x (1.5.8+)
 
 [![Build Status](https://travis-ci.org/ws-types/ws-angular-x.svg?branch=master)](https://travis-ci.org/ws-types/ws-angular-x)
 
+### [Learn more about ws-angular-x](https://github.com/ws-types/ws-angular-x/wiki)
+
 ## Break changes:
 #### more changes and updates are here in wiki: [Go to wiki](https://github.com/ws-types/ws-angular-x/wiki/Update-logs)
 
