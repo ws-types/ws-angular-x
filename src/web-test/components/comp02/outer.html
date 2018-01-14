@@ -1,9 +1,10 @@
+<!--[$ngxCtrl:vm]-->
 <div class="new-back new-color">
     <div class="mmsshh">OUTER - {{vm.output}} - {{vm.direShow}}</div>
     <!-- <div style="padding:8px;" ng-transclude></div> -->
-    <button ng-click="vm.changeChild()">Change</button>
-    <button ng-click="vm.changeDirective()">Show Directive?</button>
-    <new-component ngx-child="miao17game" ngx-expose ng-if="vm.show01" meta-test="aaa" meta-number="vm.data.number" on-key-fuck="vm.onKeyFuck($event)"></new-component>
-    <new-component ngx-child ng-if="!vm.show01" meta-test="bbb" meta-number="vm.data.number" on-key-fuck="vm.onKeyFuck($event)"></new-component>
-    <div ng-if="vm.showDirective" new-directive input-meta="vm.data.input" on-changes="vm.directiveChanges($event)"></div>
+    <button (click)="changeChild()">Change</button>
+    <button (click)="changeDirective()">Show Directive?</button>
+    <new-component ngx-child="miao17game" ng-expose *ngIf="show01" meta-test="aaa" meta-number="vm.data.number" on-key-fuck="vm.onKeyFuck($event)"></new-component>
+    <new-component ngx-child *ngIf="!show01" [metaTest]=" 'bbb' " [metaNumber]="data.number" (onKeyFuck)="onKeyFuck($event)"></new-component>
+    <div ng-if="vm.showDirective" new-directive input-meta="vm.data.input" (onChanges)="directiveChanges($event)"></div>
 </div>

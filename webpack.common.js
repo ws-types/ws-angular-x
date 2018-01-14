@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-loader");
+const NgXHtmlLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-html-loader");
 const NgXRouterLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-router-loader");
 const NgXTemplateLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-template-loader");
 
@@ -118,7 +119,8 @@ module.exports = {
                 include: [path.resolve(__dirname, "src/web-test")],
                 test: /\.html$/,
                 use: [
-                    "html-loader"
+                    "html-loader",
+                    NgXHtmlLoader + "?ctrl=$"
                 ]
             }
         ]
