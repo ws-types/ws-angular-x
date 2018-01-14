@@ -47,6 +47,7 @@ export class ComponentGenerator
 
     public get Type() { return GeneratorType.Component; }
     public get StylesLoad(): Function { return this._css.Parse(); }
+    public get StylesUnload(): Function { return this._css.Dispose(); }
 
     protected _ctrl: IComponentClass;
     protected _tpl: TemplateParser;

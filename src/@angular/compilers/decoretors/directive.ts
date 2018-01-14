@@ -43,6 +43,12 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
                     target.prototype.ngOnInit.bind(this)();
                 }
             };
+            target.prototype.$onDestroy = () => {
+                generator.StylesUnload();
+                if (target.prototype.ngOnDestroy) {
+                    target.prototype.ngOnDestroy.bind(this)();
+                }
+            };
         }
     }
     if (target.prototype.ngOnDestroy) {

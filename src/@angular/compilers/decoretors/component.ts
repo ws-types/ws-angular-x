@@ -40,10 +40,13 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
                     target.prototype.ngOnInit.bind(this)();
                 }
             };
+            target.prototype.$onDestroy = () => {
+                generator.StylesUnload();
+                if (target.prototype.ngOnDestroy) {
+                    target.prototype.ngOnDestroy.bind(this)();
+                }
+            };
         }
-    }
-    if (target.prototype.ngOnDestroy) {
-        target.prototype.$onDestroy = target.prototype.ngOnDestroy;
     }
     if (target.prototype.ngAfterViewInit) {
         target.prototype.$postLink = target.prototype.ngAfterViewInit;

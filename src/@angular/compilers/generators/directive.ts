@@ -14,6 +14,7 @@ export class DirectiveGenerator
 
     public get Type() { return GeneratorType.Directive; }
     public get StylesLoad(): Function { return this._css.Parse(); }
+    public get StylesUnload(): Function { return this._css.Dispose(); }
 
     public onMaps: { [methodName: string]: (...params: any[]) => void } = {};
     public watchMaps: { [methodName: string]: (...params: any[]) => void } = {};

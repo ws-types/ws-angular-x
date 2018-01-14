@@ -21,10 +21,12 @@ export interface IGenerator<T> {
 
 export interface IComponentGenerator extends IGenerator<IComponentBundle> {
     StylesLoad?: Function;
+    StylesUnload?: Function;
 }
 
 export interface IDirectiveGenerator extends IGenerator<IDirectiveBundle> {
     StylesLoad?: Function;
+    StylesUnload?: Function;
 }
 
 export interface IProviderGenerator extends IGenerator<IProviderBundle> { }

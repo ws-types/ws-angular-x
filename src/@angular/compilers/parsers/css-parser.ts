@@ -36,6 +36,12 @@ export class CssParser {
         };
     }
 
+    public Dispose(): () => void {
+        return () => {
+            this.parsed_csses.forEach((css, index) => unloadCss(index, this.config.selector));
+        };
+    }
+
 }
 
 function parseCss(css: CssOnject, index: number, selector: string, type: ViewEncapsulation) {
@@ -71,7 +77,24 @@ function loadCss(css: string, index: number, selector: string) {
         const node = document.createElement("style");
         node.innerHTML = css;
         $(node).attr(`${NgClassPrefix}-${selector}-${NgClassSheet}`, index);
+        $(node).attr(`_ngcount`, 1);
         $("head").get(0).appendChild(node);
+    } else {
+        $(styleNode).attr(`_ngcount`, parseInt($(styleNode).attr("_ngcount"), 10) + 1);
     }
+}
+
+function unloadCss(index: number, selector: string) {
+    setTimeout(() => {
+        const styleNode = $(`[${NgClassPrefix}-${selector}-${NgClassSheet}='${index}']`).get(0);
+        if (styleNode) {
+            const nowCount = parseInt($(styleNode).attr("_ngcount"), 10);
+            if (nowCount > 1) {
+                $(styleNode).attr(`_ngcount`, nowCount - 1);
+            } else {
+                $("head").get(0).removeChild(styleNode);
+            }
+        }
+    });
 }
 
