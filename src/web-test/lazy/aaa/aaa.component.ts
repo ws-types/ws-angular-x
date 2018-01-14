@@ -1,4 +1,4 @@
-import { Component } from "@angular";
+import { Component, OnDestroy } from "@angular";
 
 
 @Component({
@@ -6,6 +6,10 @@ import { Component } from "@angular";
     template: `<div>AAAAAAAAAAAAAA<new-component></new-component></div>`,
     styles: []
 })
-export class LazyAComponent {
+export class LazyAComponent implements OnDestroy {
+
+    ngOnDestroy(): void {
+        console.log(this);
+    }
 
 }
