@@ -1,4 +1,5 @@
 import * as decamelize from "decamelize";
+import * as angular from "angular";
 import { ViewEncapsulation } from "../../metadata/enums";
 import { Directive } from "../../compilers/decoretors/directive";
 import { On, Input } from "../../compilers";
@@ -31,11 +32,11 @@ export class NgxExposeDirective implements AfterViewInit {
 }
 
 function parseTemplate(ele: JQuery<HTMLElement>, selector: string) {
-    ele.children().each((index, element) => parseNode(element, selector));
+    angular.forEach(ele.children(), (element, index) => parseNode(element, selector));
 }
 
 function parseNode(element: HTMLElement, selector: string) {
-    const eleRoot = $(element);
+    const eleRoot = angular.element(element);
     eleRoot.attr(selector, "");
-    eleRoot.children().each((index, ele) => parseNode(ele, selector));
+    angular.forEach(eleRoot.children(), (ele, index) => parseNode(ele, selector));
 }

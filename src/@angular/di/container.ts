@@ -6,16 +6,13 @@ export class ReflectContainer {
 
     public get Providers() { return this.__providers; }
 
-    // private _providers: { [key: string]: any; };
     private __providers: [string, any][];
 
     constructor() {
-        // this._providers = {};
         this.__providers = [];
     }
 
     public Register(key: string, value: any) {
-        // this._providers[key] = value;
         if (this.__providers.findIndex(([k, v]) => k === key) < 0) {
             this.__providers.push([key, value]);
         } else {

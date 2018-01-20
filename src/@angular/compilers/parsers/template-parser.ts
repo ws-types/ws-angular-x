@@ -1,6 +1,7 @@
-import * as $ from "jquery";
+import * as angular from "angular";
 import { ViewEncapsulation } from "./../../metadata";
 
+const $A = angular.element;
 export const NgContentPrefix = "_ngcontent-v2";
 
 export interface ITemplateViewConfig {
@@ -36,16 +37,16 @@ function parseTemplate(tpl: string, selector: string, type: ViewEncapsulation) {
     }
     const ngTpl = document.createElement("ng-template");
     ngTpl.innerHTML = tpl;
-    $(ngTpl).children().each((index, element) => parseNode(element, selector));
+    angular.forEach($A(ngTpl).children(), (element, index) => parseNode(element, selector));
     return ngTpl.innerHTML;
 }
 
 function parseNode(element: HTMLElement, selector: string) {
-    const eleRoot = $(element);
+    const eleRoot = $A(element);
     eleRoot.attr(`${NgContentPrefix}-${selector}`, "");
     const childPayload = eleRoot.attr("ngx-child");
     if (childPayload === "") {
         eleRoot.attr("ngx-child", element.tagName.toLowerCase());
     }
-    eleRoot.children().each((index, ele) => parseNode(ele, selector));
+    angular.forEach(eleRoot.children(), (ele, index) => parseNode(ele, selector));
 }

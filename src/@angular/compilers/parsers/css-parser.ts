@@ -1,8 +1,11 @@
-import * as $ from "jquery";
+import * as angular from "angular";
 import { ViewEncapsulation } from "./../../metadata/enums";
 import { CssOnject } from "./../../metadata";
+import { NgContentPrefix } from "./template-parser";
 
-const NgClassPrefix = "_ngcontent-v2";
+const $A = angular.element;
+
+const NgClassPrefix = NgContentPrefix;
 const NgClassSheet = "stylesheet";
 
 const ngCover = /^::ng[x]?-cover(\[([^\s]+)\])?\s/;
@@ -72,27 +75,27 @@ function parseCss(css: CssOnject, index: number, selector: string, type: ViewEnc
 }
 
 function loadCss(css: string, index: number, selector: string) {
-    const styleNode = $(`[${NgClassPrefix}-${selector}-${NgClassSheet}='${index}']`).get(0);
+    const styleNode = $A(document.querySelector(`[${NgClassPrefix}-${selector}-${NgClassSheet}='${index}']`))[0];
     if (!styleNode) {
         const node = document.createElement("style");
         node.innerHTML = css;
-        $(node).attr(`${NgClassPrefix}-${selector}-${NgClassSheet}`, index);
-        $(node).attr(`_ngcount`, 1);
-        $("head").get(0).appendChild(node);
+        $A(node).attr(`${NgClassPrefix}-${selector}-${NgClassSheet}`, index);
+        $A(node).attr(`_ngcount`, 1);
+        document.getElementsByTagName("head")[0].appendChild(node);
     } else {
-        $(styleNode).attr(`_ngcount`, parseInt($(styleNode).attr("_ngcount"), 10) + 1);
+        $A(styleNode).attr(`_ngcount`, parseInt($A(styleNode).attr("_ngcount"), 10) + 1);
     }
 }
 
 function unloadCss(index: number, selector: string) {
     setTimeout(() => {
-        const styleNode = $(`[${NgClassPrefix}-${selector}-${NgClassSheet}='${index}']`).get(0);
+        const styleNode = $A(document.querySelector(`[${NgClassPrefix}-${selector}-${NgClassSheet}='${index}']`))[0];
         if (styleNode) {
-            const nowCount = parseInt($(styleNode).attr("_ngcount"), 10);
+            const nowCount = parseInt($A(styleNode).attr("_ngcount"), 10);
             if (nowCount > 1) {
-                $(styleNode).attr(`_ngcount`, nowCount - 1);
+                $A(styleNode).attr(`_ngcount`, nowCount - 1);
             } else {
-                $("head").get(0).removeChild(styleNode);
+                document.getElementsByTagName("head")[0].removeChild(styleNode);
             }
         }
     });

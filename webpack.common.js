@@ -12,8 +12,6 @@ module.exports = {
     entry: {
         vendor: [
             "angular",
-            "bootstrap",
-            "jquery",
             "angular-animate",
             "@uirouter/angularjs",
             "oclazyload",
@@ -33,11 +31,6 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             chunks: ['index']
-        }),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: 'jquery',
-            "window.jQuery": "jquery"
         })
     ],
     resolve: {

@@ -38,7 +38,7 @@ export class OutComponent implements OnInit, OnDestroy {
 
     constructor(private app, private scope, private router: Router) {
         this.routerSubp = router.stateChanges.subscribe(state => {
-            console.log(state.to.name);
+            // console.log(state.to.name);
         });
     }
 
