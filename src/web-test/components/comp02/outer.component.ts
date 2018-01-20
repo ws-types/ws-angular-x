@@ -22,6 +22,10 @@ export class OutComponent implements OnInit, OnDestroy {
         number: 123456
     };
 
+    public Lists = ["aaa", "bbb", "ccc"];
+
+    public message = "MESSAGE_AAAA";
+
     public show01 = true;
 
     public showDirective = true;

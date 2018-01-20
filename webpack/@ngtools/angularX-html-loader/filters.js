@@ -62,7 +62,7 @@ const ngSpecial = [
     ["\\*ngIf", "ng-if"],
     ["\\*ngShow", "ng-show"],
     ["\\*ngSwitch", "ng-switch"],
-    ["[(ngModel)]", "ng-model"],
+    ["\\[\\(ngModel\\)\\]", "ng-model"],
 ];
 
 module.exports = {
