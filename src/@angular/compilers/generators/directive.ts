@@ -78,7 +78,7 @@ export class DirectiveGenerator
                 link: (scope, element, attrs, controller) => {
                     if (this.onMaps) {
                         Object.keys(this.onMaps).forEach(name => {
-                            if (name === "ngxParse") {
+                            if (name === "ngxParse" || name === "init") {
                                 this.onMaps[name](scope, element, attrs, controller);
                                 return;
                             }

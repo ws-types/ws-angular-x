@@ -3,6 +3,7 @@ import { ViewEncapsulation } from "../../metadata/enums";
 import { Directive } from "../../compilers/decoretors/directive";
 import { On, Input } from "../../compilers";
 import { NgContentPrefix } from "../../compilers/parsers/template-parser";
+import { AfterViewInit } from "../../metadata/life-cycles";
 
 @Directive({
     selector: "ngx-expose",
@@ -11,12 +12,20 @@ import { NgContentPrefix } from "../../compilers/parsers/template-parser";
     transclude: false,
     bindingToController: false,
 })
-export class NgxExposeDirective {
+export class NgxExposeDirective implements AfterViewInit {
 
-    @On("ngxParse")
-    public onParsed(scope, element: JQuery<HTMLElement>, attrs, ctrl) {
-        const stamp = Object.keys(attrs).find(i => i.includes("ngcontentV2"));
-        parseTemplate(element, decamelize(stamp.replace("ngcontentV2", ""), "-"));
+    constructor(private $element: JQuery<HTMLElement>) {
+
+    }
+
+    ngAfterViewInit(): void {
+        const attributes = this.$element[0].attributes;
+        const attrs: Array<{ localName: string }> = [];
+        Object.keys(attributes).forEach(key => attrs.push(attributes[key]));
+        const lead = attrs.map(i => i.localName).find(i => i.includes(NgContentPrefix));
+        if (lead) {
+            parseTemplate(this.$element, lead);
+        }
     }
 
 }
@@ -27,6 +36,6 @@ function parseTemplate(ele: JQuery<HTMLElement>, selector: string) {
 
 function parseNode(element: HTMLElement, selector: string) {
     const eleRoot = $(element);
-    eleRoot.attr(`${NgContentPrefix}-${selector}`, "");
+    eleRoot.attr(selector, "");
     eleRoot.children().each((index, ele) => parseNode(ele, selector));
 }

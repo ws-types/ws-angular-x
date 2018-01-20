@@ -1,4 +1,4 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive, AfterViewInit } from "@angular";
 import { AppService } from "@src/services/app.service";
 
 
@@ -10,9 +10,7 @@ import { AppService } from "@src/services/app.service";
         require("./new.scss")
     ]
 })
-export class NewDirective implements OnInit, OnDestroy {
-
-    public static $inject = [AppService, "$scope"];
+export class NewDirective implements OnInit, OnDestroy, AfterViewInit {
 
     @Input()
     private inputMeta: string;
@@ -20,9 +18,10 @@ export class NewDirective implements OnInit, OnDestroy {
     @Output()
     private onChanges: EventEmitter<string>;
 
-    constructor(private app, private scope) {
+    constructor(private app: AppService, private $scope, private $element: JQuery<HTMLElement>) {
         // console.log(app);
-        // console.log(scope);
+        // console.log($scope);
+        // console.log($element);
     }
 
     ngOnInit(): void {
@@ -33,13 +32,22 @@ export class NewDirective implements OnInit, OnDestroy {
         // console.log("directive destroyed");
     }
 
+    ngAfterViewInit(): void {
+
+    }
+
+    @On("init")
+    public init(scope, ele, attr, ctrl) {
+        // console.log(attr);
+    }
+
     @On("destroy")
-    public destroy(scope, attr, ele, ctrl) {
+    public destroy(scope, ele, attr, ctrl) {
         // console.log("directive destroyed");
     }
 
     @Watch("inputMeta")
-    public watchInputMeta(scope, attr, ele, ctrl) {
+    public watchInputMeta(scope, ele, attr, ctrl) {
         // console.log("inputMeta changes");
     }
 

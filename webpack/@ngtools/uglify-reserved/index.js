@@ -33,6 +33,7 @@ module.exports = {
         "$controller",
         "$document",
         "$exceptionHandler",
+        "$element",
         "$filter",
         "$http",
         "$httpBackend",
