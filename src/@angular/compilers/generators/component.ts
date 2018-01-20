@@ -28,8 +28,8 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
         return this;
     }
 
-    public Input(key: string, isObject = true) {
-        this._bindings[key] = isObject ? "<" : "@";
+    public Input(key: string, isString = false) {
+        this._bindings[key] = !isString ? "<" : "@";
         return this;
     }
 

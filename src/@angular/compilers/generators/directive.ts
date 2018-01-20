@@ -39,11 +39,11 @@ export class DirectiveGenerator
         }
     }
 
-    public Input(key: string, isObject = true) {
+    public Input(key: string, isString = false) {
         if (!this.config.isolate) {
             throw UnisolateScopeBindingError();
         }
-        this._bindings[key] = isObject ? "=" : "@";
+        this._bindings[key] = !isString ? "=" : "@";
         return this;
     }
 
@@ -67,8 +67,7 @@ export class DirectiveGenerator
 
     public Build(): IDirectiveBundle {
         const directive: IDirectiveBundle = () => {
-            return {
-                scope: this.config.isolate ? this._bindings : undefined,
+            const direc: ng.IDirective<any> = {
                 bindToController: this.config.bindingToController,
                 restrict: this.config.restrict || "E",
                 template: this._tpl.Parse(),
@@ -97,6 +96,10 @@ export class DirectiveGenerator
                     }
                 }
             };
+            if (this.config.isolate) {
+                direc.scope = this._bindings;
+            }
+            return direc;
         };
         return directive;
     }

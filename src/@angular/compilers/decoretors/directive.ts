@@ -79,7 +79,7 @@ function parseIOProperties(proto: any, generator: DirectiveGenerator) {
             switch (key) {
                 case InputMetaKey:
                     const input = prop as IInputProperty;
-                    generator.Input(input.keyName, !input.isString);
+                    generator.Input(input.keyName, input.isString);
                     break;
                 case OutputMetaKey:
                     generator.Output(prop);

@@ -72,7 +72,7 @@ function parseIOProperties(proto: any, generator: ComponentGenerator) {
         (Reflect.getMetadata(key, proto) as any[]).forEach(prop => {
             if (key === InputMetaKey) {
                 const input = prop as IInputProperty;
-                generator.Input(input.keyName, !input.isString);
+                generator.Input(input.keyName, input.isString);
             } else if (key === OutputMetaKey) {
                 generator.Output(prop);
                 outputs.push(prop);
