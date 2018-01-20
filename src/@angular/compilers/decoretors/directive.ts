@@ -51,9 +51,6 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
             };
         }
     }
-    if (target.prototype.ngOnDestroy) {
-        target.prototype.$onDestroy = target.prototype.ngOnDestroy;
-    }
     if (target.prototype.ngAfterViewInit) {
         target.prototype.$postLink = target.prototype.ngAfterViewInit;
     }
