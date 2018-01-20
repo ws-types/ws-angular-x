@@ -1,5 +1,4 @@
 import * as angular from "angular";
-import * as $ from "jquery";
 
 import { Ng2Module, IModuleClass, IModuleGenerator } from "./../metadata";
 
@@ -18,7 +17,7 @@ export function browserDynamic(selector = "html") {
                 }
                 deps.push(generator.Build().name);
             }
-            angular.bootstrap($(selector), deps);
+            angular.bootstrap(angular.element(document.getElementsByTagName(selector)), deps);
         }
     };
 }

@@ -31,7 +31,12 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             chunks: ['index']
-        })
+        }),
+        new webpack.ProvidePlugin({
+            "$": "jquery",
+            "jQuery": "jquery",
+            "window.jQuery": "jquery"
+        }),
     ],
     resolve: {
         modules: [
