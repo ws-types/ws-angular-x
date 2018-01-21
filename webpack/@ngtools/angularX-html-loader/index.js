@@ -55,7 +55,7 @@ module.exports = function (content) {
     const regexBindings = />\s*{{{([^}<>]+)}}}\s*</;
     while (regexBindings.test(content)) {
         const value = RegExp.$1;
-        console.log(`>{{${ctrl}${value}}}<`);
+        // console.log(`>{{${ctrl}${value}}}<`);
         content = content.replace(regexBindings, `>{{${ctrl}${value}}}<`);
     }
 
