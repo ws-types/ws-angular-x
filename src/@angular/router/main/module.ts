@@ -37,7 +37,9 @@ export class RouterModule {
 
     private mainRouters: Routes;
     private childRouters: Routes = [];
-    public routesConfig: ITreeRoute[];
+
+    private _routesConfig: ITreeRoute[];
+    public get RoutesList() { return this._routesConfig; }
 
     constructor() {
         if (DI.GetValue(uirouter_stamp)) {
@@ -74,13 +76,16 @@ export class RouterModule {
         mains.forEach(subRt => RouterHandler.SetStates(subRt, state, states, urlProvider));
         RouterHandler.ConfDefaultHome(mains, state, states, urlProvider);
         RouterHandler.ConfDefaultOtherwise(mains, state, states, urlProvider);
-        router.routesConfig = states;
+        router._routesConfig = states;
     }
 
 }
 
-const default_devide = "$/%$#@";
-const impossible_url = "^%&^&%$";
+const default_devide = "$DEFAULT_DEVIDE_STAMP_USED_INNER$";
+const impossible_url = "$IMPOSSIBLE_ROUTER_PATH$";
+const default_otherwise = "__otherwise";
+const default_home = "__default";
+const empty_path = "";
 
 export class RouterHandler {
 
@@ -97,7 +102,7 @@ export class RouterHandler {
     public static ConfDefaultOtherwise(mains: Route[], state: StateProvider, states: ITreeRoute[], urlProvider: UrlRouterProvider) {
         const otherwise = mains.find(i => !i.state && i.path === "**");
         if (otherwise && otherwise.redirectToPath) {
-            otherwise.state = "__otherwise";
+            otherwise.state = default_otherwise;
             RouterHandler.SetState(state, otherwise, states, urlProvider);
         } else {
             throw OtherwiseRoutesDefineError();
@@ -111,8 +116,8 @@ export class RouterHandler {
             if (!redrect) {
                 throw RoutersDefaultHomeUndefinedError();
             } else {
-                home.state = "__default";
-                home.path = "";
+                home.state = default_home;
+                home.path = empty_path;
                 home.redirectTo = redrect.state;
             }
             RouterHandler.SetState(state, home, states, urlProvider);
@@ -144,11 +149,17 @@ export class RouterHandler {
             config.lazyLoad = ($transition$, $state) => {
                 const $ocLazyLoad: ILazyLoad = $transition$.injector().get("$ocLazyLoad");
                 return ((subRt.loadChildren as any)() as Promise<IModuleClass>).then(module => {
+                    const generator: ModuleGenerator = <any>module.generator;
+                    generator.RunLazyLoads((lazy) => {
+                        if (lazy._ngModuleLazyConfig) {
+                            lazy._ngModuleLazyConfig(<any>config.parent, config.name.replace(".**", ""), generator);
+                        }
+                    });
                     return $ocLazyLoad.load(module.generator.Build() as any);
                 });
             };
         } else {
-            if (subRt.state === "__otherwise") {
+            if (subRt.state === default_otherwise) {
                 config.url = impossible_url;
                 config.redirectTo = "handle => " + subRt.redirectToPath;
                 config.abstract = true;
@@ -197,34 +208,43 @@ export class RouterHandler {
                 return "/" + subRt.path;
             }
         } else {
-            return "";
+            return empty_path;
         }
     }
 
-    public static ParseRoutesState(route: Route) {
-        const coll = route.state.split(".");
-        route.state = coll[coll.length - 1];
-        if (coll.length > 1) {
-            route.parent = coll[coll.length - 2];
+    public static ParseRoutesState(route: Route, pre_states?: [string, string]) {
+        let hasParent = false;
+        if (pre_states) {
+            [route.parent, route.state] = pre_states;
+            if (route.parent) {
+                hasParent = true;
+            }
+        } else {
+            const coll = route.state.split(".");
+            route.state = coll[coll.length - 1];
+            if (coll.length > 1) {
+                hasParent = true;
+                route.parent = coll[coll.length - 2];
+            }
         }
         const these = route.children.filter(child => !!child.state);
-        these.forEach(child => { // 构建子集的state
+        these.forEach(child => { // build children states
             child.parent = route.state;
         });
-        // 设置当前级别目录的默认重定向
-        RouterHandler.SetRedirect(route, these, coll.length > 1 ? route.parent : null, route.state);
+        // set local route level's default redirect.
+        RouterHandler.SetRedirect(route, these, hasParent ? route.parent : null, route.state);
     }
 
     public static SetRedirect(route: Route, these: Route[], prefix: string, subPre: string) {
         const df = route.children.filter(child => !child.state && child.path === "")[0];
-        if (df) { // 构建默认完全重定向和默认完全失败匹配
+        if (df) { // build the default redirect and otherwise
             if (df.redirectTo) {
                 const found = these.find(i => i.state === df.redirectTo);
-                if (found) { // 重定向在本级路由内
+                if (found) { // redirect to this current route level
                     df.state = route.state;
                     df.path = route.path || route.state;
                     df.redirectTo = found.state;
-                } else { // 重定向到外部路由，不检查正确性
+                } else { // redirect to out routes level, ignore checks.
                     df.state = route.state;
                     df.path = route.path || route.state;
                 }
@@ -236,7 +256,7 @@ export class RouterHandler {
                     path: default_devide,
                     redirectTo: df.redirectTo,
                     parent: subPre
-                }); // 空路径统配
+                }); // empty routes config
             }
         }
     }
@@ -263,22 +283,30 @@ export class RouterHandler {
 
 export class LazyLoadHandler {
 
-    public static ConfLazyRouterConfig(childRoute: Route) {
+    public static ConfLazyRouterConfig(childRoute: Route): IModulePayload {
         const router = RouterHandler.GetRouterModule();
         return {
-            _ngConfig: [
-                ["$stateRegistryProvider", (provider) => {
-                    RouterHandler.ParseRoutesState(childRoute);
-                    RouterHandler.ParseRoutesComponent(childRoute.children);
-                    RouterHandler.ParseRoutesLazyload(childRoute.children);
-                    childRoute.children.forEach(subRt => {
-                        const prefix = subRt.state;
-                        if (!prefix) {
-                            throw SubRoutesNoPathError();
-                        }
-                        RouterHandler.SetStates(subRt, provider, router.routesConfig, null);
-                    });
-                }]
+            _ngPayload: {
+                _ngModuleLazyConfig: (pre_state: string, state: string, generator: ModuleGenerator) => {
+                    generator.LazyConfig(["$stateRegistryProvider", (provider: StateRegistry) => {
+                        RouterHandler.ParseRoutesState(childRoute, [pre_state, state]);
+                        RouterHandler.ParseRoutesComponent(childRoute.children);
+                        RouterHandler.ParseRoutesLazyload(childRoute.children);
+                        childRoute.children.forEach(subRt => {
+                            const prefix = subRt.state;
+                            if (!prefix) {
+                                throw SubRoutesNoPathError();
+                            }
+                            RouterHandler.SetStates(subRt, provider, router.RoutesList, null);
+                        });
+                    }]);
+                }
+            },
+            _ngConfig: [],
+            _ngInvokers: [
+                (module: ModuleGenerator) => {
+                    console.log(module);
+                }
             ]
         };
     }

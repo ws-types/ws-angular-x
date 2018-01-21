@@ -4,7 +4,7 @@ import * as uuid from "uuid/v4";
 import { SelectorParse } from "../parsers/selector-parser";
 import {
     IModuleConfig, IModuleBundle,
-    IModulePayload, IPipeGenerator, Ng2Pipe
+    IModulePayload, IPipeGenerator, Ng2Pipe, IModuleLazys
 } from "./../../metadata";
 
 import {
@@ -31,6 +31,11 @@ export class ModuleGenerator implements IModuleGenerator {
     private _pipes: IPipeGenerator[];
     private _imports: IModuleGenerator[];
 
+    private _lazy_confs: Injectable<Function>[] = [];
+    private _lazy_payload: Array<IModuleLazys> = [];
+
+    public get LazyLoads() { return this._lazy_payload; }
+
     private _configs: Injectable<Function>[] = [];
     private _runs: Injectable<Function>[] = [];
 
@@ -54,7 +59,7 @@ export class ModuleGenerator implements IModuleGenerator {
     }
 
     private elementsParse(config: IModuleConfig) {
-        this._imports = parseElements(parseModulePayload(config, this));
+        this._imports = parseElements(this.parseModulePayload(config));
         this._components = parseElements(<Ng2Component[]>config.declarations, GeneratorType.Component);
         this._directives = parseElements(<Ng2Directive[]>config.declarations, GeneratorType.Directive);
         this._pipes = parseElements(<Ng2Pipe[]>config.declarations, GeneratorType.Pipe);
@@ -131,8 +136,19 @@ export class ModuleGenerator implements IModuleGenerator {
         return this;
     }
 
+    public LazyConfig(func: Injectable<Function>) {
+        this._lazy_confs.push(func);
+        return this;
+    }
+
     public Run(func: Injectable<Function>) {
         this._runs.push(func);
+        return this;
+    }
+
+    public RunLazyLoads(handler: (lazy: IModuleLazys) => void) {
+        this._lazy_payload.forEach(lazy => handler(lazy));
+        this._lazy_payload = [];
         return this;
     }
 
@@ -140,6 +156,8 @@ export class ModuleGenerator implements IModuleGenerator {
         if (this._isOldMd) {
             return angular.module(this.config.selector);
         }
+        this._configs.push(...this._lazy_confs);
+        this._lazy_confs = [];
         const instance = this.moduleConstructions();
         const depts = [];
         if (this._imports && this._imports.length > 0) {
@@ -172,23 +190,24 @@ export class ModuleGenerator implements IModuleGenerator {
         return module;
     }
 
+    private parseModulePayload(config: IModuleConfig) {
+        const imports: Ng2Module[] = [];
+        (config.imports || []).forEach(ipt => {
+            if ((<IModulePayload>ipt)._ngConfig) {
+                ((<IModulePayload>ipt)._ngConfig || []).forEach(conf => this.LazyConfig(conf));
+                ((<IModulePayload>ipt)._ngInvokers || []).forEach(invoker => invoker(this));
+                this._lazy_payload.push((<IModulePayload>ipt)._ngPayload);
+            } else {
+                imports.push(<Ng2Module>ipt);
+            }
+        });
+        return imports;
+    }
 
     private moduleConstructions() {
         const instance = new (this.Controller)();
         return instance;
     }
-}
-
-function parseModulePayload(config: IModuleConfig, generator: ModuleGenerator) {
-    const imports: Ng2Module[] = [];
-    (config.imports || []).forEach(ipt => {
-        if ((<IModulePayload>ipt)._ngConfig) {
-            ((<IModulePayload>ipt)._ngConfig || []).forEach(conf => generator.Config(conf));
-        } else {
-            imports.push(<Ng2Module>ipt);
-        }
-    });
-    return imports;
 }
 
 function parseElements<T>(elements: (IGenerator<T> | IClass<T, any>)[], flag?: string): IGenerator<T>[] {

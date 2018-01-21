@@ -18,10 +18,9 @@ export class Router {
 
     public static $inject = ["$state", "$transitions", "$location"];
 
-    public get RoutesTree(): Routes {
-        const rtmd: RouterModule = DI.GetValue(uirouter_stamp);
-        return !rtmd ? null : rtmd.routesConfig;
-    }
+    private routerModule: RouterModule;
+
+    public get RoutesTree(): Routes { return this.routerModule.RoutesList; }
 
     private _stateChanges = new Subject<IRouteBundle>();
     public get stateChanges() { return this._stateChanges; }
@@ -30,6 +29,7 @@ export class Router {
     public get errors() { return this._errorsOcc; }
 
     constructor(private state: StateService, private transitions: Transition, private $location: ng.ILocationService) {
+        this.routerModule = DI.GetValue(uirouter_stamp);
         this.initHooks();
     }
 
@@ -54,11 +54,15 @@ export class Router {
         this.state.go(state, params);
     }
 
-    public navigate(url: string[] | string, params?: RawParams) {
+    public navigate(url: string[] | string, params?: RawParams, replace = false) {
+        let action: ng.ILocationService;
         if (url instanceof Array) {
-            this.$location.path(url.join("/")).search(params);
+            action = this.$location.path(url.join("/")).search(params);
         } else {
-            this.$location.path(url).search(params);
+            action = this.$location.path(url).search(params);
+        }
+        if (replace) {
+            action.replace();
         }
     }
 

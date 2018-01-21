@@ -7,6 +7,7 @@ const childRoutes: Route = {
     state: "lazy.others", children: [
         { state: "fuck", component: LazyFuckComponent },
         { state: "fuck2", component: LazyFuck2Component },
+        { state: "more", loadChildren: "./moreLazy/moreLazy.module#LazyMoreModule" },
         { path: "", redirectTo: "fuck" },
     ]
 };
