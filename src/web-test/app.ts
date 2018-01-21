@@ -12,8 +12,8 @@ import { FormatPipe } from "@src/pipes/format/fmt.pipe";
 import { CommonModule } from "@angular/common";
 
 const rootRoutes: Routes = [
-    { state: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" },
-    { state: "home", component: FirstComponent },
+    { path: "lazy", loadChildren: "./lazy/lazy.module#LazyModule" },
+    { path: "home", component: FirstComponent },
     { path: "", redirectTo: "home" },
     { path: "**", redirectToPath: "errors/notfound" }
 ];

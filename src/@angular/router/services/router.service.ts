@@ -5,6 +5,7 @@ import { Transition, StateService, StateDeclaration, RawParams } from "@uirouter
 import { uirouter_stamp } from "./../config/config";
 import { RouterModule } from "../main/module";
 import { Routes } from "./../config/config";
+import { ITreeRoute } from "./../../router";
 
 export interface IRouteBundle {
     from?: StateDeclaration;
@@ -20,7 +21,28 @@ export class Router {
 
     private routerModule: RouterModule;
 
-    public get RoutesTree(): Routes { return this.routerModule.RoutesList; }
+    public get RoutesTree(): ITreeRoute[] { return this.routerModule.RoutesList; }
+    public get RoutesConfig(): string {
+        const final = [];
+        const parser = (target: ITreeRoute[], tree: ITreeRoute[]) => {
+            tree.forEach(t => {
+                const newt: any = { path: t.url };
+                if (t.component) {
+                    newt.component = t.component;
+                }
+                if (t.redirect) {
+                    newt.redirect = t.redirect;
+                }
+                if (t.children) {
+                    newt.children = [];
+                    parser(newt.children, t.children);
+                }
+                target.push(newt);
+            });
+        };
+        parser(final, this.routerModule.RoutesList);
+        return JSON.stringify(final);
+    }
 
     private _stateChanges = new Subject<IRouteBundle>();
     public get stateChanges() { return this._stateChanges; }

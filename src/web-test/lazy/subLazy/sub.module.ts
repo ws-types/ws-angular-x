@@ -4,10 +4,10 @@ import { LazyFuckComponent } from "@src/lazy/subLazy/fuck.conponent";
 import { LazyFuck2Component } from "@src/lazy/subLazy/fuck2.conponent";
 
 const childRoutes: Route = {
-    state: "lazy.others", children: [
-        { state: "fuck", component: LazyFuckComponent },
-        { state: "fuck2", component: LazyFuck2Component },
-        { state: "more", loadChildren: "./moreLazy/moreLazy.module#LazyMoreModule" },
+    state: "", children: [
+        { path: "fuck", component: LazyFuckComponent },
+        { path: "fuck02", component: LazyFuck2Component },
+        { path: "more", loadChildren: "./moreLazy/moreLazy.module#LazyMoreModule" },
         { path: "", redirectTo: "fuck" },
     ]
 };

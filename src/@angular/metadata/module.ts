@@ -27,7 +27,7 @@ export interface IModuleBundle extends ng.IModule { }
 export type IModuleConfigFunc = ((...args: any[]) => any) | Array<(string | ((...args: any[]) => any))>;
 
 export interface IModuleLazys {
-    _ngModuleLazyConfig: (pre_state: string, state: string, generator: IModuleGenerator) => void;
+    _ngModuleLazyConfig: (pre_state: string, current: [string, string], generator: IModuleGenerator) => void;
     [propName: string]: any;
 }
 

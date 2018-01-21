@@ -4,10 +4,10 @@ import { NgModule } from "@angular";
 import { Route, RouterModule } from "@angular/router";
 
 const childRoutes: Route = {
-    state: "lazy", children: [
-        { state: "index", component: LazyAComponent },
-        { state: "details", path: "details/:detailsId?{homeId}&{seed}", params: ["detailsId", "homeId", "seed"], component: LazyBComponent },
-        { state: "others", loadChildren: "./subLazy/sub.module#LazyOthersModule" },
+    state: "", children: [
+        { path: "index", component: LazyAComponent },
+        { path: "details/:detailsId?{homeId}&{seed}", params: ["detailsId", "homeId", "seed"], component: LazyBComponent },
+        { path: "others", loadChildren: "./subLazy/sub.module#LazyOthersModule" },
         { path: "", redirectTo: "index" },
     ]
 };

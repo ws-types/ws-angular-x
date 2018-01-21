@@ -2,9 +2,9 @@ import { NgModule } from "@angular";
 import { Route, RouterModule } from "@angular/router";
 
 const childRoutes: Route = {
-    state: "lazy.others.more", children: [
-        { state: "more01", component: null },
-        { state: "more02", component: null },
+    state: "", children: [
+        { path: "more01", component: null },
+        { path: "more02", component: null },
         { path: "", redirectTo: "more01" },
     ]
 };
