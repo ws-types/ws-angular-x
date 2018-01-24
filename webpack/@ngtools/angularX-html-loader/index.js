@@ -52,12 +52,6 @@ module.exports = function (content) {
         list03.push([new RegExp(`\\s\\[${key}\\]="\\s*([!]?)\\s*([^"]+)\\s*"`), value]);
     });
 
-    // const ngxHashVariable = /<\s*[^"']*([^'"=]+=("|')[^"']*("|'))*#([0-9a-zA-Z_]+)\s*([^'"=]+=("|')[^"']*("|'))*(\/>|>)/;
-    const ngxHashVariable = /<\s*([^"'=]+)\s+(([a-z_]+="[^"]*"\s+)*)#([0-9a-zA-Z_]+)\s*(.*)>/;
-    while (ngxHashVariable.test(content)) {
-        content = content.replace(ngxHashVariable, `<${RegExp.$1} ${RegExp.$2} ngx-name-selector="${RegExp.$4}" ${RegExp.$5}>`);
-    }
-
     const regexBindings = />\s*{{{([^}<>]+)}}}\s*</;
     while (regexBindings.test(content)) {
         const value = RegExp.$1;
@@ -110,6 +104,12 @@ module.exports = function (content) {
     while (regexTG.test(content)) {
         const value = decamelize(RegExp.$1, "-");
         content = content.replace(regexTG, ` ${value}`);
+    }
+
+    // const ngxHashVariable = /<\s*[^"']*([^'"=]+=("|')[^"']*("|'))*#([0-9a-zA-Z_]+)\s*([^'"=]+=("|')[^"']*("|'))*(\/>|>)/;
+    const ngxHashVariable = /<\s*([^"'=]+)\s+(([a-z\-]+="[^"]*"\s+)*)#([0-9a-zA-Z_]+)\s*(.*)>/;
+    while (ngxHashVariable.test(content)) {
+        content = content.replace(ngxHashVariable, `<${RegExp.$1} ${RegExp.$2} ngx-name-selector="${RegExp.$4}" ${RegExp.$5}>`);
     }
 
     return content;
