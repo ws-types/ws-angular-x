@@ -264,19 +264,35 @@ export class RouterHandler {
                         df.state = route.state;
                         df.path = route.path || route.state;
                         df.redirectTo = found.state;
-                    } // redirect to out routes level, ignore checks.
-                    df.state = route.state;
-                    df.path = route.path || route.state;
+                    } else {
+                        // redirect to out routes level, ignore checks.
+                        df.state = route.state;
+                        df.path = route.path || route.state;
+                    }
                 }
                 if (prefix) {
                     df.parent = prefix;
                 }
+                // empty routes config
                 route.children.push({
-                    state: uuid(),
+                    state: `current_redirect_${camelCase(uuid())}`,
                     path: default_devide,
                     redirectTo: df.redirectTo,
                     parent: subPre
-                }); // empty routes config
+                });
+            } else if (df.component) {
+                // default level-index component
+                df.state = route.state;
+                df.path = route.path || route.state;
+                if (prefix) {
+                    df.parent = prefix;
+                }
+                route.children.push({
+                    state: `current_index_${camelCase(uuid())}`,
+                    component: df.component,
+                    path: default_devide,
+                    parent: subPre
+                });
             }
         }
     }
