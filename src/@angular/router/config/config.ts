@@ -11,6 +11,7 @@ export interface ITreeRoute {
     redirect?: String;
     loadChildren?: any;
     children?: ITreeRoute[];
+    dynamicParams?: string[];
 }
 
 export interface Route {

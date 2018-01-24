@@ -134,7 +134,7 @@ export class RouterHandler {
     }
 
     public static BuildStateUnique(subRt: Route) {
-        if (!subRt.state && subRt.path !== "" && subRt.path !== "**") {
+        if (!subRt.state && subRt.path !== "" && subRt.path !== "**" && !subRt.path.startsWith("?")) {
             // return;
             subRt.state = `${(subRt.path || "E")}_${camelCase(uuid())}`;
             // console.log(subRt.state);
@@ -208,6 +208,7 @@ export class RouterHandler {
         if (config.url === impossible_url) { sv.url = "**"; }
         if (config.component) { sv.component = config.component; }
         if (config.redirectTo) { sv.redirect = <string>config.redirectTo; }
+        if (config.params) { sv.dynamicParams = subRt.params; }
         sv.state = config.name;
         findAndInsertToFinallyHost(sv, savings, (config.parent || sv.state) + ".**");
     }
@@ -216,8 +217,8 @@ export class RouterHandler {
         if (subRt.path) {
             if (subRt.path.substring(0, 1) === "/") {
                 return "^" + subRt.path;
-            } else if (subRt.path.toString() === default_devide) {
-                return "/";
+            } else if (subRt.path.toString().includes(default_devide)) {
+                return "/" + subRt.path.toString().replace(default_devide, "");
             } else {
                 return "/" + subRt.path;
             }
@@ -250,7 +251,7 @@ export class RouterHandler {
     }
 
     public static SetRedirect(route: Route, these: Route[], prefix: string, subPre: string) {
-        const df = route.children.filter(child => !child.state && child.path === "")[0];
+        const df = route.children.filter(child => !child.state && (child.path === "" || child.path.startsWith("?")))[0];
         if (df) { // build the default redirect and otherwise
             if (df.redirectTo) {
                 let found = these.find(i => i.state === df.redirectTo);
@@ -275,7 +276,7 @@ export class RouterHandler {
                 }
                 // empty routes config
                 route.children.push({
-                    state: `current_redirect_${camelCase(uuid())}`,
+                    state: `__current_redirect_${camelCase(uuid())}`,
                     path: default_devide,
                     redirectTo: df.redirectTo,
                     parent: subPre
@@ -283,14 +284,14 @@ export class RouterHandler {
             } else if (df.component) {
                 // default level-index component
                 df.state = route.state;
-                df.path = route.path || route.state;
+                df.path = (route.path || route.state) + df.path;
                 if (prefix) {
                     df.parent = prefix;
                 }
                 route.children.push({
-                    state: `current_index_${camelCase(uuid())}`,
+                    state: `__current_index_${camelCase(uuid())}`,
                     component: df.component,
-                    path: default_devide,
+                    path: default_devide + df.path,
                     parent: subPre
                 });
             }
@@ -377,6 +378,9 @@ function findTreeHost(svs: ITreeRoute[], state_target: string) {
 function findAndInsertToFinallyHost(s: ITreeRoute, svs: ITreeRoute[], state_target: string) {
     const prt = findTreeHost(svs, state_target);
     if (prt) {
+        if (s.state + ".**" === prt.state) {
+            s.url = s.url.replace(prt.url, "");
+        }
         if (prt.children) {
             findAndInsertToFinallyHost(s, prt.children, s.state + ".**");
         } else {

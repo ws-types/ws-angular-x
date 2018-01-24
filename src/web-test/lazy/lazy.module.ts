@@ -9,7 +9,8 @@ const childRoutes: Route = {
         { path: "details/:detailsId?{homeId}&{seed}", params: ["detailsId", "homeId", "seed"], component: LazyBComponent },
         { path: "others", loadChildren: "./subLazy/sub.module#LazyOthersModule" },
         // { path: "", redirectTo: "index" },
-        { path: "", component: LazyAComponent }
+        { path: "?{a}&{b}", params: ["a", "b"], component: LazyAComponent },
+        // { path: "", component: LazyAComponent }
     ]
 };
 
