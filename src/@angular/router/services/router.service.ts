@@ -79,9 +79,9 @@ export class Router {
     public navigate(url: string[] | string, params?: RawParams, replace = false) {
         let action: ng.ILocationService;
         if (url instanceof Array) {
-            action = this.$location.path(url.join("/")).search(params);
+            action = this.$location.path(url.join("/")).search(params || {});
         } else {
-            action = this.$location.path(url).search(params);
+            action = this.$location.path(url).search(params || {});
         }
         if (replace) {
             action.replace();
