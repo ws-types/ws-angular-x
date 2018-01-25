@@ -37,6 +37,11 @@ export class DirectiveGenerator
         } else {
             this.config.transclude = false;
         }
+        if (this.config.mixin) {
+            this.config.mixin = true;
+        } else {
+            this.config.mixin = false;
+        }
     }
 
     public Input(key: string, isString = false) {
@@ -98,6 +103,10 @@ export class DirectiveGenerator
             };
             if (this.config.isolate) {
                 direc.scope = this._bindings;
+            } else if (this.config.mixin) {
+                direc.scope = false;
+            } else {
+                direc.scope = true;
             }
             return direc;
         };

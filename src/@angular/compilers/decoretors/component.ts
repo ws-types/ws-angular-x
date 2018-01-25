@@ -29,33 +29,48 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     const outputs = parseIOProperties(target.prototype, generator);
     const injects = createInjects(target);
     bindPolyfill();
+    const proto = target.prototype;
     class ComponentClass extends target {
+
         public static $inject = injects;
+
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
-            target.prototype.$onInit = () => {
-                outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
-                if (target.prototype.ngOnInit) {
-                    target.prototype.ngOnInit.bind(this)();
-                }
-            };
-            target.prototype.$onDestroy = () => {
-                generator.StylesUnload();
-                if (target.prototype.ngOnDestroy) {
-                    target.prototype.ngOnDestroy.bind(this)();
-                }
-            };
         }
-    }
-    if (target.prototype.ngAfterViewInit) {
-        target.prototype.$postLink = target.prototype.ngAfterViewInit;
-    }
-    if (target.prototype.ngOnChanges) {
-        target.prototype.$onChanges = target.prototype.ngOnChanges;
-    }
-    if (target.prototype.ngDoCheck) {
-        target.prototype.$doCheck = target.prototype.ngDoCheck;
+
+        public $onInit() {
+            outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            if (proto.ngOnInit) {
+                proto.ngOnInit.bind(this)();
+            }
+        }
+
+        public $onDestroy() {
+            generator.StylesUnload();
+            if (proto.ngOnDestroy) {
+                proto.ngOnDestroy.bind(this)();
+            }
+        }
+
+        public $postLink() {
+            if (proto.ngAfterViewInit) {
+                proto.ngAfterViewInit.bind(this)();
+            }
+        }
+
+        public $onChanges(changes: any) {
+            if (proto.ngOnChanges) {
+                proto.ngOnChanges.bind(this)(changes);
+            }
+        }
+
+        public $doCheck() {
+            if (proto.ngDoCheck) {
+                proto.ngDoCheck.bind(this)();
+            }
+        }
+
     }
     generator.Class(ComponentClass);
     return generator;

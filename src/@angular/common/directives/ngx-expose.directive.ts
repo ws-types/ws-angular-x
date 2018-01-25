@@ -9,7 +9,9 @@ import { AfterViewInit } from "../../metadata/life-cycles";
 @Directive({
     selector: "ngx-expose",
     restrict: "A",
+    alias: "__ngxExpose",
     isolate: false,
+    mixin: true,
     transclude: false,
     bindingToController: false,
 })
