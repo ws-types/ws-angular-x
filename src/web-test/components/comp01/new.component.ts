@@ -1,12 +1,13 @@
 import {
     Component, OnInit, OnDestroy,
     ViewEncapsulation, Input, Output, EventEmitter,
-    OnChanges, DoCheck, SimpleChanges, IProviderClass
+    OnChanges, DoCheck, SimpleChanges, IProviderClass, Require
 } from "@angular";
 
 import { AppService } from "@src/services/app.service";
 import { InjectorService } from "@angular/core/injector";
 import { AnotherService } from "@src/services/another.service";
+import { AntDirective } from "@src/directives/dire02/ant.directive";
 
 @Component({
     selector: "new-component",
@@ -24,8 +25,13 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     private metaNumber: number;
 
     @Output()
-    // private onKeyFuck: EventEmitter<string>;
-    private onKeyFuck: any;
+    private onKeyFuck: EventEmitter<string>;
+
+    @Require("antDirective")
+    private outer: AntDirective;
+
+    @Require("ngModel")
+    private ngModel: ng.INgModelController;
 
     constructor(private app: AppService, private injector: InjectorService) {
 

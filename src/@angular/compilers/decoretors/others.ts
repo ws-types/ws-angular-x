@@ -1,12 +1,13 @@
 import "reflect-metadata";
 import * as uuid from "uuid/v4";
 
-export const InputMetaKey = Symbol("ng-metadata:Input");
-export const OutputMetaKey = Symbol("ng-metadata:Output");
-export const OnMetaKey = Symbol("ng-metadata:On");
-export const WatchMetaKey = Symbol("ng-metadata:Watch");
-export const ModuleConfigMetaKey = Symbol("ng-metadata:ModuleConfig");
-export const ModuleRunMetaKey = Symbol("ng-metadata:ModuleRun");
+export const InputMetaKey = Symbol("ngx-metadata:Input");
+export const OutputMetaKey = Symbol("ngx-metadata:Output");
+export const OnMetaKey = Symbol("ngx-metadata:On");
+export const WatchMetaKey = Symbol("ngx-metadata:Watch");
+export const ModuleConfigMetaKey = Symbol("ngx-metadata:ModuleConfig");
+export const ModuleRunMetaKey = Symbol("ngx-metadata:ModuleRun");
+export const RequireMetaKey = Symbol("ngx-metadata:DirectiveRequire");
 export const ParamsTypeMetaKey = "design:paramtypes";
 
 export interface IInputProperty {
@@ -27,6 +28,20 @@ export interface IWatchProperty {
 export interface IModuleConfigProperty {
     depts?: string[];
     FuncName: string;
+}
+
+export interface IRequireProperty {
+    keyName: string;
+    require: string;
+    isStrict: boolean;
+}
+
+export function Require(requireName: string, strict: boolean = null) {
+    return function requireDecorator(target, propertyKey: string) {
+        const values: IRequireProperty[] = Reflect.getMetadata(RequireMetaKey, target) || [];
+        values.push({ isStrict: strict, require: requireName, keyName: propertyKey || uuid() });
+        Reflect.defineMetadata(RequireMetaKey, values, target);
+    };
 }
 
 export function Input(isString = false) {

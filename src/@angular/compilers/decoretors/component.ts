@@ -1,7 +1,10 @@
 import "reflect-metadata";
 import { IComponentConfig, IComponentClass } from "./../../metadata";
 import { CreateComponent } from "./../creators";
-import { InputMetaKey, OutputMetaKey, IInputProperty, ParamsTypeMetaKey } from "./others";
+import {
+    InputMetaKey, OutputMetaKey, IInputProperty,
+    IRequireProperty, RequireMetaKey, ParamsTypeMetaKey
+} from "./others";
 import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
@@ -91,6 +94,9 @@ function parseIOProperties(proto: any, generator: ComponentGenerator) {
             } else if (key === OutputMetaKey) {
                 generator.Output(prop);
                 outputs.push(prop);
+            } else if (key === RequireMetaKey) {
+                const require = prop as IRequireProperty;
+                generator.Require(require.require, require.keyName, require.isStrict);
             }
         });
     });

@@ -54,8 +54,15 @@ export class ComponentGenerator
     protected _css: CssParser;
     protected _bindings: IBindings = {};
 
+    private requires: { [propName: string]: string } = {};
+
     constructor(protected config: IComponentConfig) {
         super(config);
+    }
+
+    public Require(require: string, propName: string, isStrict = true) {
+        this.requires[propName] = `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
+        return this;
     }
 
     public Build(): IComponentBundle {
@@ -64,6 +71,7 @@ export class ComponentGenerator
             controller: this._ctrl,
             controllerAs: this.config.alias || "vm",
             template: this._tpl.Parse(),
+            require: this.requires,
             transclude: true
         };
         return component;

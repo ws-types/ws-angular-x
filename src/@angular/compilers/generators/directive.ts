@@ -16,8 +16,9 @@ export class DirectiveGenerator
     public get StylesLoad(): Function { return this._css.Parse(); }
     public get StylesUnload(): Function { return this._css.Dispose(); }
 
-    public onMaps: { [methodName: string]: (...params: any[]) => void } = {};
-    public watchMaps: { [methodName: string]: (...params: any[]) => void } = {};
+    private onMaps: { [methodName: string]: (...params: any[]) => void } = {};
+    private watchMaps: { [methodName: string]: (...params: any[]) => void } = {};
+    private requires: { [propName: string]: string } = {};
 
     constructor(protected config: IDirectiveConfig) {
         super(config);
@@ -42,6 +43,11 @@ export class DirectiveGenerator
         } else {
             this.config.mixin = false;
         }
+    }
+
+    public Require(require: string, propName: string, isStrict = true) {
+        this.requires[propName] = `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
+        return this;
     }
 
     public Input(key: string, isString = false) {
@@ -107,6 +113,9 @@ export class DirectiveGenerator
                 direc.scope = false;
             } else {
                 direc.scope = true;
+            }
+            if (this.requires) {
+                direc.require = this.requires;
             }
             return direc;
         };

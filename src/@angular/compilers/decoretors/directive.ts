@@ -3,7 +3,8 @@ import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";
 import {
     OutputMetaKey, IInputProperty, InputMetaKey,
-    OnMetaKey, IOnProperty, WatchMetaKey, IWatchProperty, ParamsTypeMetaKey
+    OnMetaKey, IOnProperty, WatchMetaKey, IRequireProperty,
+    RequireMetaKey, IWatchProperty, ParamsTypeMetaKey
 } from "./others";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
@@ -89,6 +90,10 @@ function parseIOProperties(proto: any, generator: DirectiveGenerator) {
     IOKeys.forEach(key => {
         (Reflect.getMetadata(key, proto) as any[]).forEach(prop => {
             switch (key) {
+                case RequireMetaKey:
+                    const require = prop as IRequireProperty;
+                    generator.Require(require.require, require.keyName, require.isStrict);
+                    break;
                 case InputMetaKey:
                     const input = prop as IInputProperty;
                     generator.Input(input.keyName, input.isString);
