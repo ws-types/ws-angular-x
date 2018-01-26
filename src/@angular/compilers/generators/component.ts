@@ -6,7 +6,7 @@ import {
     IComponentConfig, GeneratorType, IComponentClass
 } from "./../../metadata";
 
-export interface IBindings { [key: string]: "<" | "@" | "&" | "="; }
+export interface IBindings { [key: string]: string; }
 
 export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector: string }> implements IGenerator<TBundle> {
 
@@ -17,6 +17,7 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
     protected _tpl: TemplateParser;
     protected _css: CssParser;
     protected _bindings: IBindings = {};
+    protected _requires: { [propName: string]: string } = {};
 
     constructor(protected config: TConfig) {
         this._tpl = new TemplateParser(<any>config);
@@ -28,13 +29,18 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
         return this;
     }
 
-    public Input(key: string, isString = false) {
-        this._bindings[key] = !isString ? "<" : "@";
+    public Input(key: string, alias?: string, isString = false, isTwoWay = false) {
+        this._bindings[key] = `${!isString ? isTwoWay ? "=" : "<" : "@"}${alias || ""}`;
         return this;
     }
 
     public Output(key: string) {
         this._bindings[key] = "&";
+        return this;
+    }
+
+    public Require(require: string, propName: string, isStrict = true) {
+        this._requires[propName] = `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
         return this;
     }
 
@@ -54,15 +60,8 @@ export class ComponentGenerator
     protected _css: CssParser;
     protected _bindings: IBindings = {};
 
-    private requires: { [propName: string]: string } = {};
-
     constructor(protected config: IComponentConfig) {
         super(config);
-    }
-
-    public Require(require: string, propName: string, isStrict = true) {
-        this.requires[propName] = `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
-        return this;
     }
 
     public Build(): IComponentBundle {
@@ -71,7 +70,7 @@ export class ComponentGenerator
             controller: this._ctrl,
             controllerAs: this.config.alias || "vm",
             template: this._tpl.Parse(),
-            require: this.requires,
+            require: this._requires,
             transclude: true
         };
         return component;

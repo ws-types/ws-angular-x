@@ -12,7 +12,14 @@ export const ParamsTypeMetaKey = "design:paramtypes";
 
 export interface IInputProperty {
     isString: boolean;
+    isTwoWay?: boolean;
     keyName: string;
+    outAlias?: string;
+}
+
+export interface IOutputProperty {
+    keyName: string;
+    outAlias?: string;
 }
 
 export interface IOnProperty {
@@ -44,10 +51,20 @@ export function Require(requireName: string, strict: boolean = null) {
     };
 }
 
-export function Input(isString = false) {
+export function Input(aliasOrIsString: boolean | string = false, twoWay: boolean | null = false) {
+    let alias: string;
+    let isString = false;
+    if (typeof (aliasOrIsString) === "string") {
+        alias = aliasOrIsString;
+        isString = twoWay === null;
+        twoWay = twoWay === true;
+    } else {
+        isString = aliasOrIsString;
+        twoWay = !!twoWay;
+    }
     return function inputDecorator(target, propertyKey: string) {
         const values: IInputProperty[] = Reflect.getMetadata(InputMetaKey, target) || [];
-        values.push({ isString: isString, keyName: propertyKey || uuid() });
+        values.push({ isString: isString, keyName: propertyKey || uuid(), outAlias: alias, isTwoWay: twoWay });
         Reflect.defineMetadata(InputMetaKey, values, target);
     };
 }

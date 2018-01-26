@@ -11,7 +11,7 @@ import { AfterViewInit } from "../../metadata/life-cycles";
     restrict: "A",
     alias: "__ngxExpose",
     isolate: false,
-    mixin: true,
+    merge: true,
     transclude: false,
     bindingToController: false,
 })

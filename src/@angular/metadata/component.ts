@@ -10,6 +10,7 @@ export interface IComponentConfig {
     styles?: CssOnject[];
     styleUrls?: string[];
     alias?: string;
+    // mixin?: boolean;
     encapsulation?: ViewEncapsulation;
 }
 

@@ -9,6 +9,8 @@ import { InjectorService } from "@angular/core/injector";
 import { AnotherService } from "@src/services/another.service";
 import { AntDirective } from "@src/directives/dire02/ant.directive";
 
+import * as angular from "angular";
+
 @Component({
     selector: "new-component",
     template: require("./new.html"),
@@ -23,6 +25,7 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
     private metaNumber: number;
+    // public get AAA() { return this.metaNumber; }
 
     @Output()
     private onKeyFuck: EventEmitter<string>;
@@ -33,13 +36,16 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     @Require("ngModel")
     private ngModel: ng.INgModelController;
 
-    constructor(private app: AppService, private injector: InjectorService) {
+    constructor(private $scope, private app: AppService, private injector: InjectorService) {
 
     }
 
     ngOnInit(): void {
         console.log("new component init");
-        console.log(this);
+        // console.log(this);
+        angular.extend(this.$scope, this);
+        console.log(this.$scope);
+        // this.$scope.vm = null;
         // console.log(this.onKeyFuck({ $event: "hahahahahahah----666666" }));
     }
 

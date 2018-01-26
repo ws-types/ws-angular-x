@@ -13,7 +13,7 @@ import { Router } from "@angular/router";
 })
 export class AntDirective {
 
-    @Input()
+    @Input("newInput")
     get inputMeta() { return this._input; }
     set inputMeta(value) { this._input = value; }
 

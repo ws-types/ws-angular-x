@@ -18,7 +18,6 @@ export class DirectiveGenerator
 
     private onMaps: { [methodName: string]: (...params: any[]) => void } = {};
     private watchMaps: { [methodName: string]: (...params: any[]) => void } = {};
-    private requires: { [propName: string]: string } = {};
 
     constructor(protected config: IDirectiveConfig) {
         super(config);
@@ -38,23 +37,18 @@ export class DirectiveGenerator
         } else {
             this.config.transclude = false;
         }
-        if (this.config.mixin) {
-            this.config.mixin = true;
+        if (this.config.merge) {
+            this.config.merge = true;
         } else {
-            this.config.mixin = false;
+            this.config.merge = false;
         }
     }
 
-    public Require(require: string, propName: string, isStrict = true) {
-        this.requires[propName] = `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
-        return this;
-    }
-
-    public Input(key: string, isString = false) {
+    public Input(key: string, alias?: string, isString = false, isTwoWay = false) {
         if (!this.config.isolate) {
             throw UnisolateScopeBindingError();
         }
-        this._bindings[key] = !isString ? "=" : "@";
+        this._bindings[key] = `${!isString ? isTwoWay ? "=" : "<" : "@"}${alias || ""}`;
         return this;
     }
 
@@ -109,13 +103,13 @@ export class DirectiveGenerator
             };
             if (this.config.isolate) {
                 direc.scope = this._bindings;
-            } else if (this.config.mixin) {
+            } else if (this.config.merge) {
                 direc.scope = false;
             } else {
                 direc.scope = true;
             }
-            if (this.requires) {
-                direc.require = this.requires;
+            if (this._requires) {
+                direc.require = this._requires;
             }
             return direc;
         };
