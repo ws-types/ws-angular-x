@@ -10,7 +10,7 @@ export interface IComponentConfig {
     styles?: CssOnject[];
     styleUrls?: string[];
     alias?: string;
-    // mixin?: boolean;
+    mixin?: boolean;
     encapsulation?: ViewEncapsulation;
 }
 
@@ -30,6 +30,7 @@ export interface IComponentController extends ICommonController {
 }
 
 export interface IComponentClass extends IClass<IComponentBundle, IComponentController> {
+    $scope?: ng.IScope;
     prototype: IComponentController;
 }
 

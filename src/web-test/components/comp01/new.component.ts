@@ -1,7 +1,7 @@
 import {
     Component, OnInit, OnDestroy,
     ViewEncapsulation, Input, Output, EventEmitter,
-    OnChanges, DoCheck, SimpleChanges, IProviderClass, Require
+    OnChanges, DoCheck, SimpleChanges, IProviderClass, Require, Enumerable, Property
 } from "@angular";
 
 import { AppService } from "@src/services/app.service";
@@ -13,6 +13,7 @@ import * as angular from "angular";
 
 @Component({
     selector: "new-component",
+    mixin: true,
     template: require("./new.html"),
     styles: [
         require("./new.scss")
@@ -25,7 +26,12 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
     private metaNumber: number;
-    // public get AAA() { return this.metaNumber; }
+
+    @Enumerable()
+    public get AAA() { return this.metaNumber; }
+
+    @Property("_bbb")
+    public BBB: string;
 
     @Output()
     private onKeyFuck: EventEmitter<string>;
@@ -36,15 +42,18 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     @Require("ngModel")
     private ngModel: ng.INgModelController;
 
-    constructor(private $scope, private app: AppService, private injector: InjectorService) {
+    constructor(private app: AppService, private injector: InjectorService) {
 
     }
 
     ngOnInit(): void {
         console.log("new component init");
-        // console.log(this);
-        angular.extend(this.$scope, this);
-        console.log(this.$scope);
+        console.log(this);
+        // angular.extend(this.$scope, this);
+        // console.log(this["$scope"]);
+        // this.BBB = "asdc";
+        // console.log(this.BBB);
+        // console.log(this["_bbb"]);
         // this.$scope.vm = null;
         // console.log(this.onKeyFuck({ $event: "hahahahahahah----666666" }));
     }

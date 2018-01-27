@@ -43,7 +43,7 @@ export interface IRequireProperty {
     isStrict: boolean;
 }
 
-export function Require(requireName: string, strict: boolean = null) {
+export function Require(requireName?: string, strict: boolean = null) {
     return function requireDecorator(target, propertyKey: string) {
         const values: IRequireProperty[] = Reflect.getMetadata(RequireMetaKey, target) || [];
         values.push({ isStrict: strict, require: requireName, keyName: propertyKey || uuid() });
@@ -106,5 +106,22 @@ export function Run(...depts: string[]) {
         const values: IModuleConfigProperty[] = Reflect.getMetadata(ModuleRunMetaKey, target) || [];
         values.push({ depts: depts, FuncName: propertyKey || uuid() });
         Reflect.defineMetadata(ModuleRunMetaKey, values, target);
+    };
+}
+
+export function Property(propName?: string, readonly = false, enumerable = true) {
+    return function propertyDecoretor(target, key: string) {
+        Object.defineProperty(target, key, {
+            get: () => target[`${propName || "__ngx_" + key}`],
+            set: readonly ? undefined : (value) => { target[`${propName || "__ngx_" + key}`] = value; },
+            enumerable: enumerable
+        });
+    };
+}
+
+export function Enumerable() {
+    return function enumerableDecoretor(target, key: string, descriptor: PropertyDescriptor) {
+        descriptor.enumerable = true;
+        return descriptor;
     };
 }

@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import * as angular from "angular";
 import { IComponentConfig, IComponentClass } from "./../../metadata";
 import { CreateComponent } from "./../creators";
 import {
@@ -9,6 +10,7 @@ import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
+import { createInjects, mixinScope, mixinClass, mixinClassProto } from "./directive";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
@@ -30,7 +32,7 @@ export function $Component(config: IComponentConfig) {
 function createExtends<T extends IComponentClass>(target: T, config: IComponentConfig) {
     const generator = CreateComponent(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const injects = createInjects(target);
+    const [injects, scopeIndex] = createInjects(target, config.mixin);
     bindPolyfill();
     const proto = target.prototype;
     class ComponentClass extends target {
@@ -40,10 +42,17 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            if (config.mixin) {
+                mixinScope(this, args[scopeIndex]);
+            }
         }
 
         public $onInit() {
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            if (config.mixin && this["$scope"]) {
+                mixinClass(this["$scope"], this);
+                mixinClassProto(this["$scope"], target);
+            }
             if (proto.ngOnInit) {
                 proto.ngOnInit.bind(this)();
             }
@@ -77,10 +86,6 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     }
     generator.Class(ComponentClass);
     return generator;
-}
-
-function createInjects(target: IComponentClass) {
-    return parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
 }
 
 function parseIOProperties(proto: any, generator: ComponentGenerator) {

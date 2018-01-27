@@ -20,5 +20,6 @@ export interface IDirectiveBundle extends IDirectiveFn { }
 export interface IDirectiveController extends IComponentController { }
 
 export interface IDirectiveClass extends IClass<IDirectiveBundle, IDirectiveController> {
+    $scope?: ng.IScope;
     prototype: IDirectiveController;
 }

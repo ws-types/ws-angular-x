@@ -11,7 +11,8 @@ import { Subscription } from "rxjs/Subscription";
     styleUrls: [
         "./out.scss",
         "./out2.scss"
-    ]
+    ],
+    mixin: true
 })
 export class OutComponent implements OnInit, OnDestroy {
 

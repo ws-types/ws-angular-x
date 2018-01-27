@@ -40,7 +40,7 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
     }
 
     public Require(require: string, propName: string, isStrict = true) {
-        this._requires[propName] = `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
+        this._requires[propName] = !require ? "^^" : `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
         return this;
     }
 

@@ -31,7 +31,7 @@ export function $Directive(config: IDirectiveConfig) {
 function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, target: T) {
     const generator = CreateDirective(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const injects = createInjects(target);
+    const [injects, scopeIndex] = createInjects(target, config.mixin);
     bindPolyfill();
     const proto = target.prototype;
     class DirectiveClass extends target {
@@ -41,10 +41,17 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            if (config.mixin) {
+                mixinScope(this, args[scopeIndex]);
+            }
         }
 
         public $onInit() {
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            if (config.mixin && this["$scope"]) {
+                mixinClass(this["$scope"], this);
+                mixinClassProto(this["$scope"], target);
+            }
             if (proto.ngOnInit) {
                 proto.ngOnInit.bind(this)();
             }
@@ -80,8 +87,48 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     return generator;
 }
 
-function createInjects(target: IDirectiveClass) {
-    return parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
+
+export function mixinScope(instance: any, scope: ng.IScope) {
+    instance["$scope"] = scope;
+}
+
+export function mixinClass(scope: ng.IScope, instance: any) {
+    Object.keys(instance).filter(i => !i.includes("$")).forEach(key => {
+        Object.defineProperty(scope, key, {
+            get: () => instance[key],
+            enumerable: false
+        });
+    });
+}
+
+export function mixinClassProto(scope: ng.IScope, target: any) {
+    Object.keys(target.prototype).forEach(key => {
+        const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
+        if (descriptor.get) {
+            Object.defineProperty(scope, key, {
+                get: descriptor.get,
+                set: descriptor.set,
+                enumerable: false
+            });
+        } else if (descriptor.value) {
+            scope[key] = descriptor.value;
+        }
+    });
+}
+
+
+export function createInjects(target: any, isMixin = false): [string[], number] {
+    const injects = parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
+    if (isMixin) {
+        if (!injects.includes("$scope")) {
+            injects.unshift("$scope");
+            return [injects, 0];
+        } else {
+            return [injects, injects.findIndex(i => i === "$scope")];
+        }
+    } else {
+        return [injects, -1];
+    }
 }
 
 function parseIOProperties(proto: any, generator: DirectiveGenerator) {
