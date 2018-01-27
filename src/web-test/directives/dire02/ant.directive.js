@@ -1,4 +1,4 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive } from "@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive, Property, Enumerable } from "@angular";
 import { AppService } from "@src/services/app.service";
 import { Router } from "@angular/router";
 
@@ -9,15 +9,18 @@ import { Router } from "@angular/router";
     restrict: "E",
     styles: [
         require("./ant.scss")
-    ]
+    ],
+    mixin: true
 })
 export class AntDirective {
 
     @Input("newInput")
+    @Enumerable()
     get inputMeta() { return this._input; }
     set inputMeta(value) { this._input = value; }
 
     @Output()
+    @Enumerable()
     get onChanges() { return this._onchanges; }
     set onChanges(value) { this._onchanges = value; }
 

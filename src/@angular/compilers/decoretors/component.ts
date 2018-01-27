@@ -51,7 +51,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
             if (config.mixin && this["$scope"]) {
                 mixinClass(this["$scope"], this);
-                mixinClassProto(this["$scope"], target);
+                mixinClassProto(this["$scope"], target, this);
             }
             if (proto.ngOnInit) {
                 proto.ngOnInit.bind(this)();

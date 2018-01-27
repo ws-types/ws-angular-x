@@ -24,15 +24,18 @@ module.exports = function (content) {
 
     let ctrl = "";
     if (query) {
-        ctrl = query.ctrl || "vm";
+        // ctrl = query.ctrl || "vm";
+        ctrl = query.ctrl || "";
         if (ctrl === "$" && /<!--\[\$ngxCtrl:(.+)\]-->/.test(content)) {
             ctrl = RegExp.$1;
             content = content.replace(/<!--\[\$ngxCtrl:(.+)\]-->/, "");
+        } else {
+            // ctrl = "vm";
+            ctrl = "";
         }
-        else {
-            ctrl = "vm";
+        if (ctrl) {
+            ctrl += ".";
         }
-        ctrl += ".";
     }
 
     const list01 = [];

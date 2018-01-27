@@ -50,7 +50,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
             if (config.mixin && this["$scope"]) {
                 mixinClass(this["$scope"], this);
-                mixinClassProto(this["$scope"], target);
+                mixinClassProto(this["$scope"], target, this);
             }
             if (proto.ngOnInit) {
                 proto.ngOnInit.bind(this)();
@@ -101,7 +101,7 @@ export function mixinClass(scope: ng.IScope, instance: any) {
     });
 }
 
-export function mixinClassProto(scope: ng.IScope, target: any) {
+export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
     Object.keys(target.prototype).forEach(key => {
         const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
         if (descriptor.get) {
@@ -111,7 +111,11 @@ export function mixinClassProto(scope: ng.IScope, target: any) {
                 enumerable: false
             });
         } else if (descriptor.value) {
-            scope[key] = descriptor.value;
+            if (typeof (descriptor.value) === "function") {
+                scope[key] = (...args: any[]) => descriptor.value.bind(instance)(...args);
+            } else {
+                scope[key] = descriptor.value;
+            }
         }
     });
 }

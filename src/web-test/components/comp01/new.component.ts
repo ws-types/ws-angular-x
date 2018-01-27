@@ -14,7 +14,7 @@ import * as angular from "angular";
 @Component({
     selector: "new-component",
     mixin: true,
-    template: require("./new.html"),
+    templateUrl: "./new.html",
     styles: [
         require("./new.scss")
     ]

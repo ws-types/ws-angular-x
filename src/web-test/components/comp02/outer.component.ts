@@ -45,6 +45,7 @@ export class OutComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         console.log("out component init");
+        console.log(this.scope);
     }
 
     ngOnDestroy(): void {

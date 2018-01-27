@@ -8,7 +8,8 @@ import { AppService } from "@src/services/app.service";
     restrict: "A",
     styles: [
         require("./new.scss")
-    ]
+    ],
+    mixin: true
 })
 export class NewDirective implements OnInit, OnDestroy, AfterViewInit {
 
@@ -52,6 +53,7 @@ export class NewDirective implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public changes() {
+        this.inputMeta = new Date().getTime().toString();
         this.onChanges.emit("fuck : " + new Date().getTime().toString());
     }
 
