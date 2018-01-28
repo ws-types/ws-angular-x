@@ -76,12 +76,12 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
             return;
         }
         this.ngModelCtrl.$render = () => {
-            console.log("$$render");
-            console.log($("#demoInput").html());
+            // console.log("$$render");
+            // console.log($("#demoInput").html());
             $("#demoInput").html(this.ngModelCtrl.$viewValue || "");
         };
         this.$timeout(() => {
-            console.log(this.ngModel);
+            // console.log(this.ngModel);
             $("#demoInput").html(this.ngModel);
             $("#demoInput").on("keyup", () => {
                 this["$scope"].$evalAsync(() => this.read($("#demoInput")));
