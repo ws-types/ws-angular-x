@@ -27,6 +27,8 @@ export class OutComponent implements OnInit, OnDestroy {
 
     public message = "MESSAGE_AAAA";
 
+    public modelString = "default-value";
+
     public show01 = true;
 
     public showDirective = true;
@@ -45,7 +47,7 @@ export class OutComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         console.log("out component init");
-        console.log(this.scope);
+        // console.log(this.scope);
     }
 
     ngOnDestroy(): void {

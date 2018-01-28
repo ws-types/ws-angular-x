@@ -96,6 +96,7 @@ export function mixinClass(scope: ng.IScope, instance: any) {
     Object.keys(instance).filter(i => !i.includes("$")).forEach(key => {
         Object.defineProperty(scope, key, {
             get: () => instance[key],
+            set: (value) => instance[key] = value,
             enumerable: false
         });
     });
@@ -125,8 +126,8 @@ export function createInjects(target: any, isMixin = false): [string[], number] 
     const injects = parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
     if (isMixin) {
         if (!injects.includes("$scope")) {
-            injects.unshift("$scope");
-            return [injects, 0];
+            injects.push("$scope");
+            return [injects, injects.length - 1];
         } else {
             return [injects, injects.findIndex(i => i === "$scope")];
         }
@@ -143,7 +144,7 @@ function parseIOProperties(proto: any, generator: DirectiveGenerator) {
             switch (key) {
                 case RequireMetaKey:
                     const require = prop as IRequireProperty;
-                    generator.Require(require.require, require.keyName, require.isStrict);
+                    generator.Require(require.require, require.keyName, require.scope, require.strict);
                     break;
                 case InputMetaKey:
                     const input = prop as IInputProperty;

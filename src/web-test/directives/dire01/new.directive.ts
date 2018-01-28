@@ -1,4 +1,4 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive, AfterViewInit } from "@angular";
+import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive, AfterViewInit, Require } from "@angular";
 import { AppService } from "@src/services/app.service";
 
 
@@ -18,6 +18,9 @@ export class NewDirective implements OnInit, OnDestroy, AfterViewInit {
 
     @Output()
     private onChanges: EventEmitter<string>;
+
+    @Require("outComponent")
+    private outer: any;
 
     constructor(private app: AppService, private $scope, private $element: JQuery<HTMLElement>) {
         // console.log(app);

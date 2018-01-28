@@ -101,7 +101,7 @@ function parseIOProperties(proto: any, generator: ComponentGenerator) {
                 outputs.push(prop);
             } else if (key === RequireMetaKey) {
                 const require = prop as IRequireProperty;
-                generator.Require(require.require, require.keyName, require.isStrict);
+                generator.Require(require.require, require.keyName, require.scope, require.strict);
             }
         });
     });

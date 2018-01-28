@@ -3,7 +3,8 @@ import { TemplateParser } from "../parsers/template-parser";
 import { CssParser } from "../parsers/css-parser";
 import {
     IComponentGenerator, IComponentBundle, IGenerator,
-    IComponentConfig, GeneratorType, IComponentClass
+    IComponentConfig, GeneratorType, IComponentClass,
+    RequireScope, RequireStrict
 } from "./../../metadata";
 
 export interface IBindings { [key: string]: string; }
@@ -39,8 +40,8 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
         return this;
     }
 
-    public Require(require: string, propName: string, isStrict = true) {
-        this._requires[propName] = !require ? "^^" : `${isStrict === null ? "^?" : !isStrict ? "?" : "^"}${require}`;
+    public Require(require: string, propName: string, scope: RequireScope, strict: RequireStrict) {
+        this._requires[propName] = `${strict}${scope}${require}`;
         return this;
     }
 

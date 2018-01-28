@@ -1,7 +1,7 @@
 import {
     Component, OnInit, OnDestroy,
     ViewEncapsulation, Input, Output, EventEmitter,
-    OnChanges, DoCheck, SimpleChanges, IProviderClass, Require, Enumerable, Property
+    OnChanges, DoCheck, SimpleChanges, IProviderClass, Require, Enumerable, Property, AfterViewInit
 } from "@angular";
 
 import { AppService } from "@src/services/app.service";
@@ -19,7 +19,7 @@ import * as angular from "angular";
         require("./new.scss")
     ]
 })
-export class NewComponent implements OnInit, OnDestroy, OnChanges {
+export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
     @Input(true)
     private metaTest: string;
@@ -33,6 +33,9 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     @Property("_bbb")
     public BBB: string;
 
+    @Input()
+    private ngModel: string;
+
     @Output()
     private onKeyFuck: EventEmitter<string>;
 
@@ -40,22 +43,20 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
     private outer: AntDirective;
 
     @Require("ngModel")
-    private ngModel: ng.INgModelController;
+    private ngModelCtrl: ng.INgModelController;
 
-    constructor(private app: AppService, private injector: InjectorService) {
+    public isNGMD = false;
+
+    constructor(private app: AppService, private injector: InjectorService, private $timeout) {
 
     }
 
     ngOnInit(): void {
         console.log("new component init");
-        console.log(this);
-        // angular.extend(this.$scope, this);
+        if (this.ngModel) {
+            this.isNGMD = true;
+        }
         // console.log(this["$scope"]);
-        // this.BBB = "asdc";
-        // console.log(this.BBB);
-        // console.log(this["_bbb"]);
-        // this.$scope.vm = null;
-        // console.log(this.onKeyFuck({ $event: "hahahahahahah----666666" }));
     }
 
     ngOnDestroy(): void {
@@ -70,8 +71,38 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges {
         // }
     }
 
+    ngAfterViewInit(): void {
+        if (!this.ngModelCtrl) {
+            return;
+        }
+        this.ngModelCtrl.$render = () => {
+            console.log("$$render");
+            console.log($("#demoInput").html());
+            $("#demoInput").html(this.ngModelCtrl.$viewValue || "");
+        };
+        this.$timeout(() => {
+            console.log(this.ngModel);
+            $("#demoInput").html(this.ngModel);
+            $("#demoInput").on("keyup", () => {
+                this["$scope"].$evalAsync(() => this.read($("#demoInput")));
+            });
+            this.read($("#demoInput"));
+        });
+    }
+
     public changes() {
         this.onKeyFuck.emit(new Date().getTime().toString());
+    }
+
+    private read(element: JQuery<HTMLElement>) {
+        let html = element.html();
+        // When we clear the content editable the browser leaves a <br> behind
+        // If strip-br attribute is provided then we strip this out
+        if (element[0].attributes.getNamedItem("stripBr") && html === "<br>") {
+            html = "";
+        }
+        console.log(html);
+        this.ngModelCtrl.$setViewValue(html || "");
     }
 
 }

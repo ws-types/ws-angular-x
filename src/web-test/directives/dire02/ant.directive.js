@@ -1,4 +1,8 @@
-import { Directive, OnInit, OnDestroy, On, Input, Watch, Output, EventEmitter, $Injects, $Directive, Property, Enumerable } from "@angular";
+import {
+    Directive, OnInit, OnDestroy, On, Input, Watch,
+    Output, EventEmitter, $Injects, $Directive, Property,
+    Require, Enumerable
+} from "@angular";
 import { AppService } from "@src/services/app.service";
 import { Router } from "@angular/router";
 
@@ -24,6 +28,10 @@ export class AntDirective {
     get onChanges() { return this._onchanges; }
     set onChanges(value) { this._onchanges = value; }
 
+    @Require("ngModel")
+    get ngModel() { return this._ngModel; };
+    set ngModel(value) { this._ngModel = value; }
+
     static $injector() { return [AppService, "$scope", Router]; }
 
     constructor(app, $scope, router) {
@@ -36,6 +44,7 @@ export class AntDirective {
 
     ngOnInit() {
         console.log("ant directive is on.");
+        console.log(this);
         // console.log("directive init");
     }
 

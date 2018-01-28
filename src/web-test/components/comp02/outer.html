@@ -11,4 +11,6 @@
         <span>{{sindex}} - {{para}}</span>
     </div>
     <div>{{{message}}}</div>
+    <new-component [metaTest]=" 'test-ngModel' " [metaNumber]="data.number" ng-model="modelString" (onKeyFuck)="onKeyFuck($event)"></new-component>
+    <p>{{vm.modelString}}</p>
 </div>

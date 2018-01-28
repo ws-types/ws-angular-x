@@ -80,22 +80,23 @@ export class DirectiveGenerator
                 controllerAs: this.config.alias || "vm",
                 replace: this.config.replace || false,
                 transclude: this.config.transclude,
-                link: (scope, element, attrs, controller) => {
+                require: this._requires,
+                link: (scope, element, attrs, ctrls) => {
                     if (this.onMaps) {
                         Object.keys(this.onMaps).forEach(name => {
-                            if (name === "ngxParse" || name === "init") {
-                                this.onMaps[name](scope, element, attrs, controller);
+                            if (name === "init") {
+                                this.onMaps[name](scope, element, attrs, ctrls);
                                 return;
                             }
                             scope.$on("$" + name, () => {
-                                this.onMaps[name](scope, element, attrs, controller);
+                                this.onMaps[name](scope, element, attrs, ctrls);
                             });
                         });
                     }
                     if (this.watchMaps) {
                         Object.keys(this.watchMaps).forEach(name => {
                             scope.$watch((this.config.bindingToController ? `${this.config.alias || "vm"}.` : "") + name, () => {
-                                this.watchMaps[name](scope, element, attrs, controller);
+                                this.watchMaps[name](scope, element, attrs, ctrls);
                             });
                         });
                     }
@@ -107,9 +108,6 @@ export class DirectiveGenerator
                 direc.scope = false;
             } else {
                 direc.scope = true;
-            }
-            if (this._requires) {
-                direc.require = this._requires;
             }
             return direc;
         };

@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import * as uuid from "uuid/v4";
+import { RequireScope, RequireStrict, RequireEScope, RequireEStrict } from "./../../metadata/common";
 
 export const InputMetaKey = Symbol("ngx-metadata:Input");
 export const OutputMetaKey = Symbol("ngx-metadata:Output");
@@ -40,13 +41,26 @@ export interface IModuleConfigProperty {
 export interface IRequireProperty {
     keyName: string;
     require: string;
-    isStrict: boolean;
+    scope: RequireScope;
+    strict: RequireStrict;
 }
 
-export function Require(requireName?: string, strict: boolean = null) {
+export function Require(requireName: string, scope: RequireEScope = RequireScope.InnerParent, strict: RequireEStrict = false) {
+    let tScope: RequireScope;
+    if (!scope) {
+        tScope = RequireScope.Current;
+    } else {
+        tScope = scope === "^" ? RequireScope.InnerParent : scope === "^^" ? RequireScope.Parent : RequireScope.Current;
+    }
+    let tStrict: RequireStrict;
+    if (typeof (strict) === "string") {
+        tStrict = strict === "?" ? RequireStrict.Unstrict : RequireStrict.Strict;
+    } else {
+        tStrict = !strict ? RequireStrict.Unstrict : RequireStrict.Strict;
+    }
     return function requireDecorator(target, propertyKey: string) {
         const values: IRequireProperty[] = Reflect.getMetadata(RequireMetaKey, target) || [];
-        values.push({ isStrict: strict, require: requireName, keyName: propertyKey || uuid() });
+        values.push({ strict: tStrict, require: requireName, keyName: propertyKey || uuid(), scope: tScope });
         Reflect.defineMetadata(RequireMetaKey, values, target);
     };
 }
