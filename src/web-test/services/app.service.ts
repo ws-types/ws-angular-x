@@ -1,11 +1,12 @@
 import { Injectable } from "@angular";
 import { AnotherService } from "@src/services/another.service";
+import { Router } from "@angular/router";
 
 
-@Injectable("app-service")
+@Injectable()
 export class AppService {
 
-    constructor(private bservice: AnotherService) {
+    constructor(public router: Router, private bservice: AnotherService) {
 
     }
 

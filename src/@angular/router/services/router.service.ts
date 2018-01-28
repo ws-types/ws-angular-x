@@ -30,8 +30,12 @@ export class Router {
                 if (t.component) {
                     newt.component = t.component;
                 }
+                if (t.state.includes(".**")) {
+                    newt.lazyLoaded = !t.children ? false : true;
+                }
                 if (t.redirect) {
-                    newt.redirect = t.redirect;
+                    const tgt = tree.find(i => i.state === t.redirect);
+                    newt.redirect = (tgt && tgt.url) || t.redirect;
                 }
                 if (t.children) {
                     newt.children = [];
@@ -41,7 +45,7 @@ export class Router {
             });
         };
         parser(final, this.routerModule.RoutesList);
-        return JSON.stringify(final);
+        return JSON.stringify(final, null, "\t");
     }
 
     private _stateChanges = new Subject<IRouteBundle>();

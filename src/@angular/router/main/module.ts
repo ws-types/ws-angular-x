@@ -207,8 +207,8 @@ export class RouterHandler {
         const sv: ITreeRoute = { url: config.url };
         if (config.url === impossible_url) { sv.url = "**"; }
         if (config.component) { sv.component = config.component; }
-        if (config.redirectTo) { sv.redirect = <string>config.redirectTo; }
         if (config.params) { sv.dynamicParams = subRt.params; }
+        if (config.redirectTo) { sv.redirect = <string>config.redirectTo; }
         sv.state = config.name;
         findAndInsertToFinallyHost(sv, savings, (config.parent || sv.state) + ".**");
     }
@@ -283,17 +283,22 @@ export class RouterHandler {
                 });
             } else if (df.component) {
                 // default level-index component
+                const pathCache = df.path;
                 df.state = route.state;
                 df.path = (route.path || route.state) + df.path;
                 if (prefix) {
                     df.parent = prefix;
                 }
-                route.children.push({
+                const currentIndex: Route = {
                     state: `__current_index_${camelCase(uuid())}`,
                     component: df.component,
-                    path: default_devide + df.path,
+                    path: default_devide + pathCache,
                     parent: subPre
-                });
+                };
+                if (df.params) {
+                    currentIndex.params = df.params;
+                }
+                route.children.push(currentIndex);
             }
         }
     }

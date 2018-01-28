@@ -41,6 +41,7 @@ export class AppModule {
     @Run("@injector", "@router")
     public configInjects(injector: InjectorService, router: Router) {
         console.log(router.RoutesTree);
+        console.log(router.RoutesConfig);
     }
 
 }

@@ -92,6 +92,7 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
 
     public changes() {
         this.onKeyFuck.emit(new Date().getTime().toString());
+        console.log(this.app.router.RoutesConfig);
     }
 
     private read(element: JQuery<HTMLElement>) {
