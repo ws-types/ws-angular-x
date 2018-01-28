@@ -11,6 +11,10 @@ import { AntDirective } from "@src/directives/dire02/ant.directive";
 
 import * as angular from "angular";
 
+interface IThisScope extends ng.IScope, NewComponent {
+
+}
+
 @Component({
     selector: "new-component",
     mixin: true,
@@ -47,7 +51,7 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
 
     public isNGMD = false;
 
-    constructor(private app: AppService, private injector: InjectorService, private $timeout) {
+    constructor(private $scope: IThisScope, private app: AppService, private injector: InjectorService, private $timeout) {
 
     }
 

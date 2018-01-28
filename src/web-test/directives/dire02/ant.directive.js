@@ -6,7 +6,6 @@ import {
 import { AppService } from "@src/services/app.service";
 import { Router } from "@angular/router";
 
-
 @Directive({
     selector: "ant-directive",
     template: require("./ant.html"),
