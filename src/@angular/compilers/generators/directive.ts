@@ -102,10 +102,10 @@ export class DirectiveGenerator
                     }
                 }
             };
-            if (this.config.isolate) {
-                direc.scope = this._bindings;
-            } else if (this.config.merge) {
+            if (this.config.merge) {
                 direc.scope = false;
+            } else if (this.config.isolate) {
+                direc.scope = this._bindings;
             } else {
                 direc.scope = true;
             }
