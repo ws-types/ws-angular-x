@@ -103,15 +103,15 @@ export function mixinClass(scope: ng.IScope, instance: any) {
 }
 
 export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
-    Object.keys(target.prototype).forEach(key => {
+    Object.getOwnPropertyNames(target.prototype).forEach(key => {
         const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
         if (descriptor.get) {
             Object.defineProperty(scope, key, {
-                get: descriptor.get,
-                set: descriptor.set,
+                get: descriptor.get.bind(instance),
+                set: descriptor.set && descriptor.set.bind(instance),
                 enumerable: false
             });
-        } else if (descriptor.value) {
+        } else if (descriptor.value && key !== "constructor") {
             if (typeof (descriptor.value) === "function") {
                 scope[key] = (...args: any[]) => descriptor.value.bind(instance)(...args);
             } else {
