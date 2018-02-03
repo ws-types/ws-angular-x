@@ -15,3 +15,11 @@ export enum RequireStrict {
 }
 
 export type RequireEStrict = RequireStrict | boolean | "" | "?";
+
+export enum InputType {
+    String,
+    OneWay,
+    TwoWay
+}
+
+export type InptuEType = InputType | boolean;

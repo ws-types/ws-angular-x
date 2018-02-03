@@ -1,6 +1,9 @@
 import "reflect-metadata";
 import * as uuid from "uuid/v4";
-import { RequireScope, RequireStrict, RequireEScope, RequireEStrict } from "./../../metadata/common";
+import {
+    RequireScope, RequireStrict, RequireEScope,
+    RequireEStrict, InptuEType, InputType
+} from "./../../metadata/common";
 
 export const InputMetaKey = Symbol("ngx-metadata:Input");
 export const OutputMetaKey = Symbol("ngx-metadata:Output");
@@ -65,20 +68,21 @@ export function Require(requireName: string, scope: RequireEScope = RequireScope
     };
 }
 
-export function Input(aliasOrIsString: boolean | string = false, twoWay: boolean | null = false) {
+export function Input(aliasOrIsString: boolean | string = false, twoWay: InptuEType = false) {
     let alias: string;
     let isString = false;
+    let isTwoway = false;
     if (typeof (aliasOrIsString) === "string") {
         alias = aliasOrIsString;
-        isString = twoWay === null;
-        twoWay = twoWay === true;
+        isString = twoWay === null || twoWay === InputType.String;
+        isTwoway = twoWay === true || twoWay === InputType.TwoWay;
     } else {
-        isString = aliasOrIsString;
-        twoWay = !!twoWay;
+        isString = aliasOrIsString === true;
+        isTwoway = false;
     }
     return function inputDecorator(target, propertyKey: string) {
         const values: IInputProperty[] = Reflect.getMetadata(InputMetaKey, target) || [];
-        values.push({ isString: isString, keyName: propertyKey || uuid(), outAlias: alias, isTwoWay: twoWay });
+        values.push({ isString: isString, keyName: propertyKey || uuid(), outAlias: alias, isTwoWay: isTwoway });
         Reflect.defineMetadata(InputMetaKey, values, target);
     };
 }
