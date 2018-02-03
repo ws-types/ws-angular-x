@@ -12,6 +12,7 @@ export const WatchMetaKey = Symbol("ngx-metadata:Watch");
 export const ModuleConfigMetaKey = Symbol("ngx-metadata:ModuleConfig");
 export const ModuleRunMetaKey = Symbol("ngx-metadata:ModuleRun");
 export const RequireMetaKey = Symbol("ngx-metadata:DirectiveRequire");
+export const TempRefMetaKey = Symbol("ngx-metadata:TemplateRef");
 export const ParamsTypeMetaKey = "design:paramtypes";
 
 export interface IInputProperty {
@@ -48,6 +49,11 @@ export interface IRequireProperty {
     strict: RequireStrict;
 }
 
+export interface ITemplateRefProperty {
+    keyName: string;
+    tempName: string;
+}
+
 export function Require(requireName: string, scope: RequireEScope = RequireScope.InnerParent, strict: RequireEStrict = false) {
     let tScope: RequireScope;
     if (!scope) {
@@ -65,6 +71,14 @@ export function Require(requireName: string, scope: RequireEScope = RequireScope
         const values: IRequireProperty[] = Reflect.getMetadata(RequireMetaKey, target) || [];
         values.push({ strict: tStrict, require: requireName, keyName: propertyKey || uuid(), scope: tScope });
         Reflect.defineMetadata(RequireMetaKey, values, target);
+    };
+}
+
+export function ViewChild(tempName?: string) {
+    return function tempRefDecorator(target, propertyKey: string) {
+        const values: ITemplateRefProperty[] = Reflect.getMetadata(TempRefMetaKey, target) || [];
+        values.push({ keyName: propertyKey, tempName: tempName || propertyKey });
+        Reflect.defineMetadata(TempRefMetaKey, values, target);
     };
 }
 

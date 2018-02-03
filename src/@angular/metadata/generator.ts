@@ -23,6 +23,7 @@ export interface IGenerator<T> {
 export interface IComponentGenerator extends IGenerator<IComponentBundle> {
     StylesLoad?: Function;
     StylesUnload?: Function;
+    ViewChildren?: Array<[string, string]>;
 }
 
 export interface IDirectiveGenerator extends IGenerator<IDirectiveBundle> {

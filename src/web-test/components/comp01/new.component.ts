@@ -1,7 +1,9 @@
 import {
     Component, OnInit, OnDestroy,
     ViewEncapsulation, Input, Output, EventEmitter,
-    OnChanges, DoCheck, SimpleChanges, IProviderClass, Require, Enumerable, Property, AfterViewInit
+    OnChanges, DoCheck, SimpleChanges,
+    IProviderClass, Require, Enumerable,
+    Property, AfterViewInit, ViewChild, HTMLNgTemplate, TemplateRef
 } from "@angular";
 
 import { AppService } from "@src/services/app.service";
@@ -49,9 +51,17 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
     @Require("ngModel")
     private ngModelCtrl: ng.INgModelController;
 
+    @ViewChild("testDom")
+    private theTESTdom: TemplateRef<HTMLNgTemplate>;
+
     public isNGMD = false;
 
-    constructor(private $scope: IThisScope, private app: AppService, private injector: InjectorService, private $timeout) {
+    constructor(
+        private $scope: IThisScope,
+        private $element: ng.IRootElementService,
+        private app: AppService,
+        private injector: InjectorService,
+        private $timeout: ng.ITimeoutService) {
 
     }
 
@@ -76,6 +86,7 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
     }
 
     ngAfterViewInit(): void {
+        console.log(this.theTESTdom.nativeElement);
         if (!this.ngModelCtrl) {
             return;
         }

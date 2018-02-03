@@ -4,7 +4,8 @@ import { DirectiveGenerator } from "./../generators";
 import {
     OutputMetaKey, IInputProperty, InputMetaKey,
     OnMetaKey, IOnProperty, WatchMetaKey, IRequireProperty,
-    RequireMetaKey, IWatchProperty, ParamsTypeMetaKey
+    RequireMetaKey, IWatchProperty, ParamsTypeMetaKey,
+    TempRefMetaKey, ITemplateRefProperty
 } from "./others";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
@@ -31,7 +32,8 @@ export function $Directive(config: IDirectiveConfig) {
 function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, target: T) {
     const generator = CreateDirective(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const [injects, scopeIndex] = createInjects(target, config.mixin);
+    const needDom = generator.ViewChildren.length > 0;
+    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, needDom, needDom);
     bindPolyfill();
     const proto = target.prototype;
     class DirectiveClass extends target {
@@ -43,6 +45,9 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
             generator.StylesLoad();
             if (config.mixin) {
                 mixinScope(this, args[scopeIndex]);
+            }
+            if (needDom) {
+                mixinDomScope(this, args[elementIndex], args[attrsIndex]);
             }
         }
 
@@ -92,6 +97,15 @@ export function mixinScope(instance: any, scope: ng.IScope) {
     instance["$scope"] = scope;
 }
 
+export function mixinDomScope(instance: any, $element?: ng.IRootElementService, $attrs?: ng.IAttributes) {
+    if ($element) {
+        instance["$element"] = $element;
+    }
+    if ($attrs) {
+        instance["$attrs"] = $attrs;
+    }
+}
+
 export function mixinClass(scope: ng.IScope, instance: any) {
     Object.keys(instance).filter(i => !i.includes("$")).forEach(key => {
         Object.defineProperty(scope, key, {
@@ -122,18 +136,38 @@ export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
 }
 
 
-export function createInjects(target: any, isMixin = false): [string[], number] {
-    const injects = parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []);
-    if (isMixin) {
-        if (!injects.includes("$scope")) {
-            injects.push("$scope");
-            return [injects, injects.length - 1];
+export function createInjects(target: any, need$Scope = false, need$Element = false, need$Attrs = false) {
+    const result = {
+        injects: parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []),
+        scopeIndex: -1,
+        elementIndex: -1,
+        attrsIndex: -1
+    };
+    if (need$Scope) {
+        if (!result.injects.includes("$scope")) {
+            result.injects.push("$scope");
+            result.scopeIndex = result.injects.length - 1;
         } else {
-            return [injects, injects.findIndex(i => i === "$scope")];
+            result.scopeIndex = result.injects.findIndex(i => i === "$scope");
         }
-    } else {
-        return [injects, -1];
     }
+    if (need$Element) {
+        if (!result.injects.includes("$element")) {
+            result.injects.push("$element");
+            result.elementIndex = result.injects.length - 1;
+        } else {
+            result.elementIndex = result.injects.findIndex(i => i === "$element");
+        }
+    }
+    if (need$Attrs) {
+        if (!result.injects.includes("$attrs")) {
+            result.injects.push("$attrs");
+            result.attrsIndex = result.injects.length - 1;
+        } else {
+            result.attrsIndex = result.injects.findIndex(i => i === "$attrs");
+        }
+    }
+    return result;
 }
 
 function parseIOProperties(proto: any, generator: DirectiveGenerator) {
@@ -161,6 +195,10 @@ function parseIOProperties(proto: any, generator: DirectiveGenerator) {
                 case WatchMetaKey:
                     const watch = prop as IWatchProperty;
                     generator.Watch(watch.watchKey, proto[watch.FuncName]);
+                    break;
+                case TempRefMetaKey:
+                    const tempRef = prop as ITemplateRefProperty;
+                    generator.ViewChild(tempRef.tempName, tempRef.keyName);
                     break;
             }
         });

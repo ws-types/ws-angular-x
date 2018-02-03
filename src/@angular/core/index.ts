@@ -1,4 +1,5 @@
 import * as angular from "angular";
+export * from "./template/templateRef";
 
 import { Ng2Module, IModuleClass, IModuleGenerator } from "./../metadata";
 

@@ -13,12 +13,14 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
 
     public get Selector(): string { return SelectorParse(this.config.selector); }
     public get Type() { return GeneratorType.None; }
+    public get ViewChildren() { return this._viewChilds; }
 
     protected _ctrl: TClass;
     protected _tpl: TemplateParser;
     protected _css: CssParser;
     protected _bindings: IBindings = {};
     protected _requires: { [propName: string]: string } = {};
+    protected _viewChilds: Array<[string, string]> = [];
 
     constructor(protected config: TConfig) {
         this._tpl = new TemplateParser(<any>config);
@@ -42,6 +44,11 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
 
     public Require(require: string, propName: string, scope: RequireScope, strict: RequireStrict) {
         this._requires[propName] = `${strict}${scope}${require}`;
+        return this;
+    }
+
+    public ViewChild(tempName: string, keyName: string) {
+        this._viewChilds.push([keyName, tempName]);
         return this;
     }
 

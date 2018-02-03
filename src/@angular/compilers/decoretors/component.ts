@@ -4,13 +4,15 @@ import { IComponentConfig, IComponentClass } from "./../../metadata";
 import { CreateComponent } from "./../creators";
 import {
     InputMetaKey, OutputMetaKey, IInputProperty,
-    IRequireProperty, RequireMetaKey, ParamsTypeMetaKey
+    IRequireProperty, RequireMetaKey, ParamsTypeMetaKey,
+    TempRefMetaKey, ITemplateRefProperty
 } from "./others";
 import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
-import { createInjects, mixinScope, mixinClass, mixinClassProto } from "./directive";
+import { createInjects, mixinScope, mixinClass, mixinClassProto, mixinDomScope } from "./directive";
+import { TemplateRef } from "./../../core/template/templateRef";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
@@ -32,7 +34,8 @@ export function $Component(config: IComponentConfig) {
 function createExtends<T extends IComponentClass>(target: T, config: IComponentConfig) {
     const generator = CreateComponent(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const [injects, scopeIndex] = createInjects(target, config.mixin);
+    const needDom = generator.ViewChildren.length > 0;
+    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, needDom, needDom);
     bindPolyfill();
     const proto = target.prototype;
     class ComponentClass extends target {
@@ -44,6 +47,10 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
             generator.StylesLoad();
             if (config.mixin) {
                 mixinScope(this, args[scopeIndex]);
+            }
+            if (needDom) {
+                mixinDomScope(this, args[elementIndex], args[attrsIndex]);
+                console.log(args);
             }
         }
 
@@ -66,6 +73,12 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         }
 
         public $postLink() {
+            if (generator.ViewChildren.length > 0) {
+                const root = this["$element"] as ng.IRootElementService;
+                generator.ViewChildren.forEach(([key, name]) => {
+                    this[key] = new TemplateRef<any>(root.find(`[ngx-name-selector="${name}"]`)[0]);
+                });
+            }
             if (proto.ngAfterViewInit) {
                 proto.ngAfterViewInit.bind(this)();
             }
@@ -102,6 +115,9 @@ function parseIOProperties(proto: any, generator: ComponentGenerator) {
             } else if (key === RequireMetaKey) {
                 const require = prop as IRequireProperty;
                 generator.Require(require.require, require.keyName, require.scope, require.strict);
+            } else if (key === TempRefMetaKey) {
+                const tempRef = prop as ITemplateRefProperty;
+                generator.ViewChild(tempRef.tempName, tempRef.keyName);
             }
         });
     });
