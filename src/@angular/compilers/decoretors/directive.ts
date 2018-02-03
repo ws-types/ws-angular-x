@@ -10,6 +10,7 @@ import {
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
+import { TemplateRef } from "./../../core/template/templateRef";
 
 
 export function Directive(config: IDirectiveConfig) {
@@ -70,6 +71,12 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         }
 
         public $postLink() {
+            if (generator.ViewChildren.length > 0) {
+                const root = this["$element"] as ng.IRootElementService;
+                generator.ViewChildren.forEach(([key, name]) => {
+                    this[key] = new TemplateRef<any>(root.find(`[ngx-name-selector="${name}"]`)[0]);
+                });
+            }
             if (proto.ngAfterViewInit) {
                 proto.ngAfterViewInit.bind(this)();
             }
