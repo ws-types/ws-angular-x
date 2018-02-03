@@ -84,6 +84,14 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
             // console.log($("#demoInput").html());
             $("#demoInput").html(this.ngModelCtrl.$viewValue || "");
         };
+        this.ngModelCtrl.$formatters.push((value) => {
+            console.log(value);
+            return value + "_f";
+        });
+        this.ngModelCtrl.$parsers.push((value) => {
+            console.log(value);
+            return value + "_a";
+        });
         this.$timeout(() => {
             // console.log(this.ngModel);
             $("#demoInput").html(this.ngModel);

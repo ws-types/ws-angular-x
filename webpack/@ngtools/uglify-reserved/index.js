@@ -34,6 +34,8 @@ module.exports = {
         "$document",
         "$exceptionHandler",
         "$element",
+        "$attrs",
+        "$transclude",
         "$filter",
         "$http",
         "$httpBackend",

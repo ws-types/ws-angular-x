@@ -28,6 +28,8 @@ export class OutComponent implements OnInit, OnDestroy {
     public message = "MESSAGE_AAAA";
 
     public modelString = "default-value";
+    public get ModelString() { return this.modelString; }
+    public set ModelString(value: string) { this.modelString = value; }
 
     public show01 = true;
 
