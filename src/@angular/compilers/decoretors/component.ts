@@ -75,7 +75,11 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
             root.attr(`${NgHostPrefix}-${selector}`, "");
             if (generator.ViewChildren.length > 0) {
                 generator.ViewChildren.forEach(([key, name]) => {
-                    this[key] = new TemplateRef<any>(root.find(`[ngx-name-selector="${name}"]`)[0]);
+                    const temp = root.find(`[ngx-name-selector="${name}"]`)[0];
+                    if (temp) {
+                        temp.hidden = true;
+                    }
+                    this[key] = new TemplateRef<any>(temp);
                 });
             }
             if (proto.ngAfterViewInit) {
