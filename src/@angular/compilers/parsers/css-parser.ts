@@ -10,6 +10,7 @@ const NgClassSheet = "stylesheet";
 
 const ngCover = /^::ng[x]?-cover(\[([^\s]+)\])?\s/;
 const ngGlobal = /\s::ng[x]?-global/;
+const ngHost = /^:host\s*/;
 
 export interface ICssViewConfig {
     encapsulation?: ViewEncapsulation;
@@ -54,13 +55,18 @@ function parseCss(css: CssOnject, index: number, selector: string, type: ViewEnc
     maps.forEach(key => {
         let item = `${key}${attr_selector} {`;
         let important = false;
-        if (type === ViewEncapsulation.None) {
-            item = `${key} {`;
-        } else if (ngGlobal.test(key)) {
-            item = `${key.replace(ngGlobal, "").replace(ngCover, "")} {`;
-        } else if (ngCover.test(key)) {
-            item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$2}"] ` : `${selector} `)} {`;
+        if (ngHost.test(key)) {
+            item = `${key.replace(ngHost, selector + " ")} {`;
             important = true;
+        } else {
+            if (type === ViewEncapsulation.None) {
+                item = `${key} {`;
+            } else if (ngGlobal.test(key)) {
+                item = `${key.replace(ngGlobal, "").replace(ngCover, "")} {`;
+            } else if (ngCover.test(key)) {
+                item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$2}"] ` : `${selector} `)} {`;
+                important = true;
+            }
         }
         const content = css[key];
         const subKeys = Object.keys(content);
