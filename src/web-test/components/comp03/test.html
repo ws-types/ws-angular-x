@@ -1,6 +1,13 @@
 <div>
-    <test-tabs [tabTemplate]="vm.innerContent" [tabsData]="vm.tabs"></test-tabs>
+    <test-tabs ng-if="vm.type===1" [tabTemplate]="vm.innerContent" [tabsData]="vm.tabs"></test-tabs>
+    <test-tabs ng-if="vm.type===2" [tabTemplate]="vm.innerContent2" [tabsData]="vm.tabs"></test-tabs>
+    <div>
+        <button ng-click="vm.changeTemp()">Change template</button>
+    </div>
 </div>
 <ng-template let-model="tab" #innerContent>
-    <div>{{tab.title}}</div>
+    <div style="display:inline-block;width:30%">{{tab.title}}</div>
+</ng-template>
+<ng-template let-model="tab" #innerContent2>
+    <div style="display:inline-block;width:100%">{{tab.title}}</div>
 </ng-template>

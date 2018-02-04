@@ -6,6 +6,8 @@ import {
 } from "@angular";
 import * as angular from "angular";
 
+const $ng = angular.element;
+
 @Component({
     selector: "test-tabs",
     template: `
@@ -13,17 +15,18 @@ import * as angular from "angular";
         <ng-template class="tabs-container"></ng-template>
     </div>
     `,
+    alias: "__testTabsCtrl",
     styleUrls: [],
 })
 export class TabsComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
 
     @Input()
-    private tabTemplate: TemplateRef<any>;
+    private tabTemplate: TemplateRef<HTMLNgTemplate>;
 
     @Input()
     private tabsData: Array<{ title: string }>;
 
-    constructor(private compile: CompileService) {
+    constructor(private $scope, private compile: CompileService, private $element: ng.IRootElementService) {
 
     }
 
@@ -42,10 +45,19 @@ export class TabsComponent implements OnInit, OnDestroy, AfterViewInit, OnChange
     ngOnChanges(changes: SimpleChanges): void {
         for (const prop in changes) {
             if (prop === "tabTemplate") {
-                console.log(changes[prop].currentValue);
-
-
-
+                const current = changes[prop].currentValue;
+                if (current) {
+                    console.log(this.tabTemplate.nativeElement.outerHTML);
+                    const container = this.$element.find(".tabs-container")[0];
+                    const repeat = document.createElement("ng-template");
+                    const v = this.tabTemplate.nativeElement.attributes.getNamedItem("let-model");
+                    const letModel = (v && v.value) || "model";
+                    $ng(repeat).attr("ng-repeat", `${letModel} in __testTabsCtrl.tabsData`);
+                    repeat.appendChild(this.tabTemplate.nativeElement.cloneNode(true));
+                    container.appendChild(repeat);
+                    console.log(this.$scope);
+                    $ng(container).replaceWith(this.compile.link(container, this["$scope"]));
+                }
             }
         }
     }

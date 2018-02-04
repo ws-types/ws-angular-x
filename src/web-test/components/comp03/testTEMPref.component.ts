@@ -14,6 +14,11 @@ export class TestTempRefComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild()
     private innerContent: TemplateRef<HTMLNgTemplate>;
 
+    @ViewChild()
+    private innerContent2: TemplateRef<HTMLNgTemplate>;
+
+    public type = 1;
+
     public tabs = [
         { title: "aaa" },
         { title: "bbb" },
@@ -29,7 +34,11 @@ export class TestTempRefComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        console.log(this.innerContent.nativeElement);
+
+    }
+
+    public changeTemp() {
+        this.type = this.type === 1 ? 2 : 1;
     }
 
 }
