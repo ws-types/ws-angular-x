@@ -11,7 +11,11 @@ import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
-import { createInjects, mixinScope, mixinClass, mixinClassProto, mixinDomScope } from "./directive";
+import {
+    createInjects, mixinScope, mixinClass,
+    mixinClassProto, mixinDomScope, ngHostSet,
+    ngTempRefSet
+} from "./directive";
 import { TemplateRef } from "./../../core/template/templateRef";
 import { NgHostPrefix } from "./../parsers/template-parser";
 
@@ -71,17 +75,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         }
 
         public $postLink() {
-            const root = this["$element"] as ng.IRootElementService;
-            root.attr(`${NgHostPrefix}-${selector}`, "");
-            if (generator.ViewChildren.length > 0) {
-                generator.ViewChildren.forEach(([key, name]) => {
-                    const temp = root.find(`[ngx-name-selector="${name}"]`)[0];
-                    if (temp) {
-                        temp.hidden = true;
-                    }
-                    this[key] = new TemplateRef<any>(temp);
-                });
-            }
+            ngTempRefSet(this, generator.ViewChildren, ngHostSet(this, selector, true));
             if (proto.ngAfterViewInit) {
                 proto.ngAfterViewInit.bind(this)();
             }
@@ -109,18 +103,23 @@ function parseIOProperties(proto: any, generator: ComponentGenerator) {
     const IOKeys = Reflect.getMetadataKeys(proto);
     IOKeys.forEach(key => {
         (Reflect.getMetadata(key, proto) as any[]).forEach(prop => {
-            if (key === InputMetaKey) {
-                const input = prop as IInputProperty;
-                generator.Input(input.keyName, input.outAlias, input.isString, input.isTwoWay);
-            } else if (key === OutputMetaKey) {
-                generator.Output(prop);
-                outputs.push(prop);
-            } else if (key === RequireMetaKey) {
-                const require = prop as IRequireProperty;
-                generator.Require(require.require, require.keyName, require.scope, require.strict);
-            } else if (key === TempRefMetaKey) {
-                const tempRef = prop as ITemplateRefProperty;
-                generator.ViewChild(tempRef.tempName, tempRef.keyName);
+            switch (key) {
+                case InputMetaKey:
+                    const input = prop as IInputProperty;
+                    generator.Input(input.keyName, input.outAlias, input.isString, input.isTwoWay);
+                    break;
+                case OutputMetaKey:
+                    generator.Output(prop);
+                    outputs.push(prop);
+                    break;
+                case RequireMetaKey:
+                    const require = prop as IRequireProperty;
+                    generator.Require(require.require, require.keyName, require.scope, require.strict);
+                    break;
+                case TempRefMetaKey:
+                    const tempRef = prop as ITemplateRefProperty;
+                    generator.ViewChild(tempRef.tempName, tempRef.keyName);
+                    break;
             }
         });
     });

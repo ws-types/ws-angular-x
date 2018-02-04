@@ -68,7 +68,7 @@ function parseCss(css: CssOnject, index: number, selector: string, type: ViewEnc
             const value = content[i];
             item += `\n\t${i}:${value}${important ? " !important" : ""};`;
         });
-        item += "\n}\n";
+        item += "\n}\n\n";
         str += item;
     });
     return str;

@@ -13,6 +13,12 @@ import { bindPolyfill } from "./../../utils/bind.polyfill";
 import { TemplateRef } from "./../../core/template/templateRef";
 import { NgHostPrefix } from "./../parsers/template-parser";
 
+interface IInjectBundle {
+    injects: string[];
+    scopeIndex?: number;
+    elementIndex?: number;
+    attrsIndex?: number;
+}
 
 export function Directive(config: IDirectiveConfig) {
     return function direcDecorator<T extends IDirectiveClass>(target: T) {
@@ -71,15 +77,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         }
 
         public $postLink() {
-            const root = this["$element"] as ng.IRootElementService;
-            if (hasTemplate) {
-                root.attr(`${NgHostPrefix}-${selector}`, "");
-            }
-            if (generator.ViewChildren.length > 0) {
-                generator.ViewChildren.forEach(([key, name]) => {
-                    this[key] = new TemplateRef<any>(root.find(`[ngx-name-selector="${name}"]`)[0]);
-                });
-            }
+            ngTempRefSet(this, generator.ViewChildren, ngHostSet(this, selector, hasTemplate));
             if (proto.ngAfterViewInit) {
                 proto.ngAfterViewInit.bind(this)();
             }
@@ -102,6 +100,25 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     return generator;
 }
 
+export function ngHostSet(instance: any, selector: string, addHost = false) {
+    const root = instance["$element"] as ng.IRootElementService;
+    if (addHost) {
+        root.attr(`${NgHostPrefix}-${selector}`, "");
+    }
+    return root;
+}
+
+export function ngTempRefSet(instance: any, children: Array<[string, string]>, root: angular.IRootElementService) {
+    if (children.length > 0) {
+        children.forEach(([key, name]) => {
+            const temp = root.find(`[ngx-name-selector="${name}"]`)[0];
+            if (temp) {
+                temp.hidden = true;
+            }
+            instance[key] = new TemplateRef<any>(temp);
+        });
+    }
+}
 
 export function mixinScope(instance: any, scope: ng.IScope) {
     instance["$scope"] = scope;
@@ -147,37 +164,31 @@ export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
 
 
 export function createInjects(target: any, need$Scope = false, need$Element = false, need$Attrs = false) {
-    const result = {
+    const result: IInjectBundle = {
         injects: parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []),
         scopeIndex: -1,
         elementIndex: -1,
         attrsIndex: -1
     };
     if (need$Scope) {
-        if (!result.injects.includes("$scope")) {
-            result.injects.push("$scope");
-            result.scopeIndex = result.injects.length - 1;
-        } else {
-            result.scopeIndex = result.injects.findIndex(i => i === "$scope");
-        }
+        result.scopeIndex = add$Inject(result, "$scope");
     }
     if (need$Element) {
-        if (!result.injects.includes("$element")) {
-            result.injects.push("$element");
-            result.elementIndex = result.injects.length - 1;
-        } else {
-            result.elementIndex = result.injects.findIndex(i => i === "$element");
-        }
+        result.elementIndex = add$Inject(result, "$element");
     }
     if (need$Attrs) {
-        if (!result.injects.includes("$attrs")) {
-            result.injects.push("$attrs");
-            result.attrsIndex = result.injects.length - 1;
-        } else {
-            result.attrsIndex = result.injects.findIndex(i => i === "$attrs");
-        }
+        result.attrsIndex = add$Inject(result, "$attrs");
     }
     return result;
+}
+
+function add$Inject(result: IInjectBundle, target: string) {
+    if (!result.injects.includes(target)) {
+        result.injects.push(target);
+        return result.injects.length - 1;
+    } else {
+        return result.injects.findIndex(i => i === target);
+    }
 }
 
 function parseIOProperties(proto: any, generator: DirectiveGenerator) {
