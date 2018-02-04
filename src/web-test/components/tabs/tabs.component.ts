@@ -2,8 +2,9 @@ import {
     Component, OnInit, OnDestroy, ViewEncapsulation,
     $Inject, $Injects, ViewChild, HTMLNgTemplate,
     TemplateRef, AfterViewInit, Input, OnChanges,
-    SimpleChanges
+    SimpleChanges, CompileService
 } from "@angular";
+import * as angular from "angular";
 
 @Component({
     selector: "test-tabs",
@@ -21,6 +22,10 @@ export class TabsComponent implements OnInit, OnDestroy, AfterViewInit, OnChange
 
     @Input()
     private tabsData: Array<{ title: string }>;
+
+    constructor(private compile: CompileService) {
+
+    }
 
     ngOnInit(): void {
 
