@@ -1,9 +1,9 @@
 
 export class TemplateRef<T> {
 
-    public get nativeElement() { return this.rootElement; }
+    public get nativeElement() { return this._rootElement; }
 
-    constructor(private rootElement: T) {
+    constructor(private _rootElement: T) {
 
     }
 

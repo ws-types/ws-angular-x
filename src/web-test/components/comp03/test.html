@@ -1,0 +1,6 @@
+<div>
+    <test-tabs [tabTemplate]="vm.innerContent" [tabsData]="vm.tabs"></test-tabs>
+</div>
+<ng-template let-model="tab" #innerContent>
+    <div>{{tab.title}}</div>
+</ng-template>

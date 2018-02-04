@@ -1,3 +1,4 @@
+import * as angular from "angular";
 import { IDirectiveConfig, IDirectiveClass, Type } from "./../../metadata";
 import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";
@@ -113,7 +114,7 @@ export function ngTempRefSet(instance: any, children: Array<[string, string]>, r
         children.forEach(([key, name]) => {
             const temp = root.find(`[ngx-name-selector="${name}"]`)[0];
             if (temp) {
-                temp.hidden = true;
+                temp.parentElement.removeChild(temp);
             }
             instance[key] = new TemplateRef<any>(temp);
         });
