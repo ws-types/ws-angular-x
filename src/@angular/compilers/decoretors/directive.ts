@@ -14,7 +14,7 @@ import { bindPolyfill } from "./../../utils/bind.polyfill";
 import { TemplateRef } from "./../../core/template/templateRef";
 import { NgHostPrefix } from "./../parsers/template-parser";
 
-interface IInjectBundle {
+export interface IInjectBundle {
     injects: string[];
     scopeIndex?: number;
     elementIndex?: number;
