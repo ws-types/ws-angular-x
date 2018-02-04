@@ -86,7 +86,7 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
     }
 
     ngAfterViewInit(): void {
-        console.log(this.theTESTdom.nativeElement);
+        // console.log(this.theTESTdom.nativeElement);
         if (!this.ngModelCtrl) {
             return;
         }

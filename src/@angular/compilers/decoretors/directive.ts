@@ -11,6 +11,7 @@ import { EventEmitter } from "./../features/emit";
 import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
 import { TemplateRef } from "./../../core/template/templateRef";
+import { NgHostPrefix } from "./../parsers/template-parser";
 
 
 export function Directive(config: IDirectiveConfig) {
@@ -31,10 +32,11 @@ export function $Directive(config: IDirectiveConfig) {
 }
 
 function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, target: T) {
+    const selector = config.selector;
+    const hasTemplate = !!config.template;
     const generator = CreateDirective(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const needDom = generator.ViewChildren.length > 0;
-    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, needDom, needDom);
+    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, true, true);
     bindPolyfill();
     const proto = target.prototype;
     class DirectiveClass extends target {
@@ -44,11 +46,9 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            mixinDomScope(this, args[elementIndex], args[attrsIndex]);
             if (config.mixin) {
                 mixinScope(this, args[scopeIndex]);
-            }
-            if (needDom) {
-                mixinDomScope(this, args[elementIndex], args[attrsIndex]);
             }
         }
 
@@ -71,8 +71,11 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         }
 
         public $postLink() {
+            const root = this["$element"] as ng.IRootElementService;
+            if (hasTemplate) {
+                root.attr(`${NgHostPrefix}-${selector}`, "");
+            }
             if (generator.ViewChildren.length > 0) {
-                const root = this["$element"] as ng.IRootElementService;
                 generator.ViewChildren.forEach(([key, name]) => {
                     this[key] = new TemplateRef<any>(root.find(`[ngx-name-selector="${name}"]`)[0]);
                 });

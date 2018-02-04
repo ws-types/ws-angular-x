@@ -13,6 +13,7 @@ import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
 import { createInjects, mixinScope, mixinClass, mixinClassProto, mixinDomScope } from "./directive";
 import { TemplateRef } from "./../../core/template/templateRef";
+import { NgHostPrefix } from "./../parsers/template-parser";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
@@ -32,10 +33,10 @@ export function $Component(config: IComponentConfig) {
 }
 
 function createExtends<T extends IComponentClass>(target: T, config: IComponentConfig) {
+    const selector = config.selector;
     const generator = CreateComponent(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const needDom = generator.ViewChildren.length > 0;
-    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, needDom, needDom);
+    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, true, true);
     bindPolyfill();
     const proto = target.prototype;
     class ComponentClass extends target {
@@ -45,12 +46,9 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            mixinDomScope(this, args[elementIndex], args[attrsIndex]);
             if (config.mixin) {
                 mixinScope(this, args[scopeIndex]);
-            }
-            if (needDom) {
-                mixinDomScope(this, args[elementIndex], args[attrsIndex]);
-                console.log(args);
             }
         }
 
@@ -73,8 +71,9 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         }
 
         public $postLink() {
+            const root = this["$element"] as ng.IRootElementService;
+            root.attr(`${NgHostPrefix}-${selector}`, "");
             if (generator.ViewChildren.length > 0) {
-                const root = this["$element"] as ng.IRootElementService;
                 generator.ViewChildren.forEach(([key, name]) => {
                     this[key] = new TemplateRef<any>(root.find(`[ngx-name-selector="${name}"]`)[0]);
                 });

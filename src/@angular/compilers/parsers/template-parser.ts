@@ -3,6 +3,7 @@ import { ViewEncapsulation } from "./../../metadata";
 
 const $A = angular.element;
 export const NgContentPrefix = "_ngcontent-v2";
+export const NgHostPrefix = "_nghost-v2";
 
 export interface ITemplateViewConfig {
     encapsulation?: ViewEncapsulation;

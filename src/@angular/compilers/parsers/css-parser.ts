@@ -1,7 +1,7 @@
 import * as angular from "angular";
 import { ViewEncapsulation } from "./../../metadata/enums";
 import { CssOnject } from "./../../metadata";
-import { NgContentPrefix } from "./template-parser";
+import { NgContentPrefix, NgHostPrefix } from "./template-parser";
 
 const $A = angular.element;
 
@@ -11,6 +11,7 @@ const NgClassSheet = "stylesheet";
 const ngCover = /^::ng[x]?-cover(\[([^\s]+)\])?\s/;
 const ngGlobal = /\s::ng[x]?-global/;
 const ngHost = /^:host\s*/;
+const ngDeep = /::ng-deep\s*/;
 
 export interface ICssViewConfig {
     encapsulation?: ViewEncapsulation;
@@ -50,33 +51,52 @@ export class CssParser {
 
 function parseCss(css: CssOnject, index: number, selector: string, type: ViewEncapsulation) {
     const attr_selector = `[${NgClassPrefix}-${selector}]`;
+    const host_selector = `[${NgHostPrefix}-${selector}]`;
     const maps = Object.keys(css);
     let str = "";
     maps.forEach(key => {
         let item = `${key}${attr_selector} {`;
         let important = false;
-        // if (ngHost.test(key)) {
-        //     item = `${key.replace(ngHost, `${attr_selector} `)} {`;
-        // } else {
-        if (type === ViewEncapsulation.None) {
-            item = `${key} {`;
-        } else if (ngGlobal.test(key)) {
-            item = `${key.replace(ngGlobal, "").replace(ngCover, "")} {`;
-        } else if (ngCover.test(key)) {
-            item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$2}"] ` : `${selector} `)} {`;
-            important = true;
+        if (ngHost.test(key)) {
+            ({ item, important } = hostCssParse(key, item, host_selector, attr_selector));
+        } else {
+            ({ item, important } = contentCssParse(type, item, key, selector));
         }
-        // }
         const content = css[key];
         const subKeys = Object.keys(content);
         subKeys.forEach(i => {
             const value = content[i];
-            item += `${i}:${value}${important ? " !important" : ""};`;
+            item += `\n\t${i}:${value}${important ? " !important" : ""};`;
         });
-        item += "} ";
+        item += "\n}\n";
         str += item;
     });
     return str;
+}
+
+function contentCssParse(type: ViewEncapsulation, item: string, key: string, selector: string) {
+    let important = false;
+    if (type === ViewEncapsulation.None) {
+        item = `${key} {`;
+    } else if (ngGlobal.test(key)) {
+        item = `${key.replace(ngGlobal, "").replace(ngCover, "")} {`;
+    } else if (ngCover.test(key)) {
+        item = `${key.replace(ngCover, RegExp.$1 ? `[ngx-child="${RegExp.$2}"] ` : `${selector} `)} {`;
+        important = true;
+    }
+    return { item, important };
+}
+
+function hostCssParse(key: string, item: string, host_selector: string, attr_selector: string) {
+    let important = false;
+    if (ngDeep.test(key)) {
+        item = `${key.replace(ngDeep, "").replace(ngHost, `${host_selector} `)} {`;
+        important = true;
+    } else {
+        const result = key.replace(ngHost, `${host_selector} `);
+        item = `${result}${key.replace(ngHost, "").trim() === "" ? "" : attr_selector} {`;
+    }
+    return { item, important };
 }
 
 function loadCss(css: string, index: number, selector: string) {
