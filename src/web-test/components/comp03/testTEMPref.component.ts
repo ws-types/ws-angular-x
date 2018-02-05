@@ -1,7 +1,7 @@
 import {
     Component, OnInit, OnDestroy, ViewEncapsulation,
     $Inject, $Injects, ViewChild, HTMLNgTemplate,
-    TemplateRef, AfterViewInit
+    TemplateRef, AfterViewInit, ElementRef
 } from "@angular";
 
 @Component({
@@ -12,10 +12,10 @@ import {
 export class TestTempRefComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild()
-    private innerContent: TemplateRef<HTMLNgTemplate>;
+    private innerContent: ElementRef<HTMLNgTemplate>;
 
     @ViewChild()
-    private innerContent2: TemplateRef<HTMLNgTemplate>;
+    private innerContent2: ElementRef<HTMLNgTemplate>;
 
     public type = 1;
 

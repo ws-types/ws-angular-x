@@ -13,6 +13,7 @@ import { parseInjectsAndDI } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
 import { TemplateRef } from "./../../core/template/templateRef";
 import { NgHostPrefix } from "./../parsers/template-parser";
+import { ElementRef } from "./../../core/template/elementRef";
 
 export interface IInjectBundle {
     injects: string[];
@@ -43,7 +44,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const hasTemplate = !!config.template;
     const generator = CreateDirective(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, true, true);
+    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target);
     bindPolyfill();
     const proto = target.prototype;
     class DirectiveClass extends target {
@@ -54,9 +55,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
             super(...args);
             generator.StylesLoad();
             mixinDomScope(this, args[elementIndex], args[attrsIndex]);
-            if (config.mixin) {
-                mixinScope(this, args[scopeIndex]);
-            }
+            mixinScope(this, args[scopeIndex]);
         }
 
         public $onInit() {
@@ -113,10 +112,12 @@ export function ngTempRefSet(instance: any, children: Array<[string, string]>, r
     if (children.length > 0) {
         children.forEach(([key, name]) => {
             const temp = root.find(`[ngx-name-selector="${name}"]`)[0];
+            let scope = instance["$scope"];
             if (temp) {
                 temp.parentElement.removeChild(temp);
+                scope = scope || angular.element(temp).scope();
             }
-            instance[key] = new TemplateRef<any>(temp);
+            instance[key] = new ElementRef<any>(temp, scope);
         });
     }
 }
@@ -164,7 +165,7 @@ export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
 }
 
 
-export function createInjects(target: any, need$Scope = false, need$Element = false, need$Attrs = false) {
+export function createInjects(target: any, need$Scope = true, need$Element = true, need$Attrs = true) {
     const result: IInjectBundle = {
         injects: parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []),
         scopeIndex: -1,

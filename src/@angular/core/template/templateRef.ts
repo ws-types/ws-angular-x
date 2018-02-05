@@ -1,11 +1,12 @@
+import { ElementRef } from "./elementRef";
+
 
 export class TemplateRef<T extends HTMLElement> {
 
-    public get nativeElement() { return this._rootElement; }
-    private _a: string;
+    public get elementRef() { return this._eleRf; }
 
-    constructor(private _rootElement: T) {
-        this._rootElement = _rootElement.cloneNode(true) as any;
+    constructor(private _eleRf: ElementRef<T>) {
+
     }
 
 }

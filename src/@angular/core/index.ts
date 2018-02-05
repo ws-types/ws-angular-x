@@ -1,16 +1,21 @@
 import * as angular from "angular";
 export * from "./template/templateRef";
+export * from "./template/elementRef";
 export * from "./services/compile.service";
 
 import { Ng2Module, IModuleClass, IModuleGenerator } from "./../metadata";
 import { NgModule } from "./../compilers/decoretors/module";
 import { CompileService } from "./services/compile.service";
+import { NgTemplateOutletDirective } from "./template/ng-template.directive";
 
 @NgModule({
     selector: "ws-angular-x-v1",
     imports: [],
     providers: [
         CompileService
+    ],
+    declarations: [
+        NgTemplateOutletDirective,
     ]
 })
 class CoreModule {

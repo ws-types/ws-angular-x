@@ -40,7 +40,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     const selector = config.selector;
     const generator = CreateComponent(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target, config.mixin, true, true);
+    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target);
     bindPolyfill();
     const proto = target.prototype;
     class ComponentClass extends target {
@@ -51,9 +51,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
             super(...args);
             generator.StylesLoad();
             mixinDomScope(this, args[elementIndex], args[attrsIndex]);
-            if (config.mixin) {
-                mixinScope(this, args[scopeIndex]);
-            }
+            mixinScope(this, args[scopeIndex]);
         }
 
         public $onInit() {
