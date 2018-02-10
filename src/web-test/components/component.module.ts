@@ -5,13 +5,15 @@ import { RouterModule } from "@angular/router/main/module";
 import { Routes, Route } from "@angular/router";
 import { TestTempRefComponent } from "@src/components/comp03/testTEMPref.component";
 import { TabsComponent } from "@src/components/tabs/tabs.component";
+import { ContainerComponent } from "@src/components/contanier/container.component";
 
 @NgModule({
     declarations: [
         NewComponent,
         OutComponent,
         TestTempRefComponent,
-        TabsComponent
+        TabsComponent,
+        ContainerComponent
     ],
     providers: []
 })
