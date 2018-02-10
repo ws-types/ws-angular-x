@@ -6,6 +6,7 @@ import {
     IComponentConfig, GeneratorType, IComponentClass,
     RequireScope, RequireStrict
 } from "./../../metadata";
+import { ElementRef } from "./../../core/template/elementRef";
 
 export interface IBindings { [key: string]: string; }
 
@@ -20,7 +21,7 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
     protected _css: CssParser;
     protected _bindings: IBindings = {};
     protected _requires: { [propName: string]: string } = {};
-    protected _viewChilds: Array<[string, string]> = [];
+    protected _viewChilds: Array<[string, ElementRef<any>]> = [];
 
     constructor(protected config: TConfig) {
         this._tpl = new TemplateParser(<any>config);
@@ -48,7 +49,7 @@ export abstract class BaseGenerator<TBundle, TClass, TConfig extends { selector:
     }
 
     public ViewChild(tempName: string, keyName: string) {
-        this._viewChilds.push([keyName, tempName]);
+        this._viewChilds.push([keyName, this._tpl.GetNgTemplate(tempName)]);
         return this;
     }
 

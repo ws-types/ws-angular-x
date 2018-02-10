@@ -1,25 +1,21 @@
+import { IRefScope, IElementRef } from "./../../metadata";
 
-export class ElementRef<T extends HTMLElement> {
 
-    public get nativeElement() { return this._rootElement; }
-    public get scope(): IRefScope { return this._scope; }
+export class ElementRef<T extends HTMLElement> implements IElementRef<T> {
 
-    constructor(private _rootElement: T, private _scope: ng.IScope) {
-        this._rootElement = _rootElement.cloneNode(true) as any;
-        this._scope = _scope.$new(false, _scope);
+    constructor(public nativeElement: T, public scope?: ng.IScope) { }
+
+    public setContext(_scope: ng.IScope) {
+        this.scope = _scope;
+        return this;
     }
 
     public createView(): T {
-        return this._rootElement.cloneNode(true) as any;
+        return this.nativeElement.cloneNode(true) as any;
     }
 
     public createContext(): IRefScope {
-        return this._scope.$new(false, this._scope);
+        return this.scope && this.scope.$new(false, this.scope);
     }
 
-}
-
-export interface IRefScope extends ng.IScope {
-    $parent: IRefScope;
-    [propName: string]: any;
 }

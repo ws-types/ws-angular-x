@@ -11,6 +11,7 @@ export interface IComponentConfig {
     styleUrls?: string[];
     alias?: string;
     mixin?: boolean;
+    useAST?: boolean;
     encapsulation?: ViewEncapsulation;
 }
 

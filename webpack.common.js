@@ -19,7 +19,8 @@ module.exports = {
             "rxjs",
             "uuid",
             "decamelize",
-            "camelcase"
+            "camelcase",
+            "parse5"
         ],
         index: "./src/web-test/index.ts"
     },

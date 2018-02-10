@@ -4,6 +4,7 @@ import { IProviderBundle } from "./provider";
 import { IModuleBundle, IModuleLazys } from "./module";
 import { IPipeBundle } from "./pipe";
 import { Injectable } from "angular";
+import { IElementRef } from "./template";
 
 export enum GeneratorType {
     Component = "component",
@@ -23,7 +24,7 @@ export interface IGenerator<T> {
 export interface IComponentGenerator extends IGenerator<IComponentBundle> {
     StylesLoad?: Function;
     StylesUnload?: Function;
-    ViewChildren?: Array<[string, string]>;
+    ViewChildren?: Array<[string, IElementRef<any>]>;
 }
 
 export interface IDirectiveGenerator extends IGenerator<IDirectiveBundle> {

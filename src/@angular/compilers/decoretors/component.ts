@@ -56,6 +56,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
 
         public $onInit() {
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            ngTempRefSet(this, generator.ViewChildren);
             if (config.mixin && this["$scope"]) {
                 mixinClass(this["$scope"], this);
                 mixinClassProto(this["$scope"], target, this);
@@ -73,7 +74,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         }
 
         public $postLink() {
-            ngTempRefSet(this, generator.ViewChildren, ngHostSet(this, selector, true));
+            ngHostSet(this, selector, true);
             if (proto.ngAfterViewInit) {
                 proto.ngAfterViewInit.bind(this)();
             }

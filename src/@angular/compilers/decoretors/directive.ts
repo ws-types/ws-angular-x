@@ -60,6 +60,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
 
         public $onInit() {
             outputs.forEach(emit => this[emit] = new EventEmitter<any>(this[emit]));
+            ngTempRefSet(this, generator.ViewChildren);
             if (config.mixin && this["$scope"]) {
                 mixinClass(this["$scope"], this);
                 mixinClassProto(this["$scope"], target, this);
@@ -77,7 +78,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         }
 
         public $postLink() {
-            ngTempRefSet(this, generator.ViewChildren, ngHostSet(this, selector, hasTemplate));
+            ngHostSet(this, selector, hasTemplate);
             if (proto.ngAfterViewInit) {
                 proto.ngAfterViewInit.bind(this)();
             }
@@ -108,17 +109,9 @@ export function ngHostSet(instance: any, selector: string, addHost = false) {
     return root;
 }
 
-export function ngTempRefSet(instance: any, children: Array<[string, string]>, root: angular.IRootElementService) {
+export function ngTempRefSet(instance: any, children: Array<[string, ElementRef<any>]>) {
     if (children.length > 0) {
-        children.forEach(([key, name]) => {
-            const temp = root.find(`[ngx-name-selector="${name}"]`)[0];
-            let scope = instance["$scope"];
-            if (temp) {
-                temp.parentElement.removeChild(temp);
-                scope = scope || angular.element(temp).scope();
-            }
-            instance[key] = new ElementRef<any>(temp, scope);
-        });
+        children.forEach(([key, element]) => instance[key] = element.setContext(instance["$scope"]));
     }
 }
 

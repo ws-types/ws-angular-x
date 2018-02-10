@@ -10,7 +10,3 @@ export class TemplateRef<T extends HTMLElement> {
     }
 
 }
-
-export interface HTMLNgTemplate extends HTMLElement {
-    [propName: string]: any;
-}

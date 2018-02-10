@@ -9,3 +9,4 @@ export * from "./generator";
 export * from "./class";
 export * from "./life-cycles";
 export * from "./common";
+export * from "./template";

@@ -8,6 +8,7 @@ import {
     selector: "test-temp-ref",
     templateUrl: "./test.html",
     styleUrls: [],
+    useAST: true,
 })
 export class TestTempRefComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -26,7 +27,8 @@ export class TestTempRefComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
 
     ngOnInit(): void {
-
+        console.log(this.innerContent);
+        console.log(this.innerContent2);
     }
 
     ngOnDestroy(): void {
