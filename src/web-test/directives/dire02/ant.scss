@@ -5,3 +5,30 @@
 .new-color{
     color:lightcoral;
 }
+
+@media(max-width:1200px){
+    :host  ::ng-deep .new-back {
+        background:blue;
+    }
+}
+
+@keyframes sss {
+    from {top:0px;}
+    to {top:200px;}
+}
+
+@keyframes bbb {
+    0%   {top:0px;}
+    25%  {top:200px;}
+    50%  {top:100px;}
+    75%  {top:200px;}
+    100% {top:0px;}
+}
+
+@keyframes ddd {
+    0%,
+    25%  {top:200px;}
+    50%,
+    75%,
+    100% {top:0px;}
+}

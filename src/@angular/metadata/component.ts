@@ -1,13 +1,13 @@
 import { ViewEncapsulation } from "./enums";
 import { IClass, ICommonController } from "./class";
-import { CssOnject } from "./common";
+import { CssObject } from "./common";
 
 export interface IComponentConfig {
     selector: string;
     template?: string;
     templateUrl?: string;
-    style?: CssOnject;
-    styles?: CssOnject[];
+    style?: CssObject;
+    styles?: Array<CssObject>;
     styleUrls?: string[];
     alias?: string;
     mixin?: boolean;

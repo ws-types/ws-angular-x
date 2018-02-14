@@ -91,7 +91,7 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     cssObjectLoader,
-                    'css-loader'
+                    // 'css-loader'
                 ]
             },
             {

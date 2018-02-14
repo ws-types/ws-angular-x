@@ -1,7 +1,7 @@
 import { IComponentClass, IComponentController, IComponentConfig } from "./component";
 import { ViewEncapsulation } from "./enums";
 import { IClass, ICommonController } from "./class";
-import { CssOnject } from "./common";
+import { CssObject } from "./common";
 
 export interface IDirectiveConfig extends IComponentConfig {
     isolate?: boolean;

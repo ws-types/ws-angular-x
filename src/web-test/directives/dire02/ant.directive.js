@@ -1,7 +1,7 @@
 import {
     Directive, OnInit, OnDestroy, On, Input, Watch,
     Output, EventEmitter, $Injects, $Directive, Property,
-    Require, Enumerable
+    Require, Enumerable, ViewEncapsulation
 } from "@angular";
 import { AppService } from "@src/services/app.service";
 import { Router } from "@angular/router";
