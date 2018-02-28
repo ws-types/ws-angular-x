@@ -32,7 +32,7 @@ export class CssParser {
     constructor(config: ICssViewConfig) {
         this.config = config || { encapsulation: ViewEncapsulation.Emulated, selector: "", styles: [] };
         this.classes = this.config.styles || (!this.config.style ? [] : [this.config.style]);
-        this.classes.forEach((i, index) => this.parsed_csses.push(this.parseCss(i, index)));
+        this.classes.forEach((i, index) => this.parsed_csses.push(this.parseCss(angular.copy(i), index)));
     }
 
     public Parse(): () => void {
