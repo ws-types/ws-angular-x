@@ -4,6 +4,7 @@ import { SelectorParse } from "../parsers/selector-parser";
 
 
 export function Pipe(config: IPipeConfig | string) {
+    console.log(config);
     return function decorator<T extends IPipeClass>(target: T) {
         const generator = createController(config, target);
         target.generator = generator.Class(target);

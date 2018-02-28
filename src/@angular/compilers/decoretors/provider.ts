@@ -9,6 +9,7 @@ import { ProviderGenerator } from "./../generators";
 
 
 export function Injectable(config?: IProviderConfig | string) {
+    console.log(config);
     return function decorator<T extends IProviderClass>(target: T) {
         const generator = createExtends(config, target);
         target.generator = generator;

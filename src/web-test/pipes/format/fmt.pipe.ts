@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular";
 
 
-@Pipe("fmt")
+@Pipe({ name: "fmt", i18n: true })
 export class FormatPipe implements PipeTransform {
 
     transform(value: string, length?: number) {

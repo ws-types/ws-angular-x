@@ -1,3 +1,10 @@
+export type I18nConfig = I18nPropery | boolean;
+
+export interface I18nPropery {
+    ext?: "json" | "yaml";
+    root?: string;
+    files?: { [fileName: string]: string };
+}
 
 export interface CssObject extends CssStylesheet {
     [key: string]: any;

@@ -3,7 +3,7 @@ import { AnotherService } from "@src/services/another.service";
 import { Router } from "@angular/router";
 
 
-@Injectable()
+@Injectable({ i18n: true })
 export class AppService {
 
     constructor(public router: Router, private bservice: AnotherService) {

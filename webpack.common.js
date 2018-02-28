@@ -7,6 +7,7 @@ const cssObjectLoader = path.resolve(__dirname, "./webpack/@ngtools/css-object-l
 const NgXHtmlLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-html-loader");
 const NgXRouterLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-router-loader");
 const NgXTemplateLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-template-loader");
+const NgXI18nLoader = path.resolve(__dirname, "./webpack/@ngtools/angularX-i18n-loader");
 
 module.exports = {
     entry: {
@@ -56,6 +57,14 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.json$/,
+                use: ["json-loader"]
+            },
+            {
+                test: /\.yaml$/,
+                use: ["json-loader", "yaml-loader"]
+            },
+            {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, "src/web-test"),
@@ -67,6 +76,15 @@ module.exports = {
                         options: {
                             plugins: ['transform-runtime', 'transform-decorators-legacy'],
                             presets: ['stage-0', 'es2015'],
+                        }
+                    },
+                    {
+                        loader: NgXI18nLoader,
+                        options: {
+                            default: "en-US",
+                            support: ["en-US", "zh-CN"],
+                            defaultExt: "yaml",
+                            defaultPath: "./i18n"
                         }
                     },
                     { loader: NgXTemplateLoader + "?keepUrl=false" },
@@ -82,6 +100,15 @@ module.exports = {
                         options: {
                             transpileOnly: true
                         },
+                    },
+                    {
+                        loader: NgXI18nLoader,
+                        options: {
+                            default: "en-US",
+                            support: ["en-US", "zh-CN"],
+                            defaultExt: "yaml",
+                            defaultPath: "./i18n"
+                        }
                     },
                     { loader: NgXTemplateLoader + "?keepUrl=false" },
                     { loader: NgXRouterLoader + "?debug=false&loader=system" }

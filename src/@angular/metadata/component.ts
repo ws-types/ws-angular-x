@@ -1,6 +1,6 @@
 import { ViewEncapsulation } from "./enums";
 import { IClass, ICommonController } from "./class";
-import { CssObject } from "./common";
+import { CssObject, I18nConfig } from "./common";
 
 export interface IComponentConfig {
     selector: string;
@@ -13,6 +13,7 @@ export interface IComponentConfig {
     mixin?: boolean;
     useAST?: boolean;
     encapsulation?: ViewEncapsulation;
+    i18n?: I18nConfig;
 }
 
 export interface IComponentBundle extends ng.IComponentOptions { }
