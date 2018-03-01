@@ -3,6 +3,7 @@ import {
     ITranscludeFunction, ITemplateLinkingFunction, IScope,
     ICloneAttachFunction, ITemplateLinkingFunctionOptions
 } from "angular";
+import { NGX_I18N_CONFIG } from "./../../i18n";
 
 @Injectable("@compile")
 export class CompileService {

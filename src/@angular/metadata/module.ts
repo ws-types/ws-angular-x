@@ -9,7 +9,7 @@ import { IProviderClass } from "./provider";
 import { IPipeClass } from "./pipe";
 
 export type Ng2Module = IModuleClass | IModuleGenerator;
-export type Ng2Provider = IProviderGenerator | IProviderClass;
+export type Ng2Provider = IProviderGenerator | IProviderClass | INgxProvide;
 export type Ng2Component = IComponentGenerator | IComponentClass;
 export type Ng2Directive = IDirectiveClass | IDirectiveGenerator;
 export type Ng2Pipe = IPipeClass | IPipeGenerator;
@@ -20,6 +20,15 @@ export interface IModuleConfig {
     declarations?: Ng2Declaration[];
     imports?: (Ng2Module | IModulePayload)[];
     providers?: Ng2Provider[];
+}
+
+export interface INgxProvide {
+    provide: {
+        new(...args: any[]): any;
+    };
+    name?: string;
+    useValue?: any;
+    useFactory?: any;
 }
 
 export interface IModuleBundle extends ng.IModule { }

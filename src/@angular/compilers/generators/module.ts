@@ -1,10 +1,12 @@
 import * as angular from "angular";
 import * as uuid from "uuid/v4";
+import * as camelcase from "camelcase";
 
 import { SelectorParse } from "../parsers/selector-parser";
 import {
     IModuleConfig, IModuleBundle,
-    IModulePayload, IPipeGenerator, Ng2Pipe, IModuleLazys
+    IModulePayload, IPipeGenerator, Ng2Pipe,
+    IModuleLazys, INgxProvide
 } from "./../../metadata";
 
 import {
@@ -16,6 +18,8 @@ import {
 
 import { errors } from "./../../utils/errors";
 import { Injectable } from "angular";
+import { DI } from "../../di";
+import { NGX_I18N_CONFIG, I18N_SELECTOR } from "./../../i18n";
 
 
 export class ModuleGenerator implements IModuleGenerator {
@@ -28,6 +32,7 @@ export class ModuleGenerator implements IModuleGenerator {
     private _components: IComponentGenerator[];
     private _directives: IDirectiveGenerator[];
     private _providers: IProviderGenerator[];
+    private _constants: INgxProvide[];
     private _pipes: IPipeGenerator[];
     private _imports: IModuleGenerator[];
 
@@ -63,7 +68,8 @@ export class ModuleGenerator implements IModuleGenerator {
         this._components = parseElements(<Ng2Component[]>config.declarations, GeneratorType.Component);
         this._directives = parseElements(<Ng2Directive[]>config.declarations, GeneratorType.Directive);
         this._pipes = parseElements(<Ng2Pipe[]>config.declarations, GeneratorType.Pipe);
-        this._providers = parseElements(config.providers);
+        this._constants = parseConstants(<INgxProvide[]>config.providers);
+        this._providers = parseElements(<any[]>config.providers);
     }
 
     private selectorUnique(config: IModuleConfig) {
@@ -181,6 +187,21 @@ export class ModuleGenerator implements IModuleGenerator {
         if (this._providers && this._providers.length > 0) {
             this._providers.forEach(provider => module.service(provider.Selector, provider.Build()));
         }
+        if (this._constants && this._constants.length > 0) {
+            this._constants.forEach(constant => {
+                let value: any;
+                if (constant.useValue) {
+                    value = angular.merge(new (constant.provide)(), constant.useValue);
+                } else if (constant.useFactory) {
+                    value = angular.merge(new (constant.provide)(), constant.useFactory());
+                }
+                if (constant.provide === NGX_I18N_CONFIG) {
+                    module.constant(I18N_SELECTOR, value);
+                } else {
+                    module.constant(constant.name || camelcase("constant-" + uuid()), value);
+                }
+            });
+        }
         if (this._configs && this._configs.length > 0) {
             this._configs.forEach(configFn => module.config(configFn));
         }
@@ -214,17 +235,25 @@ function parseElements<T>(elements: (IGenerator<T> | IClass<T, any>)[], flag?: s
     const results: IGenerator<T>[] = [];
     if (elements && elements.length > 0) {
         elements.forEach(e => {
-            const ele = parseToGenerator(e);
-            if (!flag ? true : flag === ele.Type) {
-                if (checkDuplicated(results, ele)) {
-                    throw errors.ElementDuplicated(ele.Selector);
+            if ((<any>e).provide) {
+                return;
+            } else {
+                const ele = parseToGenerator(e);
+                if (!flag ? true : flag === ele.Type) {
+                    if (checkDuplicated(results, ele)) {
+                        throw errors.ElementDuplicated(ele.Selector);
+                    }
+                    results.push(ele);
                 }
-                results.push(ele);
             }
         });
         return results;
     }
     return [];
+}
+
+function parseConstants<T>(elements: INgxProvide[], flag?: string): INgxProvide[] {
+    return (elements || []).filter(i => !!i.provide);
 }
 
 function checkDuplicated<T>(results: IGenerator<T>[], ele: IGenerator<T>) {

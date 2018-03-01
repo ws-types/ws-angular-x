@@ -6,8 +6,12 @@ import { Router } from "@angular/router";
 @Injectable({ i18n: true })
 export class AppService {
 
-    constructor(public router: Router, private bservice: AnotherService) {
+    private i18n: any;
 
+    constructor(public router: Router, private bservice: AnotherService) {
+        setTimeout(() => {
+            console.log(this.i18n);
+        }, 0);
     }
 
 }

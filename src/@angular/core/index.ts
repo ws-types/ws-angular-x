@@ -7,12 +7,20 @@ import { Ng2Module, IModuleClass, IModuleGenerator } from "./../metadata";
 import { NgModule } from "./../compilers/decoretors/module";
 import { CompileService } from "./services/compile.service";
 import { NgTemplateOutletDirective } from "./template/ng-template.directive";
+import { NGX_I18N_CONFIG } from "../i18n";
 
 @NgModule({
     selector: "ws-angular-x-v1",
     imports: [],
     providers: [
-        CompileService
+        {
+            provide: NGX_I18N_CONFIG,
+            useValue: {
+                locale: "en-US",
+                default: "en-Us"
+            }
+        },
+        CompileService,
     ],
     declarations: [
         NgTemplateOutletDirective,
