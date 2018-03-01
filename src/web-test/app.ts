@@ -1,4 +1,4 @@
-import { ModuleGenerator, $Injects, Config, Run } from "@angular";
+import { ModuleGenerator, $Injects, Config, Run, NGX_I18N_CONFIG } from "@angular";
 import { NgModule } from "@angular";
 import { ComponentsModule } from "@src/components/component.module";
 import { DirectivesModule } from "@src/directives/directive.module";
@@ -32,6 +32,10 @@ const rootRoutes: Routes = [
         FormatPipe
     ],
     providers: [
+        {
+            provide: NGX_I18N_CONFIG,
+            useValue: { locale: "zh-CN", default: "en-US" }
+        },
         AppService,
         AnotherService
     ]

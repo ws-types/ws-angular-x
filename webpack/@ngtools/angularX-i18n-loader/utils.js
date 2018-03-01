@@ -8,14 +8,19 @@ module.exports = {
             return null;
         }
     },
-    requireSafe: function (path) {
-        return `
-(function(){
-    try {
-        return require("${path}");
-    } catch (e) {
-        return null;
-    }
-})()`;
+    requireSafe: function (path, tabLength) {
+        tabLength = tabLength || 0;
+        let tabs = [];
+        for (i = 0; i < tabLength; i++) {
+            tabs.push("\t");
+        }
+        const tab = tabs.join("");
+        return `(function(){
+    ${tab}try {
+        ${tab}return require("${path}");
+    ${tab}} catch (e) {
+        ${tab}return null;
+    ${tab}}
+${tab}})()`;
     }
 };

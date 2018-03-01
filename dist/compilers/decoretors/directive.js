@@ -16,6 +16,7 @@ var emit_1 = require("./../features/emit");
 var provider_1 = require("./provider");
 var bind_polyfill_1 = require("./../../utils/bind.polyfill");
 var template_parser_1 = require("./../parsers/template-parser");
+var config_1 = require("./../../i18n/config");
 function Directive(config) {
     return function direcDecorator(target) {
         var generator = createExtends(config, target);
@@ -38,7 +39,7 @@ function createExtends(config, target) {
     var hasTemplate = !!config.template;
     var generator = creators_1.CreateDirective(config);
     var outputs = parseIOProperties(target.prototype, generator);
-    var _a = createInjects(target), injects = _a.injects, scopeIndex = _a.scopeIndex, elementIndex = _a.elementIndex, attrsIndex = _a.attrsIndex;
+    var _a = createInjects(target), injects = _a.injects, scopeIndex = _a.scopeIndex, elementIndex = _a.elementIndex, attrsIndex = _a.attrsIndex, i18nIndex = _a.i18nIndex;
     bind_polyfill_1.bindPolyfill();
     var proto = target.prototype;
     var DirectiveClass = /** @class */ (function (_super) {
@@ -50,6 +51,7 @@ function createExtends(config, target) {
             }
             var _this = _super.apply(this, args) || this;
             generator.StylesLoad();
+            provider_1.buildI18nData(_this, args[i18nIndex], config.i18n);
             mixinDomScope(_this, args[elementIndex], args[attrsIndex]);
             mixinScope(_this, args[scopeIndex]);
             return _this;
@@ -114,6 +116,15 @@ function ngTempRefSet(instance, children) {
 exports.ngTempRefSet = ngTempRefSet;
 function mixinScope(instance, scope) {
     instance["$scope"] = scope;
+    try {
+        Object.defineProperty(scope, "i18n", {
+            get: function () { return instance["i18n"]; },
+            enumerable: false
+        });
+    }
+    catch (e) {
+        /* ignore redefin*/
+    }
 }
 exports.mixinScope = mixinScope;
 function mixinDomScope(instance, $element, $attrs) {
@@ -127,11 +138,16 @@ function mixinDomScope(instance, $element, $attrs) {
 exports.mixinDomScope = mixinDomScope;
 function mixinClass(scope, instance) {
     Object.keys(instance).filter(function (i) { return !i.includes("$"); }).forEach(function (key) {
-        Object.defineProperty(scope, key, {
-            get: function () { return instance[key]; },
-            set: function (value) { return instance[key] = value; },
-            enumerable: false
-        });
+        try {
+            Object.defineProperty(scope, key, {
+                get: function () { return instance[key]; },
+                set: function (value) { return instance[key] = value; },
+                enumerable: false
+            });
+        }
+        catch (e) {
+            /* ignore redefin*/
+        }
     });
 }
 exports.mixinClass = mixinClass;
@@ -139,11 +155,16 @@ function mixinClassProto(scope, target, instance) {
     Object.getOwnPropertyNames(target.prototype).forEach(function (key) {
         var descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
         if (descriptor.get) {
-            Object.defineProperty(scope, key, {
-                get: descriptor.get.bind(instance),
-                set: descriptor.set && descriptor.set.bind(instance),
-                enumerable: false
-            });
+            try {
+                Object.defineProperty(scope, key, {
+                    get: descriptor.get.bind(instance),
+                    set: descriptor.set && descriptor.set.bind(instance),
+                    enumerable: false
+                });
+            }
+            catch (e) {
+                /* ignore redefin*/
+            }
         }
         else if (descriptor.value && key !== "constructor") {
             if (typeof (descriptor.value) === "function") {
@@ -162,15 +183,17 @@ function mixinClassProto(scope, target, instance) {
     });
 }
 exports.mixinClassProto = mixinClassProto;
-function createInjects(target, need$Scope, need$Element, need$Attrs) {
+function createInjects(target, need$Scope, need$Element, need$Attrs, need$i18n) {
     if (need$Scope === void 0) { need$Scope = true; }
     if (need$Element === void 0) { need$Element = true; }
     if (need$Attrs === void 0) { need$Attrs = true; }
+    if (need$i18n === void 0) { need$i18n = true; }
     var result = {
         injects: provider_1.parseInjectsAndDI(target, Reflect.getMetadata(others_1.ParamsTypeMetaKey, target) || []),
         scopeIndex: -1,
         elementIndex: -1,
-        attrsIndex: -1
+        attrsIndex: -1,
+        i18nIndex: -1
     };
     if (need$Scope) {
         result.scopeIndex = add$Inject(result, "$scope");
@@ -180,6 +203,9 @@ function createInjects(target, need$Scope, need$Element, need$Attrs) {
     }
     if (need$Attrs) {
         result.attrsIndex = add$Inject(result, "$attrs");
+    }
+    if (need$i18n) {
+        result.i18nIndex = add$Inject(result, config_1.I18N_SELECTOR);
     }
     return result;
 }

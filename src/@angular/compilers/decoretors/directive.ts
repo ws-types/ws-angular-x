@@ -1,5 +1,5 @@
 import * as angular from "angular";
-import { IDirectiveConfig, IDirectiveClass, Type } from "./../../metadata";
+import { IDirectiveConfig, IDirectiveClass, Type, I18nPropery } from "./../../metadata";
 import { CreateDirective } from "./../creators";
 import { DirectiveGenerator } from "./../generators";
 import {
@@ -9,17 +9,19 @@ import {
     TempRefMetaKey, ITemplateRefProperty
 } from "./others";
 import { EventEmitter } from "./../features/emit";
-import { parseInjectsAndDI } from "./provider";
+import { parseInjectsAndDI, buildI18nData } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
 import { TemplateRef } from "./../../core/template/templateRef";
 import { NgHostPrefix } from "./../parsers/template-parser";
 import { ElementRef } from "./../../core/template/elementRef";
+import { I18N_SELECTOR } from "./../../i18n/config";
 
 export interface IInjectBundle {
     injects: string[];
     scopeIndex?: number;
     elementIndex?: number;
     attrsIndex?: number;
+    i18nIndex?: number;
 }
 
 export function Directive(config: IDirectiveConfig) {
@@ -44,7 +46,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
     const hasTemplate = !!config.template;
     const generator = CreateDirective(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target);
+    const { injects, scopeIndex, elementIndex, attrsIndex, i18nIndex } = createInjects(target);
     bindPolyfill();
     const proto = target.prototype;
     class DirectiveClass extends target {
@@ -54,6 +56,7 @@ function createExtends<T extends IDirectiveClass>(config: IDirectiveConfig, targ
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            buildI18nData(this, args[i18nIndex], <I18nPropery>config.i18n);
             mixinDomScope(this, args[elementIndex], args[attrsIndex]);
             mixinScope(this, args[scopeIndex]);
         }
@@ -117,6 +120,14 @@ export function ngTempRefSet(instance: any, children: Array<[string, ElementRef<
 
 export function mixinScope(instance: any, scope: ng.IScope) {
     instance["$scope"] = scope;
+    try {
+        Object.defineProperty(scope, "i18n", {
+            get: () => instance["i18n"],
+            enumerable: false
+        });
+    } catch (e) {
+        /* ignore redefin*/
+    }
 }
 
 export function mixinDomScope(instance: any, $element?: ng.IRootElementService, $attrs?: ng.IAttributes) {
@@ -130,11 +141,15 @@ export function mixinDomScope(instance: any, $element?: ng.IRootElementService, 
 
 export function mixinClass(scope: ng.IScope, instance: any) {
     Object.keys(instance).filter(i => !i.includes("$")).forEach(key => {
-        Object.defineProperty(scope, key, {
-            get: () => instance[key],
-            set: (value) => instance[key] = value,
-            enumerable: false
-        });
+        try {
+            Object.defineProperty(scope, key, {
+                get: () => instance[key],
+                set: (value) => instance[key] = value,
+                enumerable: false
+            });
+        } catch (e) {
+            /* ignore redefin*/
+        }
     });
 }
 
@@ -142,11 +157,15 @@ export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
     Object.getOwnPropertyNames(target.prototype).forEach(key => {
         const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
         if (descriptor.get) {
-            Object.defineProperty(scope, key, {
-                get: descriptor.get.bind(instance),
-                set: descriptor.set && descriptor.set.bind(instance),
-                enumerable: false
-            });
+            try {
+                Object.defineProperty(scope, key, {
+                    get: descriptor.get.bind(instance),
+                    set: descriptor.set && descriptor.set.bind(instance),
+                    enumerable: false
+                });
+            } catch (e) {
+                /* ignore redefin*/
+            }
         } else if (descriptor.value && key !== "constructor") {
             if (typeof (descriptor.value) === "function") {
                 scope[key] = (...args: any[]) => descriptor.value.bind(instance)(...args);
@@ -158,12 +177,13 @@ export function mixinClassProto(scope: ng.IScope, target: any, instance: any) {
 }
 
 
-export function createInjects(target: any, need$Scope = true, need$Element = true, need$Attrs = true) {
+export function createInjects(target: any, need$Scope = true, need$Element = true, need$Attrs = true, need$i18n = true) {
     const result: IInjectBundle = {
         injects: parseInjectsAndDI(target, Reflect.getMetadata(ParamsTypeMetaKey, target) || []),
         scopeIndex: -1,
         elementIndex: -1,
-        attrsIndex: -1
+        attrsIndex: -1,
+        i18nIndex: -1
     };
     if (need$Scope) {
         result.scopeIndex = add$Inject(result, "$scope");
@@ -173,6 +193,9 @@ export function createInjects(target: any, need$Scope = true, need$Element = tru
     }
     if (need$Attrs) {
         result.attrsIndex = add$Inject(result, "$attrs");
+    }
+    if (need$i18n) {
+        result.i18nIndex = add$Inject(result, I18N_SELECTOR);
     }
     return result;
 }

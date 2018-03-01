@@ -8,4 +8,5 @@ export class NGX_I18N_CONFIG {
     private default: string;
     private locale: string;
     public get Locale() { return this.locale || this.default; }
+    public get Default() { return this.default; }
 }

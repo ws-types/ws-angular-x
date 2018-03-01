@@ -18,6 +18,11 @@ var NGX_I18N_CONFIG = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(NGX_I18N_CONFIG.prototype, "Default", {
+        get: function () { return this.default; },
+        enumerable: true,
+        configurable: true
+    });
     NGX_I18N_CONFIG = __decorate([
         provider_1.Injectable(config_1.I18N_SELECTOR)
         // tslint:disable-next-line:class-name

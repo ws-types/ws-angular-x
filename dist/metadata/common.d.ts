@@ -2,6 +2,7 @@ export declare type I18nConfig = I18nPropery | boolean;
 export interface I18nPropery {
     ext?: "json" | "yaml";
     root?: string;
+    alias?: string;
     files?: {
         [fileName: string]: string;
     };

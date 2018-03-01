@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import * as angular from "angular";
-import { IComponentConfig, IComponentClass } from "./../../metadata";
+import { IComponentConfig, IComponentClass, I18nPropery } from "./../../metadata";
 import { CreateComponent } from "./../creators";
 import {
     InputMetaKey, OutputMetaKey, IInputProperty,
@@ -9,7 +9,7 @@ import {
 } from "./others";
 import { ComponentGenerator } from "./../generators";
 import { EventEmitter } from "./../features/emit";
-import { parseInjectsAndDI } from "./provider";
+import { parseInjectsAndDI, buildI18nData } from "./provider";
 import { bindPolyfill } from "./../../utils/bind.polyfill";
 import {
     createInjects, mixinScope, mixinClass,
@@ -18,6 +18,7 @@ import {
 } from "./directive";
 import { TemplateRef } from "./../../core/template/templateRef";
 import { NgHostPrefix } from "./../parsers/template-parser";
+import { I18N_SELECTOR } from "./../../i18n/config";
 
 export function Component(config: IComponentConfig) {
     return function compoDecorator<T extends IComponentClass>(target: T) {
@@ -40,7 +41,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
     const selector = config.selector;
     const generator = CreateComponent(config);
     const outputs = parseIOProperties(target.prototype, generator);
-    const { injects, scopeIndex, elementIndex, attrsIndex } = createInjects(target);
+    const { injects, scopeIndex, elementIndex, attrsIndex, i18nIndex } = createInjects(target);
     bindPolyfill();
     const proto = target.prototype;
     class ComponentClass extends target {
@@ -50,6 +51,7 @@ function createExtends<T extends IComponentClass>(target: T, config: IComponentC
         constructor(...args: any[]) {
             super(...args);
             generator.StylesLoad();
+            buildI18nData(this, args[i18nIndex], <I18nPropery>config.i18n);
             mixinDomScope(this, args[elementIndex], args[attrsIndex]);
             mixinScope(this, args[scopeIndex]);
         }

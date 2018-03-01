@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
+var angular = require("angular");
 var uuid = require("uuid/v4");
 var decamel = require("decamelize");
 var provider_1 = require("../creators/provider");
@@ -49,11 +50,7 @@ function createExtends(config, target) {
                 args[_i] = arguments[_i];
             }
             var _this = _super.apply(this, args) || this;
-            var i18n_conf = args[args.length - 1];
-            if (i18n_conf && nConfig.i18n && nConfig.i18n.files && i18n_conf.Locale) {
-                var keya = Object.keys(nConfig.i18n.files).find(function (key) { return key.toLowerCase() === (i18n_conf.Locale || "").toLowerCase(); });
-                _this.i18n = nConfig.i18n.files[keya];
-            }
+            buildI18nData(_this, args[args.length - 1], nConfig.i18n);
             return _this;
         }
         ProviderClass.$inject = target.$inject;
@@ -63,6 +60,19 @@ function createExtends(config, target) {
     generator.Class(ProviderClass);
     return generator;
 }
+function buildI18nData(instance, i18n_conf, i18n_propery) {
+    if (i18n_conf && i18n_propery && i18n_propery.files && i18n_conf.Locale) {
+        var files = angular.copy(i18n_propery.files);
+        var alias = i18n_propery.alias || "i18n";
+        var keya = Object.keys(files).find(function (key) { return key.toLowerCase() === (i18n_conf.Locale || "").toLowerCase(); });
+        instance[alias] = files[keya];
+        if (!instance[alias]) {
+            instance[alias] = files[i18n_conf.Default];
+        }
+        instance["__" + alias] = files;
+    }
+}
+exports.buildI18nData = buildI18nData;
 function injectI18n(target) {
     var i18n_key = config_1.I18N_SELECTOR;
     var injects = target.$inject;

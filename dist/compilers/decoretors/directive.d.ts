@@ -7,6 +7,7 @@ export interface IInjectBundle {
     scopeIndex?: number;
     elementIndex?: number;
     attrsIndex?: number;
+    i18nIndex?: number;
 }
 export declare function Directive(config: IDirectiveConfig): <T extends IDirectiveClass>(target: T) => void;
 export declare function $Directive(config: IDirectiveConfig): {
@@ -18,4 +19,4 @@ export declare function mixinScope(instance: any, scope: ng.IScope): void;
 export declare function mixinDomScope(instance: any, $element?: ng.IRootElementService, $attrs?: ng.IAttributes): void;
 export declare function mixinClass(scope: ng.IScope, instance: any): void;
 export declare function mixinClassProto(scope: ng.IScope, target: any, instance: any): void;
-export declare function createInjects(target: any, need$Scope?: boolean, need$Element?: boolean, need$Attrs?: boolean): IInjectBundle;
+export declare function createInjects(target: any, need$Scope?: boolean, need$Element?: boolean, need$Attrs?: boolean, need$i18n?: boolean): IInjectBundle;

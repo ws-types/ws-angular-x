@@ -14,7 +14,7 @@ import { AntDirective } from "@src/directives/dire02/ant.directive";
 import * as angular from "angular";
 
 interface IThisScope extends ng.IScope, NewComponent {
-
+    i18n: any;
 }
 
 @Component({
@@ -23,7 +23,8 @@ interface IThisScope extends ng.IScope, NewComponent {
     templateUrl: "./new.html",
     styles: [
         require("./new.scss")
-    ]
+    ],
+    i18n: true
 })
 export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
@@ -66,7 +67,10 @@ export class NewComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit
     }
 
     ngOnInit(): void {
-        console.log("new component init");
+        // console.log("new component init");
+        // console.log(this);
+        // console.log(this["i18n"]);
+        // console.log(this["$scope"].i18n);
         if (this.ngModel) {
             this.isNGMD = true;
         }

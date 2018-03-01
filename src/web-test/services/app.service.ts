@@ -9,9 +9,9 @@ export class AppService {
     private i18n: any;
 
     constructor(public router: Router, private bservice: AnotherService) {
-        setTimeout(() => {
-            console.log(this.i18n);
-        }, 0);
+        // setTimeout(() => {
+        //     console.log(this.i18n);
+        // }, 0);
     }
 
 }

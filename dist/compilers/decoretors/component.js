@@ -14,6 +14,7 @@ require("reflect-metadata");
 var creators_1 = require("./../creators");
 var others_1 = require("./others");
 var emit_1 = require("./../features/emit");
+var provider_1 = require("./provider");
 var bind_polyfill_1 = require("./../../utils/bind.polyfill");
 var directive_1 = require("./directive");
 function Component(config) {
@@ -37,7 +38,7 @@ function createExtends(target, config) {
     var selector = config.selector;
     var generator = creators_1.CreateComponent(config);
     var outputs = parseIOProperties(target.prototype, generator);
-    var _a = directive_1.createInjects(target), injects = _a.injects, scopeIndex = _a.scopeIndex, elementIndex = _a.elementIndex, attrsIndex = _a.attrsIndex;
+    var _a = directive_1.createInjects(target), injects = _a.injects, scopeIndex = _a.scopeIndex, elementIndex = _a.elementIndex, attrsIndex = _a.attrsIndex, i18nIndex = _a.i18nIndex;
     bind_polyfill_1.bindPolyfill();
     var proto = target.prototype;
     var ComponentClass = /** @class */ (function (_super) {
@@ -49,6 +50,7 @@ function createExtends(target, config) {
             }
             var _this = _super.apply(this, args) || this;
             generator.StylesLoad();
+            provider_1.buildI18nData(_this, args[i18nIndex], config.i18n);
             directive_1.mixinDomScope(_this, args[elementIndex], args[attrsIndex]);
             directive_1.mixinScope(_this, args[scopeIndex]);
             return _this;

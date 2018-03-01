@@ -2,12 +2,13 @@ import "reflect-metadata";
 import * as angular from "angular";
 import * as uuid from "uuid/v4";
 import * as decamel from "decamelize";
-import { IProviderConfig, IProviderClass, IClass, ICommonController } from "./../../metadata";
+import { IProviderConfig, IProviderClass, IClass, ICommonController, I18nConfig, I18nPropery } from "./../../metadata";
 import { CreateProvider } from "../creators/provider";
 import { ParamsTypeMetaKey } from "./others";
 import { DI, Inject } from "../../di/container";
 import { ProviderGenerator } from "./../generators";
 import { I18N_SELECTOR } from "./../../i18n/config";
+import { NGX_I18N_CONFIG } from "./../../i18n";
 
 
 export function Injectable(config?: IProviderConfig | string) {
@@ -39,16 +40,25 @@ function createExtends(config: string | IProviderConfig, target: IProviderClass)
         public i18n: { [selector: string]: string };
         constructor(...args: any[]) {
             super(...args);
-            const i18n_conf = args[args.length - 1];
-            if (i18n_conf && nConfig.i18n && (<any>nConfig.i18n).files && i18n_conf.Locale) {
-                const keya = <any>Object.keys((<any>nConfig.i18n).files).find(key => key.toLowerCase() === (i18n_conf.Locale || "").toLowerCase());
-                this.i18n = (<any>nConfig.i18n).files[keya];
-            }
+            buildI18nData(this, args[args.length - 1], <I18nPropery>nConfig.i18n);
         }
     }
     DI.Register(generator.Selector, target);
     generator.Class(ProviderClass);
     return generator;
+}
+
+export function buildI18nData(instance, i18n_conf: NGX_I18N_CONFIG, i18n_propery: I18nPropery) {
+    if (i18n_conf && i18n_propery && i18n_propery.files && i18n_conf.Locale) {
+        const files = angular.copy(i18n_propery.files);
+        const alias = i18n_propery.alias || "i18n";
+        const keya = <any>Object.keys(files).find(key => key.toLowerCase() === (i18n_conf.Locale || "").toLowerCase());
+        instance[alias] = files[keya];
+        if (!instance[alias]) {
+            instance[alias] = files[i18n_conf.Default];
+        }
+        instance["__" + alias] = files;
+    }
 }
 
 export function injectI18n<T extends any>(target: T) {
