@@ -120,14 +120,6 @@ export function ngTempRefSet(instance: any, children: Array<[string, ElementRef<
 
 export function mixinScope(instance: any, scope: ng.IScope) {
     instance["$scope"] = scope;
-    try {
-        Object.defineProperty(scope, "i18n", {
-            get: () => instance["i18n"],
-            enumerable: false
-        });
-    } catch (e) {
-        /* ignore redefin*/
-    }
 }
 
 export function mixinDomScope(instance: any, $element?: ng.IRootElementService, $attrs?: ng.IAttributes) {
