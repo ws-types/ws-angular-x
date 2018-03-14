@@ -116,15 +116,6 @@ function ngTempRefSet(instance, children) {
 exports.ngTempRefSet = ngTempRefSet;
 function mixinScope(instance, scope) {
     instance["$scope"] = scope;
-    try {
-        Object.defineProperty(scope, "i18n", {
-            get: function () { return instance["i18n"]; },
-            enumerable: false
-        });
-    }
-    catch (e) {
-        /* ignore redefin*/
-    }
 }
 exports.mixinScope = mixinScope;
 function mixinDomScope(instance, $element, $attrs) {
